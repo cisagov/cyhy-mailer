@@ -1,5 +1,11 @@
 # Emacs droppings
 *~
 
+# Python droppings
+.coverage
+.tox
+**/__pycache__
+*.egg-info
+
 # Python venv
 venv/
