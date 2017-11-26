@@ -9,3 +9,6 @@
 
 # Python venv
 venv/
+
+# Docker secrets
+secrets

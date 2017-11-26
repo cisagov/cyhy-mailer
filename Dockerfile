@@ -1,23 +1,29 @@
 FROM python:3.6.3-alpine3.6
 MAINTAINER Shane Frasier <jeremy.frasier@beta.dhs.gov>
 
-# Install shadow, so we have adduser and addgroup
+# Install git so we can checkout the cyhy-mailer got repo.  Install
+# shadow, so we have adduser and addgroup.  These are all build
+# dependencies that will be removed at the end.
 RUN apk update && \
-    apk add shadow
+    apk add git shadow
 
 # Dependencies
-RUN pip3 install pymongo pyyaml
+RUN pip3 install git+https://github.com/jsf9k/cyhy-mailer.git
 
 # Create unprivileged user
-ENV SCANNER_HOME=/home/scanner
-RUN addgroup -S scanner \
-    && adduser -S -g "Scanner user" -G scanner scanner
+ENV MAILER_HOME=/home/mailer
+RUN addgroup -S mailer \
+    && adduser -S -g "Mailer user" -G mailer mailer
+
+# Remove build dependencies
+RUN apk del git shadow
 
 # Prepare to Run
-WORKDIR $SCANNER_HOME
-ENTRYPOINT ["./save_to_db.sh"]
+WORKDIR MAILER_HOME
+ENTRYPOINT ["cyhy-mailer"]
+CMD ["--help"]
 
 # This goes at the end because docker will always rerun the copy
 # command (and anything that goes after it)
-COPY . $SCANNER_HOME
-RUN chown -R scanner:scanner ${SCANNER_HOME}
+# COPY . MAILER_HOME
+RUN chown -R mailer:mailer ${MAILER_HOME}

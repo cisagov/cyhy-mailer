@@ -1,0 +1,14 @@
+.coverage
+cyhy
+.git
+.gitignore
+LICENSE.md
+mailer.egg-info
+README.md
+requirements.txt
+setup.cfg
+setup.py
+.tox
+tox.ini
+.travis.yml
+venv
