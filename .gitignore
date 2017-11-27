@@ -2,10 +2,11 @@
 *~
 
 # Python droppings
+.cache
 .coverage
-.tox
-**/__pycache__
 *.egg-info
+**/__pycache__
+.tox
 
 # Python venv
 venv/
