@@ -29,6 +29,7 @@ import logging
 import smtplib
 
 from . import __version__
+from .CyhyMessage import CyhyMessage
 from . import mailer
 
 
@@ -42,7 +43,7 @@ def main():
         log_level = logging.DEBUG
     logging.basicConfig(format='%(asctime)-15s %(message)s', level=log_level)
 
-    message = mailer.CyhyMessage(['jeremy.frasier@beta.dhs.gov'], './data/pdf-sample.pdf', cc_addrs=None)
+    message = CyhyMessage(['jeremy.frasier@beta.dhs.gov'], '/home/jeremy_frasier/artifacts_2017-11-16/reporting/reports/cyhy-DHS-2017-11-16-tmail-report.pdf', cc_addrs=None)
 
     server = smtplib.SMTP('smtp01.ncats.dhs.gov', 25)
     # server.starttls()

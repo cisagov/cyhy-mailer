@@ -1,7 +1,7 @@
 from email import encoders
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
+from email.mime.application import MIMEApplication
 import logging
 
 
@@ -50,9 +50,10 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
         logging.debug('Message body: %s', CyhyMessage.Body)
 
         attachment = open(pdf_filename, 'rb')
-        part = MIMEBase('application', 'pdf')
-        part.set_payload(attachment.read())
+        part = MIMEApplication(attachment.read(), 'pdf')
+        # part.set_payload(attachment.read())
         encoders.encode_base64(part)
+        # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
         part.add_header('Content-Disposition', 'attachment; filename=%s' % pdf_filename)
         self.attach(part)
         logging.debug('Message PDF attachment: %s', pdf_filename)
