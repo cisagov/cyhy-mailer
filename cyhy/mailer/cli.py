@@ -33,14 +33,19 @@ from . import mailer
 
 
 def main():
+    # Parse command line arguments
     args = docopt.docopt(__doc__, version=__version__)
 
+    # Set up logging
+    log_level = logging.WARNING
     if args["--debug"]:
-        logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+        log_level = logging.DEBUG
+    logging.basicConfig(format='%(asctime)-15s %(message)s', level=log_level)
 
     body_text = """Greetings AGENCY_ACRONYM,
 
 The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
+
 If you have any questions, please contact our office.
 
 Cheers,
@@ -59,6 +64,9 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
     # server.starttls()
     mailer.send_message(server, message)
     server.quit()
+
+    # Stop logging and clean up
+    logging.shutdown()
 
 # TO: Pull DISTRO email from cyhy database; if no DISTRO exists, send to every TECHNICAL POC
 
