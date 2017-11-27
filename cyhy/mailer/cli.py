@@ -39,6 +39,7 @@ def main():
         logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
     body_text = """Greetings AGENCY_ACRONYM,
+
 The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
 If you have any questions, please contact our office.
 
