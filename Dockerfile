@@ -7,23 +7,21 @@ MAINTAINER Shane Frasier <jeremy.frasier@beta.dhs.gov>
 RUN apk update && \
     apk add git shadow
 
-# Dependencies
-RUN pip3 install git+https://github.com/jsf9k/cyhy-mailer.git
+# Install mailer
+RUN pip install git+https://github.com/jsf9k/cyhy-mailer.git
 
 # Create unprivileged user
 ENV MAILER_HOME=/home/mailer
-RUN addgroup -S mailer \
-    && adduser -S -g "Mailer user" -G mailer mailer
+RUN mkdir ${MAILER_HOME} \
+    && addgroup -S mailer \
+    && adduser -S -g "Mailer user" -G mailer mailer \
+    && chown -R mailer:mailer ${MAILER_HOME}
 
 # Remove build dependencies
 RUN apk del git shadow
 
 # Prepare to Run
 WORKDIR MAILER_HOME
+USER mailer:mailer
 ENTRYPOINT ["cyhy-mailer"]
 CMD ["--help"]
-
-# This goes at the end because docker will always rerun the copy
-# command (and anything that goes after it)
-# COPY . MAILER_HOME
-RUN chown -R mailer:mailer ${MAILER_HOME}
