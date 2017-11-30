@@ -4,6 +4,8 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 import logging
 
+import pystache
+
 
 class CyhyMessage(MIMEMultipart):
 
@@ -33,6 +35,14 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
     def __init__(self, to_addrs, pdf_filename, from_addr=DefaultFrom, cc_addrs=DefaultCc):
         MIMEMultipart.__init__(self)
 
+        # renderer = pystache.Renderer()
+        # template = codecs.open(mustache_file,'r', encoding='utf-8').read()
+
+        # with codecs.open(json_file,'r', encoding='utf-8') as data_file:
+        #     data = json.load(data_file)
+
+        # r = pystache.render(template, data)
+
         self['From'] = from_addr
         logging.debug('Message to be sent from: %s', self['From'])
 
@@ -41,7 +51,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
         if cc_addrs:
             self['CC'] = ','.join(cc_addrs)
-            logging.debug('Message sent as CC to: %s', self['CC'])
+            logging.debug('Message to be sent as CC to: %s', self['CC'])
 
         self['Subject'] = CyhyMessage.Subject
         logging.debug('Message subject: %s', self['Subject'])
@@ -51,7 +61,6 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
         attachment = open(pdf_filename, 'rb')
         part = MIMEApplication(attachment.read(), 'pdf')
-        # part.set_payload(attachment.read())
         encoders.encode_base64(part)
         # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
         part.add_header('Content-Disposition', 'attachment; filename=%s' % pdf_filename)
