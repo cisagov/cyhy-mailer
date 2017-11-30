@@ -54,6 +54,9 @@ setup(
 
     install_requires=[
         'docopt',
+        'pymongo',
+        'pystache',
+        'pyyaml'
     ],
 
     extras_require={
