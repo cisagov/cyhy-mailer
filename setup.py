@@ -1,5 +1,5 @@
 """
-setup module for mailer
+setup module for cyhy-mailer
 
 Based on:
 
@@ -10,7 +10,7 @@ from setuptools import setup
 from cyhy.mailer import __version__
 
 setup(
-    name='mailer',
+    name='cyhy-mailer',
     version=__version__,
     description='A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.',
 
