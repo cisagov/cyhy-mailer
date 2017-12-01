@@ -11,13 +11,13 @@ Options:
   -h --help                   Show this message.
   --cyhy-report-dir=DIRECTORY The directory where the CYHY PDF reports are
                               located.
-  -y --financial-year=YEAR    The four-digit financial year to which the 
+  -y --financial-year=YEAR    The four-digit financial year to which the
                               reports being mailed out correspond.
   -q --fy-quarter=QUARTER     The quarter of the financial year to which the
                               reports being mailed out correspond.  Expected
                               values are 1, 2, 3, or 4.
   -m --mail-server=SERVER     The hostname or IP address of the mail server
-                              that should send the messages. 
+                              that should send the messages.
                               [default: smtp01.ncats.dhs.gov]
   -p --mail-port=PORT         The port to use when connecting to the mail
                               server that should send the messages.
