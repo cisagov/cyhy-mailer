@@ -4,13 +4,21 @@
 
 Usage:
   cyhy-mailer [options]
-  cyhy-mailer (--report-dir=DIRECTORY) [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
+  cyhy-mailer (--cyhy-report-dir=DIRECTORY) (--financial-year=YEAR) (--fy-quarter=QUARTER) [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
   -h --help                   Show this message.
-  -r --report-dir=DIRECTORY   The directory where the PDF reports are located.
-  -m --mail-server=SERVER     The hostname or IP address of the mail server that should send the messages. [default: smtp01.ncats.dhs.gov]
+  --cyhy-report-dir=DIRECTORY The directory where the CYHY PDF reports are
+                              located.
+  -y --financial-year=YEAR    The four-digit financial year to which the 
+                              reports being mailed out correspond.
+  -q --fy-quarter=QUARTER     The quarter of the financial year to which the
+                              reports being mailed out correspond.  Expected
+                              values are 1, 2, 3, or 4.
+  -m --mail-server=SERVER     The hostname or IP address of the mail server
+                              that should send the messages. 
+                              [default: smtp01.ncats.dhs.gov]
   -p --mail-port=PORT         The port to use when connecting to the mail
                               server that should send the messages.
                               [default: 25]
@@ -97,7 +105,7 @@ def main():
             logging.error('No emails found for ID {}'.format(id))
             continue
 
-        cyhy_report_glob = '{}/cyhy-{}-*.pdf'.format(args['--report-dir'], id)
+        cyhy_report_glob = '{}/cyhy-{}-*.pdf'.format(args['--cyhy-report-dir'], id)
         cyhy_report_filenames = glob.glob(cyhy_report_glob)
 
         # Exactly one CYHY report should match
@@ -110,7 +118,7 @@ def main():
 
         attachment_filename = cyhy_report_filenames[0]
 
-        message = CyhyMessage(to_emails, attachment_filename)
+        message = CyhyMessage(to_emails, attachment_filename, acronym, args['--financial-year'], args['--fy-quarter'])
 
         # mailer.send_message(server, message)
         agencies_emailed += 1
