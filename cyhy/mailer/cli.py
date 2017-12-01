@@ -71,7 +71,7 @@ def main():
     server = smtplib.SMTP(args['--mail-server'], int(args['--mail-port']))
     # server.starttls()
 
-    requests = db.requests.find({'retired': False}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+    requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
 
     total_agencies = requests.count()
     agencies_emailed = 0
@@ -126,7 +126,7 @@ def main():
     server.quit()
 
     # Print out and log some statistics
-    stats_string = 'Out of {} agencies, {} ({}%) were emailed.'.format(total_agencies, agencies_emailed, 100.0 * agencies_emailed / total_agencies)
+    stats_string = 'Out of {} agencies, {} ({:.2f}%) were able to be emailed.'.format(total_agencies, agencies_emailed, 100.0 * agencies_emailed / total_agencies)
     logging.info(stats_string)
     print(stats_string)
 
