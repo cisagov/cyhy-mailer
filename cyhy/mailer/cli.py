@@ -33,8 +33,10 @@ import docopt
 import glob
 import logging
 import smtplib
+from socket import timeout
 
-from pymongo import MongoClient
+import pymongo.MongoClient
+import pymongo.errors
 import yaml
 
 from . import __version__
@@ -42,16 +44,50 @@ from .CyhyMessage import CyhyMessage
 
 
 def database_from_config_file(config_filename):
+    """Given the name of the YAML file containing the configuration
+
+    information, return a corresponding MongoDB connection.
+
+    The configuration file should something look like this:
+        version: '1'
+
+        database:
+          name: cyhy
+          uri: mongodb://<read-only user>:<password>@<hostname>:<port>/cyhy
+
+    Parameters
+    ----------
+    config_filename : str
+        The name of the YAML file containing the configuration
+        information
+
+    Returns
+    -------
+    MongoDatabase: A connection to the desired MongoDB database
+
+    Throws
+    ------
+    OSError: If the database configuration file does not exist
+
+    yaml.YAMLError: If the YAML in the database configuration file is
+    invalid
+
+    KeyError: If the YAML in the database configuration file is valid
+    YAML but does not contain the expected keys
+
+    pymongo.errors.ConnectionError: If unable to connect to the
+    requested server
+
+    pymongo.errors.InvalidName: If the requested database does not
+    exist
+    """
     with open(config_filename, 'r') as stream:
         config = yaml.load(stream)
 
-    try:
-        db_uri = config['database']['uri']
-        db_name = config['database']['name']
-    except:
-        logging.error('Incorrect database config file format in {}'.format(config_filename), exc_info=True)
+    db_uri = config['database']['uri']
+    db_name = config['database']['name']
 
-    db_connection = MongoClient(host=db_uri, tz_aware=True)
+    db_connection = pymongo.MongoClient(host=db_uri, tz_aware=True)
     return db_connection[db_name]
 
 
@@ -65,15 +101,51 @@ def main():
         log_level = logging.DEBUG
     logging.basicConfig(format='%(asctime)-15s %(levelname)s %(message)s', level=log_level)
 
-    db = database_from_config_file(args['--db-creds-file'])
+    db_creds_file = args['--db-creds-file']
+    try:
+        db = database_from_config_file(db_creds_file)
+    except OSError:
+        logging.critical('Database configuration file {} does not exist'.format(db_creds_file), exc_info=True)
+        return 1
+    except yaml.YAMLError:
+        logging.critical('Database configuration file {} does not contain valid YAML'.format(db_creds_file), exc_info=True)
+        return 1
+    except KeyError:
+        logging.critical('Database configuration file {} does not contain the expected keys'.format(db_creds_file), exc_info=True)
+        return 1
+    except pymongo.errors.ConnectionError:
+        logging.critical('Unable to connect to the database server in {}'.format(db_creds_file), exc_info=True)
+        return 1
+    except pymongo.errors.InvalidName:
+        logging.critical('The database in {} does not exist'.format(db_creds_file), exc_info=True)
+        return 1
 
     # Set up the connection to the mail server
-    server = smtplib.SMTP(args['--mail-server'], int(args['--mail-port']))
-    # server.starttls()
+    mail_server_hostname = args['--mail-server']
+    try:
+        mail_server_port = int(args['--mail-port'])
+    except ValueError:
+        logging.critical('The value {} cannot be interpreted as a valid port'.format(args['--mail-port']), exc_info=True)
+        return 2
 
-    requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+    try:
+        mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
+        # It would be nice if we could use server.starttls() here, but the
+        # postfix server on SMTP01 doesn't yet support it.
+    except (smtplib.SMTPConnectError, timeout):
+        logging.critical('There was an error connecting to the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
+        return 3
 
-    total_agencies = requests.count()
+    try:
+        requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+    except TypeError:
+        logging.critical('There was an error with the MongoDB query', exc_info=True)
+        return 4
+
+    try:
+        total_agencies = requests.count()
+    except pymongo.errors.OperationFailure:
+        logging.critical('Mongo database error while counting the number of request documents returned', exc_info=True)
     agencies_emailed = 0
     for request in requests:
         id = request['_id']
@@ -118,12 +190,22 @@ def main():
 
         attachment_filename = cyhy_report_filenames[0]
 
-        message = CyhyMessage(to_emails, attachment_filename, acronym, args['--financial-year'], args['--fy-quarter'])
+        # Temporary for testing
+        to_emails = ['jeremy.frasier@hq.dhs.gov']
+        message = CyhyMessage(to_emails, attachment_filename, acronym, args['--financial-year'], args['--fy-quarter'], cc_addrs=[])
 
-        # mailer.send_message(server, message)
-        agencies_emailed += 1
+        try:
+            mail_server.send_message(message)
+            agencies_emailed += 1
+        except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+            # See
+            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
+            # for a full list of the exceptions that smtplib.SMTP.send_message
+            # can throw.
+            logging.error('Unable to send CYHY report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
-    server.quit()
+    # Close the connection to the mail server
+    mail_server.quit()
 
     # Print out and log some statistics
     stats_string = 'Out of {} agencies, {} ({:.2f}%) were able to be emailed.'.format(total_agencies, agencies_emailed, 100.0 * agencies_emailed / total_agencies)

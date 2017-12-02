@@ -8,6 +8,27 @@ import pystache
 
 
 class CyhyMessage(MIMEMultipart):
+    """A class representing an email message with a CYHY report PDF
+    attachment.
+
+    Static attributes
+    -----------------
+    DefaultFrom : str
+        The default value for the address from which the message
+        should be sent.
+
+    DefaultCc : str
+        The default value for the CC addresses to which the message
+        should be sent.
+
+    Subject : str
+        The mustache template to use when constructing the message
+        subject.
+
+    Body : str
+        The mustache template to use when constriucting the message
+        body.
+    """
 
     DefaultFrom = 'ncats@hq.dhs.gov'
 
@@ -33,6 +54,37 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 """
 
     def __init__(self, to_addrs, pdf_filename, agency_acronym, financial_year, fy_quarter, from_addr=DefaultFrom, cc_addrs=DefaultCc):
+        """Construct an instance.
+
+        Parameters
+        ----------
+        to_addrs : array of str
+            An array of string objects, each of which is an email
+            address to which this message should be sent.
+
+        pdf_filename : str
+            The filename of the PDF file that is teh CYHY report
+            corresponding to this message.
+
+        agency_acronym : str
+            The acronym ised by the agency corresponding to the CYHY
+            report attachment.
+
+        financial_year : str
+            The four-digit financial year to corresponding to the CYHY
+            report attachment.
+
+        fy_quarter : str
+            The quarter of the financial year corresponding to the
+            CYHY report attachment.
+
+        from_addr : str
+            The email address from which this message is to be sent.
+
+        cc_addrs : array of str
+            An array of string objects, each of which is a CC email
+            address to which this message should be sent.
+        """
         MIMEMultipart.__init__(self)
 
         self['From'] = from_addr
