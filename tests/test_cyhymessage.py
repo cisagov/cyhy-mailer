@@ -5,16 +5,19 @@ from cyhy.mailer.CyhyMessage import CyhyMessage
 
 class Test(unittest.TestCase):
 
-    def test_two_params_single_recipient(self):
+    def test_five_params_single_recipient(self):
         to = ['recipient@example.com']
         pdf = './tests/data/pdf-sample.pdf'
+        agency_acronym = 'CLARKE'
+        financial_year = '2001'
+        fy_quarter = '3'
 
-        message = CyhyMessage(to, pdf)
+        message = CyhyMessage(to, pdf, agency_acronym, financial_year, fy_quarter)
 
-        self.assertEqual(message['From'], CyhyMessage.DefaultFrom)
-        self.assertEqual(message['Subject'], CyhyMessage.Subject)
-        self.assertEqual(message['CC'], ','.join(CyhyMessage.DefaultCc))
-        self.assertEqual(message['To'], ','.join(to))
+        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['Subject'], 'CLARKE - CyHy - FY2001 Q3 Results')
+        self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['To'], 'recipient@example.com')
 
         # Grab the bytes that comprise the attachment
         bytes = open(pdf, 'rb').read()
@@ -24,17 +27,38 @@ class Test(unittest.TestCase):
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
                 self.assertEqual(part.get_payload(decode=True), bytes)
+            elif part.get_content_type() == 'text/plain':
+                body = '''Greetings CLARKE,
 
-    def test_two_params_multiple_recipients(self):
+The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
+
+If you have any questions, please contact our office.
+
+Cheers,
+The NCATS team
+
+National Cybersecurity Assessments and Technical Services (NCATS)
+National Cybersecurity and Communications Integration Center
+U.S. Department of Homeland Security
+ncats@hq.dhs.gov
+
+WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+'''
+                self.assertEqual(part.get_payload(), body)
+
+    def test_five_params_multiple_recipients(self):
         to = ['recipient@example.com', 'recipient2@example.com']
         pdf = './tests/data/pdf-sample.pdf'
+        agency_acronym = 'CLARKE'
+        financial_year = '2001'
+        fy_quarter = '3'
 
-        message = CyhyMessage(to, pdf)
+        message = CyhyMessage(to, pdf, agency_acronym, financial_year, fy_quarter)
 
-        self.assertEqual(message['From'], CyhyMessage.DefaultFrom)
-        self.assertEqual(message['Subject'], CyhyMessage.Subject)
-        self.assertEqual(message['CC'], ','.join(CyhyMessage.DefaultCc))
-        self.assertEqual(message['To'], ','.join(to))
+        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['Subject'], 'CLARKE - CyHy - FY2001 Q3 Results')
+        self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
         # Grab the bytes that comprise the attachment
         bytes = open(pdf, 'rb').read()
@@ -44,19 +68,40 @@ class Test(unittest.TestCase):
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
                 self.assertEqual(part.get_payload(decode=True), bytes)
+            elif part.get_content_type() == 'text/plain':
+                body = '''Greetings CLARKE,
 
-    def test_four_params_single_cc(self):
+The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
+
+If you have any questions, please contact our office.
+
+Cheers,
+The NCATS team
+
+National Cybersecurity Assessments and Technical Services (NCATS)
+National Cybersecurity and Communications Integration Center
+U.S. Department of Homeland Security
+ncats@hq.dhs.gov
+
+WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+'''
+                self.assertEqual(part.get_payload(), body)
+
+    def test_seven_params_single_cc(self):
         to = ['recipient@example.com', 'recipient2@example.com']
         pdf = './tests/data/pdf-sample.pdf'
         fm = 'sender@example.com'
         cc = ['cc@example.com']
+        agency_acronym = 'CLARKE'
+        financial_year = '2001'
+        fy_quarter = '3'
 
-        message = CyhyMessage(to, pdf, from_addr=fm, cc_addrs=cc)
+        message = CyhyMessage(to, pdf, agency_acronym, financial_year, fy_quarter, from_addr=fm, cc_addrs=cc)
 
         self.assertEqual(message['From'], fm)
-        self.assertEqual(message['Subject'], CyhyMessage.Subject)
-        self.assertEqual(message['CC'], ','.join(cc))
-        self.assertEqual(message['To'], ','.join(to))
+        self.assertEqual(message['Subject'], 'CLARKE - CyHy - FY2001 Q3 Results')
+        self.assertEqual(message['CC'], 'cc@example.com')
+        self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
         # Grab the bytes that comprise the attachment
         bytes = open(pdf, 'rb').read()
@@ -66,19 +111,40 @@ class Test(unittest.TestCase):
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
                 self.assertEqual(part.get_payload(decode=True), bytes)
+            elif part.get_content_type() == 'text/plain':
+                body = '''Greetings CLARKE,
 
-    def test_four_params_multiple_cc(self):
+The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
+
+If you have any questions, please contact our office.
+
+Cheers,
+The NCATS team
+
+National Cybersecurity Assessments and Technical Services (NCATS)
+National Cybersecurity and Communications Integration Center
+U.S. Department of Homeland Security
+ncats@hq.dhs.gov
+
+WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+'''
+                self.assertEqual(part.get_payload(), body)
+
+    def test_seven_params_multiple_cc(self):
         to = ['recipient@example.com', 'recipient2@example.com']
         pdf = './tests/data/pdf-sample.pdf'
         fm = 'sender@example.com'
         cc = ['cc@example.com', 'cc2@example.com']
+        agency_acronym = 'CLARKE'
+        financial_year = '2001'
+        fy_quarter = '3'
 
-        message = CyhyMessage(to, pdf, from_addr=fm, cc_addrs=cc)
+        message = CyhyMessage(to, pdf, agency_acronym, financial_year, fy_quarter, from_addr=fm, cc_addrs=cc)
 
         self.assertEqual(message['From'], fm)
-        self.assertEqual(message['Subject'], CyhyMessage.Subject)
-        self.assertEqual(message['CC'], ','.join(cc))
-        self.assertEqual(message['To'], ','.join(to))
+        self.assertEqual(message['Subject'], 'CLARKE - CyHy - FY2001 Q3 Results')
+        self.assertEqual(message['CC'], 'cc@example.com,cc2@example.com')
+        self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
         # Grab the bytes that comprise the attachment
         bytes = open(pdf, 'rb').read()
@@ -88,6 +154,24 @@ class Test(unittest.TestCase):
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
                 self.assertEqual(part.get_payload(decode=True), bytes)
+            elif part.get_content_type() == 'text/plain':
+                body = '''Greetings CLARKE,
+
+The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
+
+If you have any questions, please contact our office.
+
+Cheers,
+The NCATS team
+
+National Cybersecurity Assessments and Technical Services (NCATS)
+National Cybersecurity and Communications Integration Center
+U.S. Department of Homeland Security
+ncats@hq.dhs.gov
+
+WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+'''
+                self.assertEqual(part.get_payload(), body)
 
 
 if __name__ == '__main__':
