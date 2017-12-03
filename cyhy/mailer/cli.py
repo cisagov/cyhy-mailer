@@ -190,9 +190,7 @@ def main():
 
         attachment_filename = cyhy_report_filenames[0]
 
-        # Temporary for testing
-        to_emails = ['jeremy.frasier@hq.dhs.gov']
-        message = CyhyMessage(to_emails, attachment_filename, acronym, args['--financial-year'], args['--fy-quarter'], cc_addrs=[])
+        message = CyhyMessage(to_emails, attachment_filename, acronym, args['--financial-year'], args['--fy-quarter'])
 
         try:
             mail_server.send_message(message)
