@@ -35,7 +35,7 @@ import logging
 import smtplib
 from socket import timeout
 
-import pymongo.MongoClient
+from pymongo import MongoClient
 import pymongo.errors
 import yaml
 
@@ -87,7 +87,7 @@ def database_from_config_file(config_filename):
     db_uri = config['database']['uri']
     db_name = config['database']['name']
 
-    db_connection = pymongo.MongoClient(host=db_uri, tz_aware=True)
+    db_connection = MongoClient(host=db_uri, tz_aware=True)
     return db_connection[db_name]
 
 

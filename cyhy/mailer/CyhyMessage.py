@@ -3,6 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 import logging
+import os.path
 
 import pystache
 
@@ -114,6 +115,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
         part = MIMEApplication(attachment.read(), 'pdf')
         encoders.encode_base64(part)
         # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
-        part.add_header('Content-Disposition', 'attachment; filename=%s' % pdf_filename)
+        _, filename = os.path.split(pdf_filename)
+        part.add_header('Content-Disposition', 'attachment', filename=filename)
         self.attach(part)
         logging.debug('Message PDF attachment: %s', pdf_filename)

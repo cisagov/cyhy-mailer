@@ -27,6 +27,7 @@ class Test(unittest.TestCase):
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
                 self.assertEqual(part.get_payload(decode=True), bytes)
+                self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
             elif part.get_content_type() == 'text/plain':
                 body = '''Greetings CLARKE,
 
@@ -68,6 +69,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
                 self.assertEqual(part.get_payload(decode=True), bytes)
+                self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
             elif part.get_content_type() == 'text/plain':
                 body = '''Greetings CLARKE,
 
@@ -111,6 +113,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
                 self.assertEqual(part.get_payload(decode=True), bytes)
+                self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
             elif part.get_content_type() == 'text/plain':
                 body = '''Greetings CLARKE,
 
@@ -154,6 +157,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
                 self.assertEqual(part.get_payload(decode=True), bytes)
+                self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
             elif part.get_content_type() == 'text/plain':
                 body = '''Greetings CLARKE,
 
