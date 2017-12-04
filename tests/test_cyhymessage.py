@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
                 self.assertEqual(part.get_payload(decode=True), bytes)
                 self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
             elif part.get_content_type() == 'text/plain':
-                body = '''Greetings CLARKE,
+                text_body = '''Greetings CLARKE,
 
 The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
 
@@ -45,7 +45,30 @@ ncats@hq.dhs.gov
 
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
 '''
-                self.assertEqual(part.get_payload(), body)
+                self.assertEqual(part.get_payload(), text_body)
+            elif part.get_content_type() == 'text/html':
+                html_body = '''<html>
+<head></head>
+<body>
+<p>Greetings CLARKE,</p>
+
+<p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)</p>
+
+<p>If you have any questions, please contact our office.</p>
+
+<p>Cheers,<br>
+The NCATS team</p>
+
+<p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
+National Cybersecurity and Communications Integration Center<br>
+U.S. Department of Homeland Security<br>
+<a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
+
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+</body>
+</html>
+'''
+                self.assertEqual(part.get_payload(), html_body)
 
     def test_five_params_multiple_recipients(self):
         to = ['recipient@example.com', 'recipient2@example.com']
@@ -88,6 +111,29 @@ ncats@hq.dhs.gov
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
 '''
                 self.assertEqual(part.get_payload(), body)
+            elif part.get_content_type() == 'text/html':
+                html_body = '''<html>
+<head></head>
+<body>
+<p>Greetings CLARKE,</p>
+
+<p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)</p>
+
+<p>If you have any questions, please contact our office.</p>
+
+<p>Cheers,<br>
+The NCATS team</p>
+
+<p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
+National Cybersecurity and Communications Integration Center<br>
+U.S. Department of Homeland Security<br>
+<a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
+
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+</body>
+</html>
+'''
+                self.assertEqual(part.get_payload(), html_body)
 
     def test_seven_params_single_cc(self):
         to = ['recipient@example.com', 'recipient2@example.com']
@@ -132,6 +178,29 @@ ncats@hq.dhs.gov
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
 '''
                 self.assertEqual(part.get_payload(), body)
+            elif part.get_content_type() == 'text/html':
+                html_body = '''<html>
+<head></head>
+<body>
+<p>Greetings CLARKE,</p>
+
+<p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)</p>
+
+<p>If you have any questions, please contact our office.</p>
+
+<p>Cheers,<br>
+The NCATS team</p>
+
+<p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
+National Cybersecurity and Communications Integration Center<br>
+U.S. Department of Homeland Security<br>
+<a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
+
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+</body>
+</html>
+'''
+                self.assertEqual(part.get_payload(), html_body)
 
     def test_seven_params_multiple_cc(self):
         to = ['recipient@example.com', 'recipient2@example.com']
@@ -176,6 +245,29 @@ ncats@hq.dhs.gov
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
 '''
                 self.assertEqual(part.get_payload(), body)
+            elif part.get_content_type() == 'text/html':
+                html_body = '''<html>
+<head></head>
+<body>
+<p>Greetings CLARKE,</p>
+
+<p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)</p>
+
+<p>If you have any questions, please contact our office.</p>
+
+<p>Cheers,<br>
+The NCATS team</p>
+
+<p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
+National Cybersecurity and Communications Integration Center<br>
+U.S. Department of Homeland Security<br>
+<a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
+
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+</body>
+</html>
+'''
+                self.assertEqual(part.get_payload(), html_body)
 
 
 if __name__ == '__main__':

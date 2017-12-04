@@ -26,9 +26,13 @@ class CyhyMessage(MIMEMultipart):
         The mustache template to use when constructing the message
         subject.
 
-    Body : str
-        The mustache template to use when constriucting the message
-        body.
+    TextBody : str
+        The mustache template to use when constructing the plain text
+        message body.
+
+    HtmlBody : str
+        The mustache template to use when constructing the HTML
+        message body.
     """
 
     DefaultFrom = 'ncats@hq.dhs.gov'
@@ -37,7 +41,7 @@ class CyhyMessage(MIMEMultipart):
 
     Subject = '{{acronym}} - CyHy - FY{{financial_year}} Q{{quarter}} Results'
 
-    Body = '''Greetings {{acronym}},
+    TextBody = '''Greetings {{acronym}},
 
 The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
 
@@ -52,6 +56,28 @@ U.S. Department of Homeland Security
 ncats@hq.dhs.gov
 
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+'''
+
+    HtmlBody = '''<html>
+<head></head>
+<body>
+<p>Greetings {{acronym}},</p>
+
+<p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)</p>
+
+<p>If you have any questions, please contact our office.</p>
+
+<p>Cheers,<br>
+The NCATS team</p>
+
+<p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
+National Cybersecurity and Communications Integration Center<br>
+U.S. Department of Homeland Security<br>
+<a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
+
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+</body>
+</html>
 '''
 
     def __init__(self, to_addrs, pdf_filename, agency_acronym, financial_year, fy_quarter, from_addr=DefaultFrom, cc_addrs=DefaultCc):
@@ -107,9 +133,15 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
         self['Subject'] = pystache.render(CyhyMessage.Subject, mustache_data)
         logging.debug('Message subject: %s', self['Subject'])
 
-        body = pystache.render(CyhyMessage.Body, mustache_data)
-        self.attach(MIMEText(body, 'plain'))
-        logging.debug('Message body: %s', body)
+        text_body = pystache.render(CyhyMessage.TextBody, mustache_data)
+        self.attach(MIMEText(text_body, 'plain'))
+        logging.debug('Message plain-text body: %s', text_body)
+
+        html_body = pystache.render(CyhyMessage.HtmlBody, mustache_data)
+        html_part = MIMEText(html_body, 'html')
+        html_part.add_header('Content-Disposition', 'inline')
+        self.attach(html_part)
+        logging.debug('Message HTML body: %s', html_body)
 
         attachment = open(pdf_filename, 'rb')
         part = MIMEApplication(attachment.read(), 'pdf')
