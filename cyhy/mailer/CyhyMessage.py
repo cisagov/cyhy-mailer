@@ -72,7 +72,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
             report attachment.
 
         financial_year : str
-            The four-digit financial year to corresponding to the CYHY
+            The two-digit financial year to corresponding to the CYHY
             report attachment.
 
         fy_quarter : str

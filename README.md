@@ -33,7 +33,7 @@ Options:
   -h --help                   Show this message.
   --cyhy-report-dir=DIRECTORY The directory where the CYHY PDF reports are
                               located.
-  -y --financial-year=YEAR    The four-digit financial year to which the
+  -y --financial-year=YEAR    The two-digit financial year to which the
                               reports being mailed out correspond.
   -q --fy-quarter=QUARTER     The quarter of the financial year to which the
                               reports being mailed out correspond.  Expected
