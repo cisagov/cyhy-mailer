@@ -15,6 +15,12 @@ After using `git` to clone the repository, you can install
 pip install /path/to/cyhy-mailer
 ```
 
+Or, if you prefer, you can install directly from
+[the GitHub repository](https://github.com/jsf9k/cyhy-mailer):
+```bash
+pip install git+https://github.com/jsf9k/cyhy-mailer.git
+```
+
 ## Usage ##
 
 ```bash
