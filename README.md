@@ -26,29 +26,37 @@ pip install git+https://github.com/jsf9k/cyhy-mailer.git
 ```bash
 Usage:
   cyhy-mailer [options]
-  cyhy-mailer (--cyhy-report-dir=DIRECTORY) (--financial-year=YEAR) (--fy-quarter=QUARTER) [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
+  cyhy-mailer (--cyhy-report-dir=DIRECTORY) (--financial-year=YEAR) (--fy-quarter=QUARTER) [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
-  -h --help                   Show this message.
-  --cyhy-report-dir=DIRECTORY The directory where the CYHY PDF reports are
-                              located.
-  -y --financial-year=YEAR    The two-digit financial year to which the
-                              reports being mailed out correspond.
-  -q --fy-quarter=QUARTER     The quarter of the financial year to which the
-                              reports being mailed out correspond.  Expected
-                              values are 1, 2, 3, or 4.
-  -m --mail-server=SERVER     The hostname or IP address of the mail server
-                              that should send the messages.
-                              [default: smtp01.ncats.dhs.gov]
-  -p --mail-port=PORT         The port to use when connecting to the mail
-                              server that should send the messages.
-                              [default: 25]
-  -c --db-creds-file=FILENAME A YAML file containing the CYHY database
-                              credentials.
-                              [default: /run/secrets/database_creds.yml]
-  -d --debug                  A Boolean value indicating whether the output
-                              should include debugging messages or not.
+  -h --help                    Show this message.
+  --cyhy-report-dir=DIRECTORY  The directory where the CYHY PDF reports are
+                               located.
+  -y --financial-year=YEAR     The two-digit financial year to which the
+                               reports being mailed out correspond.
+  -q --fy-quarter=QUARTER      The quarter of the financial year to which the
+                               reports being mailed out correspond.  Expected
+                               values are 1, 2, 3, or 4.
+  --tmail-report-dir=DIRECTORY The directory where the trustymail PDF reports
+                               are located.  If it exists, the corresponding
+                               trustymail report will also be attached to an
+                               agency's CYHY email.
+  --https-report-dir=DIRECTORY The directory where the https-scan PDF reports
+                               are located.  If it exists, the corresponding
+                               https-scan report will also be attached to an
+                               agency's CYHY email.
+  -m --mail-server=SERVER      The hostname or IP address of the mail server
+                               that should send the messages.
+                               [default: smtp01.ncats.dhs.gov]
+  -p --mail-port=PORT          The port to use when connecting to the mail
+                               server that should send the messages.
+                               [default: 25]
+  -c --db-creds-file=FILENAME  A YAML file containing the CYHY database
+                               credentials.
+                               [default: /run/secrets/database_creds.yml]
+  -d --debug                   A Boolean value indicating whether the output
+                               should include debugging messages or not.
 ```
 
 ## License ##
