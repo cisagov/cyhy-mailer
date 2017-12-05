@@ -8,7 +8,7 @@ RUN apk update && \
     apk add git shadow
 
 # Install mailer
-RUN pip install git+https://github.com/jsf9k/cyhy-mailer.git
+RUN pip install git+https://github.com/dhs-ncats/cyhy-mailer.git
 
 # Create unprivileged user
 ENV MAILER_HOME=/home/mailer
