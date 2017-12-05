@@ -80,7 +80,7 @@ U.S. Department of Homeland Security<br>
 </html>
 '''
 
-    def __init__(self, to_addrs, pdf_filename, agency_acronym, financial_year, fy_quarter, from_addr=DefaultFrom, cc_addrs=DefaultCc):
+    def __init__(self, to_addrs, cyhy_pdf_filename, agency_acronym, financial_year, fy_quarter, tmail_pdf_filename=None, https_pdf_filename=None, from_addr=DefaultFrom, cc_addrs=DefaultCc):
         """Construct an instance.
 
         Parameters
@@ -89,8 +89,8 @@ U.S. Department of Homeland Security<br>
             An array of string objects, each of which is an email
             address to which this message should be sent.
 
-        pdf_filename : str
-            The filename of the PDF file that is teh CYHY report
+        cyhy_pdf_filename : str
+            The filename of the PDF file that is the CYHY report
             corresponding to this message.
 
         agency_acronym : str
@@ -104,6 +104,14 @@ U.S. Department of Homeland Security<br>
         fy_quarter : str
             The quarter of the financial year corresponding to the
             CYHY report attachment.
+
+        tmail_pdf_filename : str
+            The filename of the PDF file that is the trustymail report
+            corresponding to this message.
+
+        https_pdf_filename : str
+            The filename of the PDF file that is the https-scan report
+            corresponding to this message.
 
         from_addr : str
             The email address from which this message is to be sent.
@@ -143,6 +151,25 @@ U.S. Department of Homeland Security<br>
         self.attach(html_part)
         logging.debug('Message HTML body: %s', html_body)
 
+        self.attach_pdf(cyhy_pdf_filename)
+        logging.debug('Message PDF CYHY attachment: %s', cyhy_pdf_filename)
+
+        if tmail_pdf_filename:
+            self.attach_pdf(tmail_pdf_filename)
+            logging.debug('Message PDF trustymail attachment: %s', tmail_pdf_filename)
+
+        if https_pdf_filename:
+            self.attach_pdf(https_pdf_filename)
+            logging.debug('Message PDF https-scan attachment: %s', https_pdf_filename)
+
+    def attach_pdf(self, pdf_filename):
+        """Attach a PDF file to this message.
+
+        Parameters
+        ----------
+        pdf_filename : str
+            The filename of the PDF file to attach.
+        """
         attachment = open(pdf_filename, 'rb')
         part = MIMEApplication(attachment.read(), 'pdf')
         encoders.encode_base64(part)
@@ -150,4 +177,3 @@ U.S. Department of Homeland Security<br>
         _, filename = os.path.split(pdf_filename)
         part.add_header('Content-Disposition', 'attachment', filename=filename)
         self.attach(part)
-        logging.debug('Message PDF attachment: %s', pdf_filename)
