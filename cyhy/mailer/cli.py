@@ -4,29 +4,37 @@
 
 Usage:
   cyhy-mailer [options]
-  cyhy-mailer (--cyhy-report-dir=DIRECTORY) (--financial-year=YEAR) (--fy-quarter=QUARTER) [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
+  cyhy-mailer (--cyhy-report-dir=DIRECTORY) (--financial-year=YEAR) (--fy-quarter=QUARTER) [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
-  -h --help                   Show this message.
-  --cyhy-report-dir=DIRECTORY The directory where the CYHY PDF reports are
-                              located.
-  -y --financial-year=YEAR    The two-digit financial year to which the
-                              reports being mailed out correspond.
-  -q --fy-quarter=QUARTER     The quarter of the financial year to which the
-                              reports being mailed out correspond.  Expected
-                              values are 1, 2, 3, or 4.
-  -m --mail-server=SERVER     The hostname or IP address of the mail server
-                              that should send the messages.
-                              [default: smtp01.ncats.dhs.gov]
-  -p --mail-port=PORT         The port to use when connecting to the mail
-                              server that should send the messages.
-                              [default: 25]
-  -c --db-creds-file=FILENAME A YAML file containing the CYHY database
-                              credentials.
-                              [default: /run/secrets/database_creds.yml]
-  -d --debug                  A Boolean value indicating whether the output
-                              should include debugging messages or not.
+  -h --help                    Show this message.
+  --cyhy-report-dir=DIRECTORY  The directory where the CYHY PDF reports are
+                               located.
+  -y --financial-year=YEAR     The two-digit financial year to which the
+                               reports being mailed out correspond.
+  -q --fy-quarter=QUARTER      The quarter of the financial year to which the
+                               reports being mailed out correspond.  Expected
+                               values are 1, 2, 3, or 4.
+  --tmail-report-dir=DIRECTORY The directory where the trustymail PDF reports
+                               are located.  If it exists, the corresponding
+                               trustymail report will also be attached to an
+                               agency's CYHY email.
+  --https-report-dir=DIRECTORY The directory where the https-scan PDF reports
+                               are located.  If it exists, the corresponding
+                               https-scan report will also be attached to an
+                               agency's CYHY email.
+  -m --mail-server=SERVER      The hostname or IP address of the mail server
+                               that should send the messages.
+                               [default: smtp01.ncats.dhs.gov]
+  -p --mail-port=PORT          The port to use when connecting to the mail
+                               server that should send the messages.
+                               [default: 25]
+  -c --db-creds-file=FILENAME  A YAML file containing the CYHY database
+                               credentials.
+                               [default: /run/secrets/database_creds.yml]
+  -d --debug                   A Boolean value indicating whether the output
+                               should include debugging messages or not.
 """
 
 import docopt
@@ -177,20 +185,57 @@ def main():
             logging.error('No emails found for ID {}'.format(id))
             continue
 
+        ###
+        # Find the CYHY report
+        ###
         cyhy_report_glob = '{}/cyhy-{}-*.pdf'.format(args['--cyhy-report-dir'], id)
         cyhy_report_filenames = glob.glob(cyhy_report_glob)
 
         # Exactly one CYHY report should match
         if len(cyhy_report_filenames) > 1:
             logging.warn('More than one CYHY report found for agency with ID {}'.format(id))
-            continue
         elif len(cyhy_report_filenames) == 0:
             logging.error('No CYHY report found for agency with ID {}'.format(id))
             continue
 
-        attachment_filename = cyhy_report_filenames[0]
+        cyhy_attachment_filename = cyhy_report_filenames[0]
 
-        message = CyhyMessage(to_emails, attachment_filename, acronym, args['--financial-year'], args['--fy-quarter'])
+        ###
+        # Find the trustymail report
+        ###
+        tmail_attachment_filename = None
+        tmail_report_dir = args['--tmail-report-dir']
+        if tmail_report_dir:
+            tmail_report_glob = '{}/cyhy-{}-*.pdf'.format(tmail_report_dir, id)
+            tmail_report_filenames = glob.glob(tmail_report_glob)
+
+            # Exactly one trustymail report should match
+            if len(tmail_report_filenames) >= 1:
+                tmail_attachment_filename = tmail_report_filenames[0]
+                if len(tmail_report_filenames) > 1:
+                    logging.warn('More than one trustymail report found for agency with ID {}'.format(id))
+            elif len(tmail_report_filenames) == 0:
+                logging.info('No trustymail report found for agency with ID {}'.format(id))
+
+        ###
+        # Find the https-scan report
+        ###
+        https_attachment_filename = None
+        https_report_dir = args['--https-report-dir']
+        if https_report_dir:
+            https_report_glob = '{}/cyhy-{}-*.pdf'.format(args['--https-report-dir'], id)
+            https_report_filenames = glob.glob(https_report_glob)
+
+            # Exactly one https-scan report should match
+            if len(https_report_filenames) >= 1:
+                https_attachment_filename = https_report_filenames[0]
+                if len(https_report_filenames) > 1:
+                    logging.warn('More than one https-scan report found for agency with ID {}'.format(id))
+            elif len(https_report_filenames) == 0:
+                logging.info('No https-scan report found for agency with ID {}'.format(id))
+
+        # Construct the message to send
+        message = CyhyMessage(to_emails, cyhy_attachment_filename, acronym, args['--financial-year'], args['--fy-quarter'], tmail_pdf_filename=tmail_attachment_filename, https_pdf_filename=https_attachment_filename)
 
         try:
             mail_server.send_message(message)
