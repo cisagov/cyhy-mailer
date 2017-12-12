@@ -3,7 +3,7 @@ setup module for cyhy-mailer
 
 Based on:
 
-- https://github.com/jsf9k/cyhy-mailer
+- https://github.com/dhs-ncats/cyhy-mailer
 """
 
 from setuptools import setup
@@ -17,7 +17,7 @@ setup(
     # NCATS "homepage"
     url='https://www.dhs.gov/cyber-incident-response',
     # The project's main homepage
-    download_url='https://github.com/jsf9k/cyhy-mailer',
+    download_url='https://github.com/dhs-ncats/cyhy-mailer',
 
     # Author details
     author='Department of Homeland Security, National Cybersecurity Assessments and Technical Services team',

@@ -1,27 +1,15 @@
-from email import encoders
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.application import MIMEApplication
-import logging
-import os.path
-
 import pystache
 
+from cyhy.mailer.Message import Message
+from cyhy.mailer.ReportMessage import ReportMessage
 
-class CyhyMessage(MIMEMultipart):
+
+class CyhyMessage(ReportMessage):
     """A class representing an email message with a CYHY report PDF
     attachment.
 
     Static attributes
     -----------------
-    DefaultFrom : str
-        The default value for the address from which the message
-        should be sent.
-
-    DefaultCc : str
-        The default value for the CC addresses to which the message
-        should be sent.
-
     Subject : str
         The mustache template to use when constructing the message
         subject.
@@ -35,11 +23,7 @@ class CyhyMessage(MIMEMultipart):
         message body.
     """
 
-    DefaultFrom = 'ncats@hq.dhs.gov'
-
-    DefaultCc = ['ncats@hq.dhs.gov']
-
-    Subject = '{{acronym}} - CyHy - FY{{financial_year}} Q{{quarter}} Results'
+    Subject = '{{acronym}} - Cyber Hygiene Report - {{report_date}} Results'
 
     TextBody = '''Greetings {{acronym}},
 
@@ -80,7 +64,7 @@ U.S. Department of Homeland Security<br>
 </html>
 '''
 
-    def __init__(self, to_addrs, cyhy_pdf_filename, agency_acronym, financial_year, fy_quarter, tmail_pdf_filename=None, https_pdf_filename=None, from_addr=DefaultFrom, cc_addrs=DefaultCc):
+    def __init__(self, to_addrs, pdf_filename, agency_acronym, report_date, from_addr=Message.DefaultFrom, cc_addrs=Message.DefaultCc):
         """Construct an instance.
 
         Parameters
@@ -89,29 +73,17 @@ U.S. Department of Homeland Security<br>
             An array of string objects, each of which is an email
             address to which this message should be sent.
 
-        cyhy_pdf_filename : str
+        pdf_filename : str
             The filename of the PDF file that is the CYHY report
             corresponding to this message.
 
         agency_acronym : str
-            The acronym ised by the agency corresponding to the CYHY
+            The acronym used by the agency corresponding to the CYHY
             report attachment.
 
-        financial_year : str
-            The two-digit financial year to corresponding to the CYHY
-            report attachment.
-
-        fy_quarter : str
-            The quarter of the financial year corresponding to the
-            CYHY report attachment.
-
-        tmail_pdf_filename : str
-            The filename of the PDF file that is the trustymail report
-            corresponding to this message.
-
-        https_pdf_filename : str
-            The filename of the PDF file that is the https-scan report
-            corresponding to this message.
+        report_date : str
+            The date corresponding to the CYHY report attachment.  We
+            have been using dates of the form December 12, 2017.
 
         from_addr : str
             The email address from which this message is to be sent.
@@ -120,60 +92,15 @@ U.S. Department of Homeland Security<br>
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
         """
-        MIMEMultipart.__init__(self)
-
-        self['From'] = from_addr
-        logging.debug('Message to be sent from: %s', self['From'])
-
-        self['To'] = ','.join(to_addrs)
-        logging.debug('Message to be sent to: %s', self['To'])
-
-        if cc_addrs:
-            self['CC'] = ','.join(cc_addrs)
-            logging.debug('Message to be sent as CC to: %s', self['CC'])
-
         # This is the data mustache will use to render the templates
         mustache_data = {
             'acronym': agency_acronym,
-            'financial_year': financial_year,
-            'quarter': fy_quarter
+            'report_date': report_date
         }
-        self['Subject'] = pystache.render(CyhyMessage.Subject, mustache_data)
-        logging.debug('Message subject: %s', self['Subject'])
 
+        # Render the templates
+        subject = pystache.render(CyhyMessage.Subject, mustache_data)
         text_body = pystache.render(CyhyMessage.TextBody, mustache_data)
-        self.attach(MIMEText(text_body, 'plain'))
-        logging.debug('Message plain-text body: %s', text_body)
-
         html_body = pystache.render(CyhyMessage.HtmlBody, mustache_data)
-        html_part = MIMEText(html_body, 'html')
-        html_part.add_header('Content-Disposition', 'inline')
-        self.attach(html_part)
-        logging.debug('Message HTML body: %s', html_body)
 
-        self.attach_pdf(cyhy_pdf_filename)
-        logging.debug('Message PDF CYHY attachment: %s', cyhy_pdf_filename)
-
-        if tmail_pdf_filename:
-            self.attach_pdf(tmail_pdf_filename)
-            logging.debug('Message PDF trustymail attachment: %s', tmail_pdf_filename)
-
-        if https_pdf_filename:
-            self.attach_pdf(https_pdf_filename)
-            logging.debug('Message PDF https-scan attachment: %s', https_pdf_filename)
-
-    def attach_pdf(self, pdf_filename):
-        """Attach a PDF file to this message.
-
-        Parameters
-        ----------
-        pdf_filename : str
-            The filename of the PDF file to attach.
-        """
-        attachment = open(pdf_filename, 'rb')
-        part = MIMEApplication(attachment.read(), 'pdf')
-        encoders.encode_base64(part)
-        # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
-        _, filename = os.path.split(pdf_filename)
-        part.add_header('Content-Disposition', 'attachment', filename=filename)
-        self.attach(part)
+        ReportMessage.__init__(self, to_addrs, subject, text_body, html_body, pdf_filename, from_addr, cc_addrs)
