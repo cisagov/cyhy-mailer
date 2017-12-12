@@ -4,7 +4,7 @@
 
 Usage:
   cyhy-mailer [options]
-  cyhy-mailer [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--financial-year=YEAR] [--fy-quarter=QUARTER] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
+  cyhy-mailer [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -226,6 +226,10 @@ def main():
 
         ###
         # Find and mail the trustymail report, if necessary
+        #
+        # This is very similar to the previous block but slightly
+        # different.  I need to figure out how to isolate the common
+        # functionality into a class or functions.
         ###
         tmail_report_dir = args['--tmail-report-dir']
         if tmail_report_dir:
