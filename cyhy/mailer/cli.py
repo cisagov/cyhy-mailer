@@ -45,6 +45,7 @@ import yaml
 
 from cyhy.mailer import __version__
 from cyhy.mailer.CyhyMessage import CyhyMessage
+from cyhy.mailer.HttpsMessage import HttpsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
 
 
@@ -227,7 +228,7 @@ def main():
         ###
         # Find and mail the trustymail report, if necessary
         #
-        # This is very similar to the previous block but slightly
+        # This is very similar to the CYHY block but slightly
         # different.  I need to figure out how to isolate the common
         # functionality into a class or functions.
         ###
@@ -270,21 +271,49 @@ def main():
                     logging.error('Unable to send Trustworthy Email report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
         ###
-        # Find the https-scan report, if necessary
+        # Find and mail the https report, if necessary
+        #
+        # This is very similar to the CYHY block but slightly
+        # different.  I need to figure out how to isolate the common
+        # functionality into a class or functions.
         ###
-        # https_attachment_filename = None
-        # https_report_dir = args['--https-report-dir']
-        # if https_report_dir:
-        #     https_report_glob = '{}/cyhy-{}-*.pdf'.format(args['--https-report-dir'], id)
-        #     https_report_filenames = glob.glob(https_report_glob)
+        https_report_dir = args['--https-report-dir']
+        if https_report_dir:
+            https_report_glob = '{}/cyhy-{}-*.pdf'.format(https_report_dir, id)
+            https_report_filenames = glob.glob(https_report_glob)
 
-        #     # Exactly one https-scan report should match
-        #     if len(https_report_filenames) >= 1:
-        #         https_attachment_filename = https_report_filenames[0]
-        #         if len(https_report_filenames) > 1:
-        #             logging.warn('More than one https-scan report found for agency with ID {}'.format(id))
-        #     elif len(https_report_filenames) == 0:
-        #         logging.info('No https-scan report found for agency with ID {}'.format(id))
+            # At most one HTTPS report should match
+            if len(https_report_filenames) > 1:
+                logging.warn('More than one HTTPS report found for agency with ID {}'.format(id))
+            elif not https_report_filenames:
+                # This is only at info since we are starting from the
+                # list of CYHY customers.  Many of them will not have
+                # HTTPS reports.
+                logging.info('No HTTPS report found for agency with ID {}'.format(id))
+
+            if https_report_filenames:
+                # We take the last filename since, if there happens to
+                # be more than one, we hope it is the latest.
+                https_attachment_filename = https_report_filenames[-1]
+
+                # Extract the report date from the report filename
+                match = re.search(r'-(?P<date>\d{4}-[01]\d-[0-3]\d)-https-report', https_attachment_filename)
+                report_date = datetime.datetime.strptime(match.group('date'), '%Y-%m-%d').strftime('%B %d, %Y')
+
+                # Construct the HTTPS message to send
+                message = HttpsMessage(to_emails, https_attachment_filename, acronym, report_date)
+
+                # "Are you silly?  I'm still gonna send it!"
+                #   -- Larry Enticer
+                try:
+                    mail_server.send_message(message)
+                    agencies_emailed_https_reports += 1
+                except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+                    # See
+                    # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
+                    # for a full list of the exceptions that
+                    # smtplib.SMTP.send_message can throw.
+                    logging.error('Unable to send HTTPS report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
     # Close the connection to the mail server
     mail_server.quit()
