@@ -1,0 +1,39 @@
+from cyhy.mailer.Message import Message
+
+
+class ReportMessage(Message):
+    """A class representing an email message with a report PDF attachment.
+    """
+
+    def __init__(self, to_addrs, subject, text_body, html_body, pdf_filename, from_addr=Message.DefaultFrom, cc_addrs=Message.DefaultCc):
+        """Construct an instance.
+
+        Parameters
+        ----------
+        to_addrs : array of str
+            An array of string objects, each of which is an email
+            address to which this message should be sent.
+
+        subject : str
+            The subject of this email message.
+
+        text_body : str
+            The plain-text version of the email body.
+
+        html_body : str
+            The HTML version of the email body.
+
+        pdf_filename : str
+            The filename of the PDF file that is the report to be
+            attached to this message.
+
+        from_addr : str
+            The email address from which this message is to be sent.
+
+        cc_addrs : array of str
+            An array of string objects, each of which is a CC email
+            address to which this message should be sent.
+        """
+        Message.__init__(self, to_addrs, subject, text_body, html_body, from_addr, cc_addrs)
+
+        self.attach_pdf(pdf_filename)
