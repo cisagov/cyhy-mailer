@@ -49,7 +49,7 @@ class Message(MIMEMultipart):
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
         """
-        MIMEMultipart.__init__(self)
+        MIMEMultipart.__init__(self, 'alternative')
 
         self['From'] = from_addr
         logging.debug('Message to be sent from: %s', self['From'])
@@ -70,11 +70,11 @@ class Message(MIMEMultipart):
         # version the default version that is displayed, as long as
         # the client supports it.
         #
-        if html_body:
-            self.attach_html_body(html_body)
-
         if text_body:
             self.attach_text_body(text_body)
+
+        if html_body:
+            self.attach_html_body(html_body)
 
     def attach_text_body(self, text):
         """Attach a plain text body to this message.
