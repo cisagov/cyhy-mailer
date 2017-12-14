@@ -26,7 +26,7 @@ pip install git+https://github.com/dhs-ncats/cyhy-mailer.git
 ```bash
 Usage:
   cyhy-mailer [options]
-  cyhy-mailer [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
+  cyhy-mailer [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -49,6 +49,10 @@ Options:
   -c --db-creds-file=FILENAME  A YAML file containing the CYHY database
                                credentials.
                                [default: /run/secrets/database_creds.yml]
+  --summary-to=EMAILS          A comma-separated list of emails addresses to
+                               which the summary statistics should be sent at
+                               the end of the run.  If not specified then no
+                               summary will be sent. 
   -d --debug                   A Boolean value indicating whether the output
                                should include debugging messages or not.
 ```

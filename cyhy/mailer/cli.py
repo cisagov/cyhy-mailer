@@ -4,7 +4,7 @@
 
 Usage:
   cyhy-mailer [options]
-  cyhy-mailer [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--debug]
+  cyhy-mailer [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -27,6 +27,10 @@ Options:
   -c --db-creds-file=FILENAME  A YAML file containing the CYHY database
                                credentials.
                                [default: /run/secrets/database_creds.yml]
+  --summary-to=EMAILS          A comma-separated list of emails addresses to
+                               which the summary statistics should be sent at
+                               the end of the run.  If not specified then no
+                               summary will be sent.
   -d --debug                   A Boolean value indicating whether the output
                                should include debugging messages or not.
 """
@@ -46,6 +50,7 @@ import yaml
 from cyhy.mailer import __version__
 from cyhy.mailer.CyhyMessage import CyhyMessage
 from cyhy.mailer.HttpsMessage import HttpsMessage
+from cyhy.mailer.StatsMessage import StatsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
 
 
@@ -315,9 +320,6 @@ def main():
                     # smtplib.SMTP.send_message can throw.
                     logging.error('Unable to send HTTPS report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
-    # Close the connection to the mail server
-    mail_server.quit()
-
     # Print out and log some statistics
     cyhy_stats_string = 'Out of {} CYHY agencies, {} ({:.2f}%) were emailed CYHY reports.'.format(total_agencies, agencies_emailed_cyhy_reports, 100.0 * agencies_emailed_cyhy_reports / total_agencies)
     tmail_stats_string = 'Out of {} CYHY agencies, {} ({:.2f}%) were emailed Trustworthy Email reports.'.format(total_agencies, agencies_emailed_tmail_reports, 100.0 * agencies_emailed_tmail_reports / total_agencies)
@@ -328,6 +330,24 @@ def main():
     print(cyhy_stats_string)
     print(tmail_stats_string)
     print(https_stats_string)
+
+    ###
+    # Email the summary statistics, if necessary
+    ###
+    summary_to = args['--summary-to']
+    if summary_to:
+        message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string])
+        try:
+            mail_server.send_message(message)
+        except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+            # See
+            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
+            # for a full list of the exceptions that smtplib.SMTP.send_message
+            # can throw.
+            logging.error('Unable to send cyhy-mailer summary', exc_info=True, stack_info=True)
+
+    # Close the connection to the mail server
+    mail_server.quit()
 
     # Stop logging and clean up
     logging.shutdown()
