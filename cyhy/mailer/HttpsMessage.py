@@ -37,7 +37,7 @@ The embedded CSV, pshtt-results.csv, contains the raw scores for compliance. For
 
 We welcome your feedback and questions.
 
-Cheers,<br>
+Cheers,
 The NCATS Team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
