@@ -5,12 +5,14 @@
 Usage:
   cyhy-mailer report [options]
   cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
   -h --help                    Show this message.
-  --cyhy-report-dir=DIRECTORY  The directory where the CYHY PDF reports are
-                               located.  If not specified then no CYHY reports
+  --cyhy-report-dir=DIRECTORY  The directory where the Cyber Hygiene
+                               PDF reports are located.  If not
+                               specified then no Cyber Hygiene reports
                                will be sent.
   --tmail-report-dir=DIRECTORY The directory where the trustymail PDF reports
                                are located.  If not specified then no trustymail
@@ -24,15 +26,31 @@ Options:
   -p --mail-port=PORT          The port to use when connecting to the mail
                                server that should send the messages.
                                [default: 25]
-  -c --db-creds-file=FILENAME  A YAML file containing the CYHY database
-                               credentials.
+  -c --db-creds-file=FILENAME  A YAML file containing the Cyber
+                               Hygiene database credentials.
                                [default: /run/secrets/database_creds.yml]
-  --summary-to=EMAILS          A comma-separated list of emails addresses to
+  --summary-to=EMAILS          A comma-separated list of email addresses to
                                which the summary statistics should be sent at
                                the end of the run.  If not specified then no
                                summary will be sent.
   -d --debug                   A Boolean value indicating whether the output
                                should include debugging messages or not.
+  --subject=SUBJECT            The subject line when sending an ad hoc
+                               email message.
+  --html-body=FILENAME         The file containing the HTML body text
+                               when sending an ad hoc email message.
+  --text-body=FILENAME         The file containing the text body text
+                               when sending an ad hoc email message.
+  --to=EMAILS                  A comma-separated list of additional
+                               email addresses to which the ad hoc
+                               message should be sent.
+  --cyhy                       If present, then the ad hoc message
+                               will be sent to all Cyber Hygiene
+                               customers.
+  --cyhy-federal               If present, then the ad hoc message
+                               will be sent to all Federal Cyber
+                               Hygiene customers.  (Note that --cyhy
+                               implies --cyhy-federal.)
 """
 
 import datetime
@@ -50,6 +68,7 @@ import yaml
 from cyhy.mailer import __version__
 from cyhy.mailer.CyhyMessage import CyhyMessage
 from cyhy.mailer.HttpsMessage import HttpsMessage
+from cyhy.mailer.Message import Message
 from cyhy.mailer.StatsMessage import StatsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
 
@@ -101,6 +120,37 @@ def database_from_config_file(config_filename):
     return db_connection[db_name]
 
 
+def get_all_descendants(db, parent):
+    """Return all (non-retired) descendents of the given Cyber Hygiene
+    parent
+
+    Parameters
+    ----------
+    db : MongoDatabase
+        The Mongo database from which Cyber Hygiene customer data can
+        be retrieved.
+
+    parent : str
+        The Cyber Hygiene parent for which all descendents are desired.
+
+    Returns
+    -------
+    list of str: The descendents of the Cyber Hygiene parent.
+    """
+    current_request = db.requests.find_one({'_id': parent})
+    if not current_request:
+        raise ValueError(parent + ' has no request document')
+
+    descendants = []
+    if current_request.get('children'):
+        for child in current_request['children']:
+            if not db.requests.find_one({'_id': child}).get('retired'):
+                descendants.append(child)
+                descendants += get_all_descendants(db, child)
+
+    return descendants
+
+
 def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, summary_to):
     """Given the parameters, send out Cyber Hygiene, Trustworthy
     Email, HTTPS reports, and a summary email out as appropriate.
@@ -128,7 +178,7 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
         then no HTTPS reports will be sent.
 
     summary_to : str
-        A comma-separated list of emails addresses to which the
+        A comma-separated list of email addresses to which the
         summary statistics should be sent at the end of the run.  If
         None then no summary will be sent.
     """
@@ -185,11 +235,11 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
 
             # Exactly one CYHY report should match
             if len(cyhy_report_filenames) > 1:
-                logging.warn('More than one CYHY report found for agency with ID {}'.format(id))
+                logging.warn('More than one Cyber Hygiene report found for agency with ID {}'.format(id))
             elif not cyhy_report_filenames:
                 # This is an error since we are starting from the list
                 # of CYHY customers and they should all have reports
-                logging.error('No CYHY report found for agency with ID {}'.format(id))
+                logging.error('No Cyber Hygiene report found for agency with ID {}'.format(id))
 
             if cyhy_report_filenames:
                 # We take the last filename since, if there happens to
@@ -213,7 +263,7 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                     # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
                     # for a full list of the exceptions that
                     # smtplib.SMTP.send_message can throw.
-                    logging.error('Unable to send CYHY report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
+                    logging.error('Unable to send Cyber Hygiene report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
         ###
         # Find and mail the trustymail report, if necessary
@@ -304,9 +354,9 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                     logging.error('Unable to send HTTPS report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
     # Print out and log some statistics
-    cyhy_stats_string = 'Out of {} CYHY agencies, {} ({:.2f}%) were emailed CYHY reports.'.format(total_agencies, agencies_emailed_cyhy_reports, 100.0 * agencies_emailed_cyhy_reports / total_agencies)
-    tmail_stats_string = 'Out of {} CYHY agencies, {} ({:.2f}%) were emailed Trustworthy Email reports.'.format(total_agencies, agencies_emailed_tmail_reports, 100.0 * agencies_emailed_tmail_reports / total_agencies)
-    https_stats_string = 'Out of {} CYHY agencies, {} ({:.2f}%) were emailed HTTPS reports.'.format(total_agencies, agencies_emailed_https_reports, 100.0 * agencies_emailed_https_reports / total_agencies)
+    cyhy_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Cyber Hygiene reports.'.format(total_agencies, agencies_emailed_cyhy_reports, 100.0 * agencies_emailed_cyhy_reports / total_agencies)
+    tmail_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Trustworthy Email reports.'.format(total_agencies, agencies_emailed_tmail_reports, 100.0 * agencies_emailed_tmail_reports / total_agencies)
+    https_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed HTTPS reports.'.format(total_agencies, agencies_emailed_https_reports, 100.0 * agencies_emailed_https_reports / total_agencies)
     logging.info(cyhy_stats_string)
     logging.info(tmail_stats_string)
     logging.info(https_stats_string)
@@ -319,6 +369,177 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
     ###
     if summary_to:
         message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string])
+        try:
+            mail_server.send_message(message)
+        except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+            # See
+            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
+            # for a full list of the exceptions that smtplib.SMTP.send_message
+            # can throw.
+            logging.error('Unable to send cyhy-mailer summary', exc_info=True, stack_info=True)
+
+
+def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_body, summary_to):
+    """Given the parameters, send out an email to the appropriate
+    recipients.
+
+    Parameters
+    ----------
+    db : MongoDatabase
+        The Mongo database from which Cyber Hygiene customer data can
+        be retrieved.
+
+    mail_server : smtplib.SMTP
+        The mail server via which outgoing mail should be sent.
+
+    to : str
+        A comma-separated list of additional email addresses to which
+        the ad hoc email message should be sent.  If None then the ad
+        hoc email message will not be sent to any additional
+        addresses.
+
+    cyhy : bool
+        If True then the ad hoc email message will be sent to all
+        Cyber Hygiene customers.
+
+    cyhy_federal : bool
+        If True then the ad hoc email message will be sent to all
+        Federal Cyber Hygiene customers.  Note that cyhy implies
+        cyhy_federal.
+
+    subject : str
+        The subject for the ad hoc email.
+
+    html_body : str
+        The filename where the HTML that comprises the body of the ad
+        hoc email message can be found.
+
+    text_body : str
+        The filename where the plain text that comprises the body of
+        the ad hoc email message can be found.
+
+    summary_to : str
+        A comma-separated list of email addresses to which the
+        summary statistics should be sent at the end of the run.  If
+        None then no summary will be sent.
+    """
+    with open(text_body, 'r') as text_file:
+        text = text_file.read()
+    with open(html_body, 'r') as html_file:
+        html = html_file.read()
+
+    emails = []
+    if cyhy:
+        try:
+            requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+        except TypeError:
+            logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
+            return 4
+
+        for request in requests:
+            id = request['_id']
+
+            # Drop any contacts that do not have both a type and an
+            # email attribute...
+            contacts = [c for c in request['agency']['contacts'] if 'type' in c and 'email' in c]
+            # ...but let's log a warning about them
+            for c in request['agency']['contacts']:
+                if 'type' not in c or 'email' not in c:
+                    logging.warn('Agency with ID {} has a contact that is missing an email and/or type attribute!'.format(id))
+
+            distro_emails = [c['email'] for c in contacts if c['type'] == 'DISTRO']
+            technical_emails = [c['email'] for c in contacts if c['type'] == 'TECHNICAL']
+
+            # There should be zero or one distro email, so log a
+            # warning if there are multiple.
+            if len(distro_emails) > 1:
+                logging.warn('More than one DISTRO email address for agency with ID {}'.format(id))
+
+            # Send to the distro email, if it exists.  Otherwise, send
+            # to the technical emails.
+            to_emails = distro_emails
+            if not to_emails:
+                to_emails = technical_emails
+
+            # At this point to_emails should contain at least one
+            # email
+            if not to_emails:
+                logging.error('No emails found for ID {}'.format(id))
+                continue
+
+            emails.append(to_emails)
+    elif cyhy_federal:
+        fed_orgs = get_all_descendants(db, 'FEDERAL')
+
+        try:
+            requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY', 'owner': {'$in': fed_orgs}}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+        except TypeError:
+            logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
+            return 4
+
+        for request in requests:
+            id = request['_id']
+
+            # Drop any contacts that do not have both a type and an
+            # email attribute...
+            contacts = [c for c in request['agency']['contacts'] if 'type' in c and 'email' in c]
+            # ...but let's log a warning about them
+            for c in request['agency']['contacts']:
+                if 'type' not in c or 'email' not in c:
+                    logging.warn('Agency with ID {} has a contact that is missing an email and/or type attribute!'.format(id))
+
+            distro_emails = [c['email'] for c in contacts if c['type'] == 'DISTRO']
+            technical_emails = [c['email'] for c in contacts if c['type'] == 'TECHNICAL']
+
+            # There should be zero or one distro email, so log a
+            # warning if there are multiple.
+            if len(distro_emails) > 1:
+                logging.warn('More than one DISTRO email address for agency with ID {}'.format(id))
+
+            # Send to the distro email, if it exists.  Otherwise, send
+            # to the technical emails.
+            to_emails = distro_emails
+            if not to_emails:
+                to_emails = technical_emails
+
+            # At this point to_emails should contain at least one
+            # email
+            if not to_emails:
+                logging.error('No emails found for ID {}'.format(id))
+                continue
+
+            emails.append(to_emails)
+
+    if to:
+        emails.append(to.split(','))
+
+    ad_hoc_emails_to_send = len(emails)
+    ad_hoc_emails_sent = 0
+    for email in emails:
+        message = Message([email], subject, text, html)
+
+        # "Are you silly?  I'm still gonna send it!"
+        #   -- Larry Enticer
+        try:
+            mail_server.send_message(message)
+            ad_hoc_emails_sent += 1
+        except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+            # See
+            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
+            # for a full list of the exceptions that
+            # smtplib.SMTP.send_message can throw.
+            logging.error('Unable to send ad hoc email to {}'.format(email), exc_info=True, stack_info=True)
+
+    # Print out and log some statistics
+    stats_string = 'Out of {} ad hoc emails to be sent, {} ({:.2f}%) were sent.'.format(ad_hoc_emails_to_send, ad_hoc_emails_sent, 100.0 * ad_hoc_emails_sent / ad_hoc_emails_to_send)
+    logging.info(stats_string)
+    print(stats_string)
+
+    ###
+    # Email the summary statistics, if necessary
+    ###
+    if summary_to:
+        message = StatsMessage(summary_to.split(','), [stats_string])
         try:
             mail_server.send_message(message)
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
@@ -376,8 +597,8 @@ def main():
 
     if args['report']:
         do_report(db, mail_server, args['--cyhy-report-directory'], args['--tmail-report-directory'], args['--https-report-directory'], args['--summary-to'])
-    # elif args['adhoc']:
-    #     do_adhoc()
+    elif args['adhoc']:
+        do_adhoc(db, mail_server, args['--to'], args['--cyhy'], args['--cyhy-federal'], args['--subject'], args['--html-body'], args['--text-body'], args['--summary-to'])
 
     # Close the connection to the mail server
     mail_server.quit()
