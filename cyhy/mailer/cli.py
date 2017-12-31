@@ -3,8 +3,8 @@
 """cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
 
 Usage:
-  cyhy-mailer [options]
-  cyhy-mailer [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [options]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -101,51 +101,37 @@ def database_from_config_file(config_filename):
     return db_connection[db_name]
 
 
-def main():
-    # Parse command line arguments
-    args = docopt.docopt(__doc__, version=__version__)
+def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, summary_to):
+    """Given the parameters, send out Cyber Hygiene, Trustworthy
+    Email, HTTPS reports, and a summary email out as appropriate.
 
-    # Set up logging
-    log_level = logging.WARNING
-    if args['--debug']:
-        log_level = logging.DEBUG
-    logging.basicConfig(format='%(asctime)-15s %(levelname)s %(message)s', level=log_level)
+    Parameters
+    ----------
+    db : MongoDatabase
+        The Mongo database from which Cyber Hygiene customer data can
+        be retrieved.
 
-    db_creds_file = args['--db-creds-file']
-    try:
-        db = database_from_config_file(db_creds_file)
-    except OSError:
-        logging.critical('Database configuration file {} does not exist'.format(db_creds_file), exc_info=True)
-        return 1
-    except yaml.YAMLError:
-        logging.critical('Database configuration file {} does not contain valid YAML'.format(db_creds_file), exc_info=True)
-        return 1
-    except KeyError:
-        logging.critical('Database configuration file {} does not contain the expected keys'.format(db_creds_file), exc_info=True)
-        return 1
-    except pymongo.errors.ConnectionError:
-        logging.critical('Unable to connect to the database server in {}'.format(db_creds_file), exc_info=True)
-        return 1
-    except pymongo.errors.InvalidName:
-        logging.critical('The database in {} does not exist'.format(db_creds_file), exc_info=True)
-        return 1
+    mail_server : smtplib.SMTP
+        The mail server via which outgoing mail should be sent.
 
-    # Set up the connection to the mail server
-    mail_server_hostname = args['--mail-server']
-    try:
-        mail_server_port = int(args['--mail-port'])
-    except ValueError:
-        logging.critical('The value {} cannot be interpreted as a valid port'.format(args['--mail-port']), exc_info=True)
-        return 2
+    cyhy_report_dir : str
+        The directory where the Cyber Hygiene reports can be found.
+        If None then no Cyber Hygiene reports will be sent.
 
-    try:
-        mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
-        # It would be nice if we could use server.starttls() here, but the
-        # postfix server on SMTP01 doesn't yet support it.
-    except (smtplib.SMTPConnectError, timeout):
-        logging.critical('There was an error connecting to the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
-        return 3
+    tmail_report_dir : str
+        The directory where the Trustworthy Email reports can be
+        found.  If None then no Trustworthy Email reports will be
+        sent.
 
+    https_report_dir : str
+        The directory where the HTTPS reports can be found.  If None
+        then no HTTPS reports will be sent.
+
+    summary_to : str
+        A comma-separated list of emails addresses to which the
+        summary statistics should be sent at the end of the run.  If
+        None then no summary will be sent.
+    """
     try:
         requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
     except TypeError:
@@ -193,7 +179,6 @@ def main():
         ###
         # Find and mail the CYHY report, if necessary
         ###
-        cyhy_report_dir = args['--cyhy-report-dir']
         if cyhy_report_dir:
             cyhy_report_glob = '{}/cyhy-{}-*.pdf'.format(cyhy_report_dir, id)
             cyhy_report_filenames = glob.glob(cyhy_report_glob)
@@ -237,7 +222,6 @@ def main():
         # different.  I need to figure out how to isolate the common
         # functionality into a class or functions.
         ###
-        tmail_report_dir = args['--tmail-report-dir']
         if tmail_report_dir:
             tmail_report_glob = '{}/cyhy-{}-*.pdf'.format(tmail_report_dir, id)
             tmail_report_filenames = glob.glob(tmail_report_glob)
@@ -282,7 +266,6 @@ def main():
         # different.  I need to figure out how to isolate the common
         # functionality into a class or functions.
         ###
-        https_report_dir = args['--https-report-dir']
         if https_report_dir:
             https_report_glob = '{}/cyhy-{}-*.pdf'.format(https_report_dir, id)
             https_report_filenames = glob.glob(https_report_glob)
@@ -334,7 +317,6 @@ def main():
     ###
     # Email the summary statistics, if necessary
     ###
-    summary_to = args['--summary-to']
     if summary_to:
         message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string])
         try:
@@ -345,6 +327,57 @@ def main():
             # for a full list of the exceptions that smtplib.SMTP.send_message
             # can throw.
             logging.error('Unable to send cyhy-mailer summary', exc_info=True, stack_info=True)
+
+
+def main():
+    # Parse command line arguments
+    args = docopt.docopt(__doc__, version=__version__)
+
+    # Set up logging
+    log_level = logging.WARNING
+    if args['--debug']:
+        log_level = logging.DEBUG
+    logging.basicConfig(format='%(asctime)-15s %(levelname)s %(message)s', level=log_level)
+
+    db_creds_file = args['--db-creds-file']
+    try:
+        db = database_from_config_file(db_creds_file)
+    except OSError:
+        logging.critical('Database configuration file {} does not exist'.format(db_creds_file), exc_info=True)
+        return 1
+    except yaml.YAMLError:
+        logging.critical('Database configuration file {} does not contain valid YAML'.format(db_creds_file), exc_info=True)
+        return 1
+    except KeyError:
+        logging.critical('Database configuration file {} does not contain the expected keys'.format(db_creds_file), exc_info=True)
+        return 1
+    except pymongo.errors.ConnectionError:
+        logging.critical('Unable to connect to the database server in {}'.format(db_creds_file), exc_info=True)
+        return 1
+    except pymongo.errors.InvalidName:
+        logging.critical('The database in {} does not exist'.format(db_creds_file), exc_info=True)
+        return 1
+
+    # Set up the connection to the mail server
+    mail_server_hostname = args['--mail-server']
+    try:
+        mail_server_port = int(args['--mail-port'])
+    except ValueError:
+        logging.critical('The value {} cannot be interpreted as a valid port'.format(args['--mail-port']), exc_info=True)
+        return 2
+
+    try:
+        mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
+        # It would be nice if we could use server.starttls() here, but the
+        # postfix server on SMTP01 doesn't yet support it.
+    except (smtplib.SMTPConnectError, timeout):
+        logging.critical('There was an error connecting to the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
+        return 3
+
+    if args['report']:
+        do_report(db, mail_server, args['--cyhy-report-directory'], args['--tmail-report-directory'], args['--https-report-directory'], args['--summary-to'])
+    # elif args['adhoc']:
+    #     do_adhoc()
 
     # Close the connection to the mail server
     mail_server.quit()
