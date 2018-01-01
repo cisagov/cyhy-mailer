@@ -46,10 +46,10 @@ Options:
                                message should be sent.
   --cyhy                       If present, then the ad hoc message
                                will be sent to all Cyber Hygiene
-                               customers.
+                               agencies.
   --cyhy-federal               If present, then the ad hoc message
                                will be sent to all Federal Cyber
-                               Hygiene customers.  (Note that --cyhy
+                               Hygiene agencys.  (Note that --cyhy
                                implies --cyhy-federal.)
 """
 
@@ -172,7 +172,7 @@ def get_all_descendants(db, parent):
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene customer data can
+        The Mongo database from which Cyber Hygiene agency data can
         be retrieved.
 
     parent : str
@@ -196,6 +196,66 @@ def get_all_descendants(db, parent):
     return descendants
 
 
+def get_cyhy_requests(db):
+    """Return a cursor that can be used to iterate over the Cyber Hygiene
+    agencies.
+
+    Parameters
+    ----------
+    db : MongoDatabase
+        The Mongo database from which Cyber Hygiene agency data can be
+        retrieved.
+
+    Returns
+    -------
+    pymongo.cursor.Cursor: A cursor that can be used to iterate over
+    the Cyber Hygiene agencies.
+
+    Throws
+    ------
+    pymongo.errors.TypeError: If unable to connect to the requested
+    server
+    """
+    try:
+        requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+    except TypeError:
+        logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
+        raise
+
+    return requests
+
+
+def get_federal_cyhy_requests(db):
+    """Return a cursor that can be used to iterate over the Federal Cyber
+    Hygiene agencies.
+
+    Parameters
+    ----------
+    db : MongoDatabase
+        The Mongo database from which Federal Cyber Hygiene agency
+        data can be retrieved.
+
+    Returns
+    -------
+    pymongo.cursor.Cursor: A cursor that can be used to iterate over
+    the Federal Cyber Hygiene agencies.
+
+    Throws
+    ------
+    pymongo.errors.TypeError: If unable to connect to the requested
+    server
+
+    """
+    fed_orgs = get_all_descendants(db, 'FEDERAL')
+    try:
+        requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY', 'owner': {'$in': fed_orgs}}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+    except TypeError:
+        logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
+        raise
+
+    return requests
+
+
 def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, summary_to):
     """Given the parameters, send out Cyber Hygiene, Trustworthy
     Email, HTTPS reports, and a summary email out as appropriate.
@@ -203,7 +263,7 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene customer data can
+        The Mongo database from which Cyber Hygiene agency data can
         be retrieved.
 
     mail_server : smtplib.SMTP
@@ -228,9 +288,8 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
         None then no summary will be sent.
     """
     try:
-        requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+        requests = get_cyhy_requests(db)
     except TypeError:
-        logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
         return 4
 
     try:
@@ -261,7 +320,7 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                 logging.warn('More than one Cyber Hygiene report found for agency with ID {}'.format(id))
             elif not cyhy_report_filenames:
                 # This is an error since we are starting from the list
-                # of CYHY customers and they should all have reports
+                # of CYHY agencys and they should all have reports
                 logging.error('No Cyber Hygiene report found for agency with ID {}'.format(id))
 
             if cyhy_report_filenames:
@@ -304,7 +363,7 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                 logging.warn('More than one Trustworthy Email report found for agency with ID {}'.format(id))
             elif not tmail_report_filenames:
                 # This is only at info since we are starting from the
-                # list of CYHY customers.  Many of them will not have
+                # list of CYHY agencys.  Many of them will not have
                 # Tmail reports.
                 logging.info('No Trustworthy Email report found for agency with ID {}'.format(id))
 
@@ -348,7 +407,7 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                 logging.warn('More than one HTTPS report found for agency with ID {}'.format(id))
             elif not https_report_filenames:
                 # This is only at info since we are starting from the
-                # list of CYHY customers.  Many of them will not have
+                # list of CYHY agencys.  Many of them will not have
                 # HTTPS reports.
                 logging.info('No HTTPS report found for agency with ID {}'.format(id))
 
@@ -409,7 +468,7 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene customer data can
+        The Mongo database from which Cyber Hygiene agency data can
         be retrieved.
 
     mail_server : smtplib.SMTP
@@ -423,11 +482,11 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
 
     cyhy : bool
         If True then the ad hoc email message will be sent to all
-        Cyber Hygiene customers.
+        Cyber Hygiene agencys.
 
     cyhy_federal : bool
         If True then the ad hoc email message will be sent to all
-        Federal Cyber Hygiene customers.  Note that cyhy implies
+        Federal Cyber Hygiene agencys.  Note that cyhy implies
         cyhy_federal.
 
     subject : str
@@ -454,14 +513,11 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
     emails = []
     if cyhy:
         try:
-            requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+            requests = get_cyhy_requests(db)
         except TypeError:
-            logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
             return 4
 
         for request in requests:
-            id = request['_id']
-
             to_emails = get_emails_from_request(request)
             # to_emails should contain at least one email
             if not to_emails:
@@ -469,17 +525,12 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
 
             emails.append(to_emails)
     elif cyhy_federal:
-        fed_orgs = get_all_descendants(db, 'FEDERAL')
-
         try:
-            requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY', 'owner': {'$in': fed_orgs}}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+            requests = get_federal_cyhy_requests(db)
         except TypeError:
-            logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
             return 4
 
         for request in requests:
-            id = request['_id']
-
             to_emails = get_emails_from_request(request)
             # to_emails should contain at least one email
             if not to_emails:
