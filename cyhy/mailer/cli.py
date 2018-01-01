@@ -523,7 +523,7 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
             if not to_emails:
                 continue
 
-            emails.append(to_emails)
+            emails.extend(to_emails)
     elif cyhy_federal:
         try:
             requests = get_federal_cyhy_requests(db)
@@ -536,10 +536,10 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
             if not to_emails:
                 continue
 
-            emails.append(to_emails)
+            emails.extend(to_emails)
 
     if to:
-        emails.append(to.split(','))
+        emails.extend(to.split(','))
 
     ad_hoc_emails_to_send = len(emails)
     ad_hoc_emails_sent = 0
