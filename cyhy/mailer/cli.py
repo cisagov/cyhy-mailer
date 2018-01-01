@@ -120,6 +120,51 @@ def database_from_config_file(config_filename):
     return db_connection[db_name]
 
 
+def get_emails_from_request(request):
+    """Given the request document, return the proper email address or
+    addresses to use for corresponding with the agency.
+
+    Parameters
+    ----------
+    request : dict
+        The request documents for which the corresponding email
+        address is desired.
+
+    Returns
+    -------
+    list of str: A list containing the proper email addresses to use
+    for corresponding with the agency
+    """
+    id = request['_id']
+    # Drop any contacts that do not have both a type and an email
+    # attribute...
+    contacts = [c for c in request['agency']['contacts'] if 'type' in c and 'email' in c]
+    # ...but let's log a warning about them
+    for c in request['agency']['contacts']:
+        if 'type' not in c or 'email' not in c:
+            logging.warn('Agency with ID {} has a contact that is missing an email and/or type attribute!'.format(id))
+
+    distro_emails = [c['email'] for c in contacts if c['type'] == 'DISTRO']
+    technical_emails = [c['email'] for c in contacts if c['type'] == 'TECHNICAL']
+
+    # There should be zero or one distro email, so log a warning if
+    # there are multiple.
+    if len(distro_emails) > 1:
+        logging.warn('More than one DISTRO email address for agency with ID {}'.format(id))
+
+    # Send to the distro email, if it exists.  Otherwise, send to the
+    # technical emails.
+    to_emails = distro_emails
+    if not to_emails:
+        to_emails = technical_emails
+
+    # At this point to_emails should contain at least one email
+    if not to_emails:
+        logging.error('No emails found for ID {}'.format(id))
+
+    return to_emails
+
+
 def get_all_descendants(db, parent):
     """Return all (non-retired) descendents of the given Cyber Hygiene
     parent
@@ -199,31 +244,9 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
         id = request['_id']
         acronym = request['agency']['acronym']
 
-        # Drop any contacts that do not have both a type and an email
-        # attribute...
-        contacts = [c for c in request['agency']['contacts'] if 'type' in c and 'email' in c]
-        # ...but let's log a warning about them
-        for c in request['agency']['contacts']:
-            if 'type' not in c or 'email' not in c:
-                logging.warn('Agency with ID {} has a contact that is missing an email and/or type attribute!'.format(id))
-
-        distro_emails = [c['email'] for c in contacts if c['type'] == 'DISTRO']
-        technical_emails = [c['email'] for c in contacts if c['type'] == 'TECHNICAL']
-
-        # There should be zero or one distro email, so log a warning if there
-        # are multiple.
-        if len(distro_emails) > 1:
-            logging.warn('More than one DISTRO email address for agency with ID {}'.format(id))
-
-        # Send to the distro email, if it exists.  Otherwise, send to the
-        # technical emails.
-        to_emails = distro_emails
+        to_emails = get_emails_from_request(request)
+        # to_emails should contain at least one email
         if not to_emails:
-            to_emails = technical_emails
-
-        # At this point to_emails should contain at least one email
-        if not to_emails:
-            logging.error('No emails found for ID {}'.format(id))
             continue
 
         ###
@@ -439,32 +462,9 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
         for request in requests:
             id = request['_id']
 
-            # Drop any contacts that do not have both a type and an
-            # email attribute...
-            contacts = [c for c in request['agency']['contacts'] if 'type' in c and 'email' in c]
-            # ...but let's log a warning about them
-            for c in request['agency']['contacts']:
-                if 'type' not in c or 'email' not in c:
-                    logging.warn('Agency with ID {} has a contact that is missing an email and/or type attribute!'.format(id))
-
-            distro_emails = [c['email'] for c in contacts if c['type'] == 'DISTRO']
-            technical_emails = [c['email'] for c in contacts if c['type'] == 'TECHNICAL']
-
-            # There should be zero or one distro email, so log a
-            # warning if there are multiple.
-            if len(distro_emails) > 1:
-                logging.warn('More than one DISTRO email address for agency with ID {}'.format(id))
-
-            # Send to the distro email, if it exists.  Otherwise, send
-            # to the technical emails.
-            to_emails = distro_emails
+            to_emails = get_emails_from_request(request)
+            # to_emails should contain at least one email
             if not to_emails:
-                to_emails = technical_emails
-
-            # At this point to_emails should contain at least one
-            # email
-            if not to_emails:
-                logging.error('No emails found for ID {}'.format(id))
                 continue
 
             emails.append(to_emails)
@@ -480,32 +480,9 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
         for request in requests:
             id = request['_id']
 
-            # Drop any contacts that do not have both a type and an
-            # email attribute...
-            contacts = [c for c in request['agency']['contacts'] if 'type' in c and 'email' in c]
-            # ...but let's log a warning about them
-            for c in request['agency']['contacts']:
-                if 'type' not in c or 'email' not in c:
-                    logging.warn('Agency with ID {} has a contact that is missing an email and/or type attribute!'.format(id))
-
-            distro_emails = [c['email'] for c in contacts if c['type'] == 'DISTRO']
-            technical_emails = [c['email'] for c in contacts if c['type'] == 'TECHNICAL']
-
-            # There should be zero or one distro email, so log a
-            # warning if there are multiple.
-            if len(distro_emails) > 1:
-                logging.warn('More than one DISTRO email address for agency with ID {}'.format(id))
-
-            # Send to the distro email, if it exists.  Otherwise, send
-            # to the technical emails.
-            to_emails = distro_emails
+            to_emails = get_emails_from_request(request)
+            # to_emails should contain at least one email
             if not to_emails:
-                to_emails = technical_emails
-
-            # At this point to_emails should contain at least one
-            # email
-            if not to_emails:
-                logging.error('No emails found for ID {}'.format(id))
                 continue
 
             emails.append(to_emails)
