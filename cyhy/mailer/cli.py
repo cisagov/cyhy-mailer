@@ -256,6 +256,59 @@ def get_federal_cyhy_requests(db):
     return requests
 
 
+def send_message(mail_server, message, counter=None):
+    """Send a message.
+
+    Parameters
+    ----------
+    mail_server : smtplib.SMTP
+        The mail server via which the message is to be sent.
+
+    message : email.message.Message
+        The email message that is to be sent.
+
+    counter : int
+        A counter.
+
+    Returns
+    -------
+    int: If counter was not None, then counter + 1 is returned if the
+    message was sent sent successfully and counter is returned if not.
+    If counter was None then None is returned.
+
+    Throws
+    ------
+    smtplib.SMTPRecipientsRefused: If all recipients are refused.
+
+    smtplib.SMTPHelpError: If the server did not reply properly to the
+    HELO greeting.
+
+    smtplib.SMTPSenderRefused: If the server did not accept the from
+    address.
+
+    smtp.SMTPDataError: If the server replied with an unexpected error
+    code.
+
+    smtp.SMTPNotSupportedError: If SMTP is not supported by the server.
+
+    """
+    # "Are you silly?  I'm still gonna send it!"
+    #   -- Larry Enticer
+    try:
+        mail_server.send_message(message)
+        if counter:
+            counter += 1
+    except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+        # See
+        # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
+        # for a full list of the exceptions that
+        # smtplib.SMTP.send_message can throw.
+        logging.error('Unable to send message', exc_info=True, stack_info=True)
+        raise
+
+    return counter
+
+
 def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, summary_to):
     """Given the parameters, send out Cyber Hygiene, Trustworthy
     Email, HTTPS reports, and a summary email out as appropriate.
@@ -335,16 +388,9 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                 # Construct the CYHY message to send
                 message = CyhyMessage(to_emails, cyhy_attachment_filename, acronym, report_date)
 
-                # "Are you silly?  I'm still gonna send it!"
-                #   -- Larry Enticer
                 try:
-                    mail_server.send_message(message)
-                    agencies_emailed_cyhy_reports += 1
+                    agencies_emailed_cyhy_reports = send_message(mail_server, message, agencies_emailed_cyhy_reports)
                 except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    # See
-                    # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
-                    # for a full list of the exceptions that
-                    # smtplib.SMTP.send_message can throw.
                     logging.error('Unable to send Cyber Hygiene report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
         ###
@@ -379,16 +425,9 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                 # Construct the Tmail message to send
                 message = TmailMessage(to_emails, tmail_attachment_filename, acronym, report_date)
 
-                # "Are you silly?  I'm still gonna send it!"
-                #   -- Larry Enticer
                 try:
-                    mail_server.send_message(message)
-                    agencies_emailed_tmail_reports += 1
+                    agencies_emailed_tmail_reports = send_message(mail_server, message, agencies_emailed_tmail_reports)
                 except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    # See
-                    # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
-                    # for a full list of the exceptions that
-                    # smtplib.SMTP.send_message can throw.
                     logging.error('Unable to send Trustworthy Email report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
         ###
@@ -423,16 +462,9 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                 # Construct the HTTPS message to send
                 message = HttpsMessage(to_emails, https_attachment_filename, acronym, report_date)
 
-                # "Are you silly?  I'm still gonna send it!"
-                #   -- Larry Enticer
                 try:
-                    mail_server.send_message(message)
-                    agencies_emailed_https_reports += 1
+                    agencies_emailed_https_reports = send_message(mail_server, message, agencies_emailed_https_reports)
                 except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    # See
-                    # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
-                    # for a full list of the exceptions that
-                    # smtplib.SMTP.send_message can throw.
                     logging.error('Unable to send HTTPS report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
     # Print out and log some statistics
@@ -452,13 +484,9 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
     if summary_to:
         message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string])
         try:
-            mail_server.send_message(message)
+            send_message(mail_server, message)
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-            # See
-            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
-            # for a full list of the exceptions that smtplib.SMTP.send_message
-            # can throw.
-            logging.error('Unable to send cyhy-mailer summary', exc_info=True, stack_info=True)
+            logging.error('Unable to send cyhy-mailer report summary', exc_info=True, stack_info=True)
 
 
 def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_body, summary_to):
@@ -546,16 +574,9 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
     for email in emails:
         message = Message([email], subject, text, html)
 
-        # "Are you silly?  I'm still gonna send it!"
-        #   -- Larry Enticer
         try:
-            mail_server.send_message(message)
-            ad_hoc_emails_sent += 1
+            ad_hoc_emails_sent = send_message(mail_server, message, ad_hoc_emails_sent)
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-            # See
-            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
-            # for a full list of the exceptions that
-            # smtplib.SMTP.send_message can throw.
             logging.error('Unable to send ad hoc email to {}'.format(email), exc_info=True, stack_info=True)
 
     # Print out and log some statistics
@@ -569,13 +590,9 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
     if summary_to:
         message = StatsMessage(summary_to.split(','), [stats_string])
         try:
-            mail_server.send_message(message)
+            send_message(mail_server, message)
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-            # See
-            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
-            # for a full list of the exceptions that smtplib.SMTP.send_message
-            # can throw.
-            logging.error('Unable to send cyhy-mailer summary', exc_info=True, stack_info=True)
+            logging.error('Unable to send cyhy-mailer ad hoc summary', exc_info=True, stack_info=True)
 
 
 def main():
@@ -624,7 +641,7 @@ def main():
         return 3
 
     if args['report']:
-        do_report(db, mail_server, args['--cyhy-report-directory'], args['--tmail-report-directory'], args['--https-report-directory'], args['--summary-to'])
+        do_report(db, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--summary-to'])
     elif args['adhoc']:
         do_adhoc(db, mail_server, args['--to'], args['--cyhy'], args['--cyhy-federal'], args['--subject'], args['--html-body'], args['--text-body'], args['--summary-to'])
 
