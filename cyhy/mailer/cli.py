@@ -300,13 +300,13 @@ def send_message(mail_server, message, counter=None):
     #   -- Larry Enticer
     try:
         mail_server.send_message(message)
-        if counter:
+        if counter is not None:
             counter += 1
     except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
         # See
         # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
-        # for a full list of the exceptions that
-        # smtplib.SMTP.send_message can throw.
+        # for a full list of the exceptions that smtplib.SMTP.send_message can
+        # throw.
         logging.error('Unable to send message', exc_info=True, stack_info=True)
         raise
 
