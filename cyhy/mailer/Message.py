@@ -15,7 +15,7 @@ class Message(MIMEMultipart):
         The default value for the address from which the message
         should be sent.
 
-    DefaultCc : str
+    DefaultCc : list of str
         The default value for the CC addresses to which the message
         should be sent.
     """
@@ -108,11 +108,29 @@ class Message(MIMEMultipart):
         pdf_filename : str
             The filename of the PDF file to attach.
         """
-        attachment = open(pdf_filename, 'rb')
-        part = MIMEApplication(attachment.read(), 'pdf')
+        with open(pdf_filename, 'rb') as attachment:
+            part = MIMEApplication(attachment.read(), 'pdf')
+
         encoders.encode_base64(part)
         # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
         _, filename = os.path.split(pdf_filename)
         part.add_header('Content-Disposition', 'attachment', filename=filename)
         self.attach(part)
         logging.debug('Message PDF attachment: %s', pdf_filename)
+
+    def attach_csv(self, csv_filename):
+        """Attach a CSV file to this message.
+
+        Parameters
+        ----------
+        csv_filename : str
+            The filename of the CSV file to attach.
+        """
+        with open(csv_filename, 'r') as attachment:
+            part = MIMEText(attachment.read(), 'csv')
+
+        # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
+        _, filename = os.path.split(csv_filename)
+        part.add_header('Content-Disposition', 'attachment', filename=filename)
+        self.attach(part)
+        logging.debug('Message CSV attachment: %s', csv_filename)
