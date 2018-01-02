@@ -10,7 +10,7 @@ class Test(unittest.TestCase):
         csv = './tests/data/csv-sample.csv'
         report_date = 'December 15, 2001'
 
-        message = CybexMessage(pdf, csv, report_date)
+        message = CybexMessage(pdf, csv, csv, csv, csv, report_date)
 
         self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['Subject'], 'Cybex Report - December 15, 2001 Results')
@@ -80,7 +80,7 @@ U.S. Department of Homeland Security<br>
         cc = ['cc@example.com', 'cc2@example.com']
         report_date = 'December 15, 2001'
 
-        message = CybexMessage(pdf, csv, report_date, to_addrs=to, from_addr=fm, cc_addrs=cc)
+        message = CybexMessage(pdf, csv, csv, csv, csv, report_date, to_addrs=to, from_addr=fm, cc_addrs=cc)
 
         self.assertEqual(message['From'], fm)
         self.assertEqual(message['Subject'], 'Cybex Report - December 15, 2001 Results')

@@ -70,7 +70,7 @@ U.S. Department of Homeland Security<br>
 </html>
 '''
 
-    def __init__(self, pdf_filename, csv_filename, report_date, to_addrs=DefaultTo, from_addr=Message.DefaultFrom, cc_addrs=None):
+    def __init__(self, pdf_filename, critical_open_csv_filename, critical_closed_csv_filename, high_open_csv_filename, high_closed_csv_filename, report_date, to_addrs=DefaultTo, from_addr=Message.DefaultFrom, cc_addrs=None):
         """Construct an instance.
 
         Parameters
@@ -79,9 +79,21 @@ U.S. Department of Homeland Security<br>
             The filename of the PDF file that is the Cybex report
             corresponding to this message.
 
-        csv_filename : str
+        critical_open_csv_filename : str
             The filename of the CSV file that contains the Cybex
-            report data corresponding to this message.
+            report data for open critical vulnerabilities.
+
+        critical_closed_csv_filename : str
+            The filename of the CSV file that contains the Cybex
+            report data for closed critical vulnerabilities.
+
+        high_open_csv_filename : str
+            The filename of the CSV file that contains the Cybex
+            report data for open high vulnerabilities.
+
+        high_closed_csv_filename : str
+            The filename of the CSV file that contains the Cybex
+            report data for closed high vulnerabilities.
 
         report_date : str
             The date corresponding to the Cybex report attachment.  We
@@ -110,4 +122,7 @@ U.S. Department of Homeland Security<br>
 
         ReportMessage.__init__(self, to_addrs, subject, text_body, html_body, pdf_filename, from_addr, cc_addrs)
 
-        self.attach_csv(csv_filename)
+        self.attach_csv(critical_open_csv_filename)
+        self.attach_csv(critical_closed_csv_filename)
+        self.attach_csv(high_open_csv_filename)
+        self.attach_csv(high_closed_csv_filename)

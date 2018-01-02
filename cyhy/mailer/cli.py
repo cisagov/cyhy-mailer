@@ -4,7 +4,7 @@
 
 Usage:
   cyhy-mailer report [options]
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
   cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
@@ -20,6 +20,9 @@ Options:
   --https-report-dir=DIRECTORY The directory where the https-scan PDF reports
                                are located.  If not specified then no https-scan
                                reports will be sent.
+  --cybex-report-dir=DIRECTORY The directory where the Cybex PDF
+                               report is located.  If not specified
+                               then no Cybex report will be sent.
   -m --mail-server=SERVER      The hostname or IP address of the mail server
                                that should send the messages.
                                [default: smtp01.ncats.dhs.gov]
@@ -66,6 +69,7 @@ import pymongo.errors
 import yaml
 
 from cyhy.mailer import __version__
+from cyhy.mailer.CybexMessage import CybexMessage
 from cyhy.mailer.CyhyMessage import CyhyMessage
 from cyhy.mailer.HttpsMessage import HttpsMessage
 from cyhy.mailer.Message import Message
@@ -309,7 +313,7 @@ def send_message(mail_server, message, counter=None):
     return counter
 
 
-def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, summary_to):
+def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, cybex_report_dir, summary_to):
     """Given the parameters, send out Cyber Hygiene, Trustworthy
     Email, HTTPS reports, and a summary email out as appropriate.
 
@@ -335,6 +339,10 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
         The directory where the HTTPS reports can be found.  If None
         then no HTTPS reports will be sent.
 
+    cybex_report_dir : str
+        The directory where the Cybex report can be found.  If None
+        then no Cybex report will be sent.
+
     summary_to : str
         A comma-separated list of email addresses to which the
         summary statistics should be sent at the end of the run.  If
@@ -352,6 +360,7 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
     agencies_emailed_cyhy_reports = 0
     agencies_emailed_tmail_reports = 0
     agencies_emailed_https_reports = 0
+    cybex_report_emailed = False
     for request in requests:
         id = request['_id']
         acronym = request['agency']['acronym']
@@ -467,22 +476,90 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                 except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
                     logging.error('Unable to send HTTPS report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
+    ###
+    # Find and mail the Cybex report, if necessary
+    #
+    # This is very similar to the CYHY block but slightly different.
+    # I need to figure out how to isolate the common functionality
+    # into a class or functions.
+    ###
+    if cybex_report_dir:
+        cybex_report_glob = '{}/Federal_Cyber_Exposure_Scorecard-*.pdf'.format(cybex_report_dir)
+        cybex_report_filenames = glob.glob(cybex_report_glob)
+        cybex_critical_open_csv_glob = '{}/cybex_open_tickets_critical_*.csv'.format(cybex_report_dir)
+        cybex_critical_open_csv_filenames = glob.glob(cybex_critical_open_csv_glob)
+        cybex_critical_closed_csv_glob = '{}/cybex_closed_tickets_critical_*.csv'.format(cybex_report_dir)
+        cybex_critical_closed_csv_filenames = glob.glob(cybex_critical_closed_csv_glob)
+        cybex_high_open_csv_glob = '{}/cybex_open_tickets_high_*.csv'.format(cybex_report_dir)
+        cybex_high_open_csv_filenames = glob.glob(cybex_high_open_csv_glob)
+        cybex_high_closed_csv_glob = '{}/cybex_closed_tickets_high_*.csv'.format(cybex_report_dir)
+        cybex_high_closed_csv_filenames = glob.glob(cybex_high_closed_csv_glob)
+
+        # At most one Cybex report and CSV should match
+        if len(cybex_report_filenames) > 1:
+            logging.warn('More than one Cybex report found')
+        elif not cybex_report_filenames:
+            logging.error('No Cybex report found')
+        if len(cybex_critical_open_csv_filenames) > 1:
+            logging.warn('More than one Cybex critical open CSV found')
+        elif not cybex_critical_open_csv_filenames:
+            logging.error('No Cybex critical open CSV found')
+        if len(cybex_critical_closed_csv_filenames) > 1:
+            logging.warn('More than one Cybex critical closed CSV found')
+        elif not cybex_critical_closed_csv_filenames:
+            logging.error('No Cybex critical closed CSV found')
+        if len(cybex_high_open_csv_filenames) > 1:
+            logging.warn('More than one Cybex high open CSV found')
+        elif not cybex_high_open_csv_filenames:
+            logging.error('No Cybex high open CSV found')
+        if len(cybex_high_closed_csv_filenames) > 1:
+            logging.warn('More than one Cybex high closed CSV found')
+        elif not cybex_high_closed_csv_filenames:
+            logging.error('No Cybex high closed CSV found')
+
+        if cybex_report_filenames and cybex_critical_open_csv_filenames and cybex_critical_closed_csv_filenames and cybex_high_open_csv_filenames and cybex_high_closed_csv_filenames:
+            # We take the last filename since, if there happens to be
+            # more than one, we hope it is the latest.
+            cybex_report_filename = cybex_report_filenames[-1]
+            cybex_critical_open_csv_filename = cybex_critical_open_csv_filenames[-1]
+            cybex_critical_closed_csv_filename = cybex_critical_closed_csv_filenames[-1]
+            cybex_high_open_csv_filename = cybex_high_open_csv_filenames[-1]
+            cybex_high_closed_csv_filename = cybex_high_closed_csv_filenames[-1]
+
+            # Extract the report date from the report filename
+            match = re.search(r'Federal_Cyber_Exposure_Scorecard-(?P<date>\d{4}-[01]\d-[0-3]\d)', cybex_report_filename)
+            report_date = datetime.datetime.strptime(match.group('date'), '%Y-%m-%d').strftime('%B %d, %Y')
+
+            # Construct the Cybex message to send
+            message = CybexMessage(cybex_report_filename, cybex_critical_open_csv_filename, cybex_critical_closed_csv_filename, cybex_high_open_csv_filename, cybex_high_closed_csv_filename, report_date)
+
+            try:
+                cybex_report_emailed = bool(send_message(mail_server, message, 0))
+            except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+                logging.error('Unable to send Cybex report', exc_info=True, stack_info=True)
+
     # Print out and log some statistics
     cyhy_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Cyber Hygiene reports.'.format(total_agencies, agencies_emailed_cyhy_reports, 100.0 * agencies_emailed_cyhy_reports / total_agencies)
     tmail_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Trustworthy Email reports.'.format(total_agencies, agencies_emailed_tmail_reports, 100.0 * agencies_emailed_tmail_reports / total_agencies)
     https_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed HTTPS reports.'.format(total_agencies, agencies_emailed_https_reports, 100.0 * agencies_emailed_https_reports / total_agencies)
+    if cybex_report_emailed:
+        cybex_stats_string = 'Cybex report was emailed.'
+    else:
+        cybex_stats_string = 'Cybex report was not emailed.'
     logging.info(cyhy_stats_string)
     logging.info(tmail_stats_string)
     logging.info(https_stats_string)
+    logging.info(cybex_stats_string)
     print(cyhy_stats_string)
     print(tmail_stats_string)
     print(https_stats_string)
+    print(cybex_stats_string)
 
     ###
     # Email the summary statistics, if necessary
     ###
     if summary_to:
-        message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string])
+        message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string, cybex_stats_string])
         try:
             send_message(mail_server, message)
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
@@ -641,7 +718,7 @@ def main():
         return 3
 
     if args['report']:
-        do_report(db, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--summary-to'])
+        do_report(db, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--cybex-report-dir'], args['--summary-to'])
     elif args['adhoc']:
         do_adhoc(db, mail_server, args['--to'], args['--cyhy'], args['--cyhy-federal'], args['--subject'], args['--html-body'], args['--text-body'], args['--summary-to'])
 
