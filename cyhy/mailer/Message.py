@@ -108,8 +108,9 @@ class Message(MIMEMultipart):
         pdf_filename : str
             The filename of the PDF file to attach.
         """
-        attachment = open(pdf_filename, 'rb')
-        part = MIMEApplication(attachment.read(), 'pdf')
+        with open(pdf_filename, 'rb') as attachment:
+            part = MIMEApplication(attachment.read(), 'pdf')
+
         encoders.encode_base64(part)
         # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
         _, filename = os.path.split(pdf_filename)
@@ -125,8 +126,9 @@ class Message(MIMEMultipart):
         csv_filename : str
             The filename of the CSV file to attach.
         """
-        attachment = open(csv_filename, 'rb')
-        part = MIMEText(attachment.read(), 'csv')
+        with open(csv_filename, 'r') as attachment:
+            part = MIMEText(attachment.read(), 'csv')
+
         # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
         _, filename = os.path.split(csv_filename)
         part.add_header('Content-Disposition', 'attachment', filename=filename)
