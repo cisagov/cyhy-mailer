@@ -252,7 +252,7 @@ def get_federal_cyhy_requests(db):
     """
     fed_orgs = get_all_descendants(db, 'FEDERAL')
     try:
-        requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY', 'owner': {'$in': fed_orgs}}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
+        requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY', '_id': {'$in': fed_orgs}}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
     except TypeError:
         logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
         raise
