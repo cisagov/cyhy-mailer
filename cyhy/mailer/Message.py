@@ -49,7 +49,7 @@ class Message(MIMEMultipart):
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
         """
-        MIMEMultipart.__init__(self, 'alternative')
+        MIMEMultipart.__init__(self, 'mixed')
 
         self['From'] = from_addr
         logging.debug('Message to be sent from: %s', self['From'])
@@ -65,40 +65,39 @@ class Message(MIMEMultipart):
             self['Subject'] = subject
             logging.debug('Message subject: %s', subject)
 
-        #
-        # The order is important here.  This order makes the HTML
-        # version the default version that is displayed, as long as
-        # the client supports it.
-        #
-        if text_body:
-            self.attach_text_body(text_body)
+        if html_body or text_body:
+            self.attach_text_and_html_bodies(html_body, text_body)
 
-        if html_body:
-            self.attach_html_body(html_body)
-
-    def attach_text_body(self, text):
-        """Attach a plain text body to this message.
-
-        Parameters
-        ----------
-        text : str
-            The plain text to attach.
-        """
-        self.attach(MIMEText(text, 'plain'))
-        logging.debug('Message plain-text body: %s', text)
-
-    def attach_html_body(self, html):
-        """Attach an HTML text body to this message.
+    def attach_text_and_html_bodies(self, html, text):
+        """Attach a plain text body and/or an HTML text body to this
+        message.  The HTML body will be the default version that is
+        displayed.  The text body will be displayed only if the client
+        does not support HTML.
 
         Parameters
         ----------
         html : str
-            The HTML text to attach.
+            The HTML to attach.
+
+        text : str
+            The plain text to attach.
         """
-        part = MIMEText(html, 'html')
-        part.add_header('Content-Disposition', 'inline')
-        self.attach(part)
-        logging.debug('Message HTML body: %s', html)
+        textBody = MIMEMultipart('alternative')
+
+        # The order is important here.  This order makes the HTML version the
+        # default version that is displayed, as long as the client supports it.
+        if text:
+            textBody.attach(MIMEText(text, 'plain'))
+            logging.debug('Message plain-text body: %s', text)
+
+        if html:
+            htmlPart = MIMEText(html, 'html')
+            # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
+            htmlPart.add_header('Content-Disposition', 'inline')
+            textBody.attach(htmlPart)
+            logging.debug('Message HTML body: %s', html)
+
+        self.attach(textBody)
 
     def attach_pdf(self, pdf_filename):
         """Attach a PDF file to this message.
