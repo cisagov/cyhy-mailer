@@ -70,7 +70,7 @@ class Message(MIMEMultipart):
 
     def attach_text_and_html_bodies(self, html, text):
         """Attach a plain text body and/or an HTML text body to this
-        message.  The HTML body will be the default version that id
+        message.  The HTML body will be the default version that is
         displayed.  The text body will be displayed only if the client
         does not support HTML.
 
