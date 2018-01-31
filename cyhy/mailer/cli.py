@@ -140,12 +140,12 @@ def get_emails_from_request(request):
     for corresponding with the agency
     """
     id = request['_id']
-    # Drop any contacts that do not have both a type and an email
+    # Drop any contacts that do not have both a type and a non-empty email
     # attribute...
-    contacts = [c for c in request['agency']['contacts'] if 'type' in c and 'email' in c]
-    # ...but let's log a warning about them
+    contacts = [c for c in request['agency']['contacts'] if 'type' in c and 'email' in c and c['email'].split()]
+    # ...but let's log a warning about them.
     for c in request['agency']['contacts']:
-        if 'type' not in c or 'email' not in c:
+        if 'type' not in c or 'email' not in c or not c['email'].split():
             logging.warn('Agency with ID {} has a contact that is missing an email and/or type attribute!'.format(id))
 
     distro_emails = [c['email'] for c in contacts if c['type'] == 'DISTRO']
