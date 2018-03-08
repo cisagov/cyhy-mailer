@@ -73,6 +73,7 @@ from cyhy.mailer.CybexMessage import CybexMessage
 from cyhy.mailer.CyhyMessage import CyhyMessage
 from cyhy.mailer.HttpsMessage import HttpsMessage
 from cyhy.mailer.Message import Message
+from cyhy.mailer.ReportMessage import ReportMessage
 from cyhy.mailer.StatsMessage import StatsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
 
@@ -538,6 +539,38 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
             except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
                 logging.error('Unable to send Cybex report', exc_info=True, stack_info=True)
 
+    ###
+    # Find and mail the CYHY sample report, if it is present
+    ###
+    sample_cyhy_report_emailed = False
+    if cyhy_report_dir:
+        cyhy_sample_report_glob = '{}/cyhy-SAMPLE-*.pdf'.format(cyhy_report_dir)
+        cyhy_sample_report_filenames = glob.glob(cyhy_sample_report_glob)
+
+        # Exactly one CYHY sample report should match
+        if len(cyhy_sample_report_filenames) > 1:
+            logging.warn('More than one Cyber Hygiene sample report found')
+        elif not cyhy_sample_report_filenames:
+            logging.warn('No Cyber Hygiene sample report found')
+
+        if cyhy_sample_report_filenames:
+            # We take the last filename since, if there happens to be
+            # more than one, we hope it is the latest.
+            cyhy_attachment_filename = cyhy_sample_report_filenames[-1]
+
+            # Extract the report date from the report filename
+            match = re.search(r'-(?P<date>\d{4}-[01]\d-[0-3]\d)T', cyhy_attachment_filename)
+            report_date = datetime.datetime.strptime(match.group('date'), '%Y-%m-%d').strftime('%B %d, %Y')
+
+            # Construct the report message to send
+            subject = 'Sample Cyber Hygiene Report - {}'.format(report_date)
+            message = ReportMessage(['ncats@hq.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
+
+            try:
+                sample_cyhy_report_emailed = bool(send_message(mail_server, message, 0))
+            except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+                logging.error('Unable to send sample Cyber Hygiene report', exc_info=True, stack_info=True)
+
     # Print out and log some statistics
     cyhy_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Cyber Hygiene reports.'.format(total_agencies, agencies_emailed_cyhy_reports, 100.0 * agencies_emailed_cyhy_reports / total_agencies)
     tmail_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Trustworthy Email reports.'.format(total_agencies, agencies_emailed_tmail_reports, 100.0 * agencies_emailed_tmail_reports / total_agencies)
@@ -546,20 +579,26 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
         cybex_stats_string = 'Cybex report was emailed.'
     else:
         cybex_stats_string = 'Cybex report was not emailed.'
+    if sample_cyhy_report_emailed:
+        sample_cyhy_stats_string = 'Sample Cyber Hygiene report was emailed.'
+    else:
+        sample_cyhy_stats_string = 'Sample Cyber Hygiene report was not emailed.'
     logging.info(cyhy_stats_string)
     logging.info(tmail_stats_string)
     logging.info(https_stats_string)
     logging.info(cybex_stats_string)
+    logging.info(sample_cyhy_stats_string)
     print(cyhy_stats_string)
     print(tmail_stats_string)
     print(https_stats_string)
     print(cybex_stats_string)
+    print(sample_cyhy_stats_string)
 
     ###
     # Email the summary statistics, if necessary
     ###
     if summary_to:
-        message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string, cybex_stats_string])
+        message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string, cybex_stats_string, sample_cyhy_stats_string])
         try:
             send_message(mail_server, message)
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
