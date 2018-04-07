@@ -5,24 +5,23 @@ from cyhy.mailer.CyhyMessage import CyhyMessage
 
 class Test(unittest.TestCase):
 
-    def test_five_params_single_recipient(self):
+    def test_four_params_single_recipient(self):
         to = ['recipient@example.com']
         pdf = './tests/data/pdf-sample.pdf'
         agency_acronym = 'CLARKE'
-        financial_year = '2001'
-        fy_quarter = '3'
+        report_date = 'December 15, 2001'
 
-        message = CyhyMessage(to, pdf, agency_acronym, financial_year, fy_quarter)
+        message = CyhyMessage(to, pdf, agency_acronym, report_date)
 
         self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
-        self.assertEqual(message['Subject'], 'CLARKE - CyHy - FY2001 Q3 Results')
+        self.assertEqual(message['Subject'], 'CLARKE - Cyber Hygiene Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com')
 
         # Grab the bytes that comprise the attachment
         bytes = open(pdf, 'rb').read()
 
-        # Make sure the correct attachment was added
+        # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
@@ -70,24 +69,23 @@ U.S. Department of Homeland Security<br>
 '''
                 self.assertEqual(part.get_payload(), html_body)
 
-    def test_five_params_multiple_recipients(self):
+    def test_four_params_multiple_recipients(self):
         to = ['recipient@example.com', 'recipient2@example.com']
         pdf = './tests/data/pdf-sample.pdf'
         agency_acronym = 'CLARKE'
-        financial_year = '2001'
-        fy_quarter = '3'
+        report_date = 'December 15, 2001'
 
-        message = CyhyMessage(to, pdf, agency_acronym, financial_year, fy_quarter)
+        message = CyhyMessage(to, pdf, agency_acronym, report_date)
 
         self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
-        self.assertEqual(message['Subject'], 'CLARKE - CyHy - FY2001 Q3 Results')
+        self.assertEqual(message['Subject'], 'CLARKE - Cyber Hygiene Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
         # Grab the bytes that comprise the attachment
         bytes = open(pdf, 'rb').read()
 
-        # Make sure the correct attachment was added
+        # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
@@ -135,26 +133,25 @@ U.S. Department of Homeland Security<br>
 '''
                 self.assertEqual(part.get_payload(), html_body)
 
-    def test_seven_params_single_cc(self):
+    def test_six_params_single_cc(self):
         to = ['recipient@example.com', 'recipient2@example.com']
         pdf = './tests/data/pdf-sample.pdf'
         fm = 'sender@example.com'
         cc = ['cc@example.com']
         agency_acronym = 'CLARKE'
-        financial_year = '2001'
-        fy_quarter = '3'
+        report_date = 'December 15, 2001'
 
-        message = CyhyMessage(to, pdf, agency_acronym, financial_year, fy_quarter, from_addr=fm, cc_addrs=cc)
+        message = CyhyMessage(to, pdf, agency_acronym, report_date, from_addr=fm, cc_addrs=cc)
 
         self.assertEqual(message['From'], fm)
-        self.assertEqual(message['Subject'], 'CLARKE - CyHy - FY2001 Q3 Results')
+        self.assertEqual(message['Subject'], 'CLARKE - Cyber Hygiene Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'cc@example.com')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
         # Grab the bytes that comprise the attachment
         bytes = open(pdf, 'rb').read()
 
-        # Make sure the correct attachment was added
+        # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':
@@ -202,26 +199,25 @@ U.S. Department of Homeland Security<br>
 '''
                 self.assertEqual(part.get_payload(), html_body)
 
-    def test_seven_params_multiple_cc(self):
+    def test_six_params_multiple_cc(self):
         to = ['recipient@example.com', 'recipient2@example.com']
         pdf = './tests/data/pdf-sample.pdf'
         fm = 'sender@example.com'
         cc = ['cc@example.com', 'cc2@example.com']
         agency_acronym = 'CLARKE'
-        financial_year = '2001'
-        fy_quarter = '3'
+        report_date = 'December 15, 2001'
 
-        message = CyhyMessage(to, pdf, agency_acronym, financial_year, fy_quarter, from_addr=fm, cc_addrs=cc)
+        message = CyhyMessage(to, pdf, agency_acronym, report_date, from_addr=fm, cc_addrs=cc)
 
         self.assertEqual(message['From'], fm)
-        self.assertEqual(message['Subject'], 'CLARKE - CyHy - FY2001 Q3 Results')
+        self.assertEqual(message['Subject'], 'CLARKE - Cyber Hygiene Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'cc@example.com,cc2@example.com')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
         # Grab the bytes that comprise the attachment
         bytes = open(pdf, 'rb').read()
 
-        # Make sure the correct attachment was added
+        # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
             if part.get_content_type() == 'application/pdf':

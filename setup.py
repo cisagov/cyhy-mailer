@@ -3,21 +3,29 @@ setup module for cyhy-mailer
 
 Based on:
 
-- https://github.com/jsf9k/cyhy-mailer
+- https://github.com/dhs-ncats/cyhy-mailer
 """
 
 from setuptools import setup
 from cyhy.mailer import __version__
 
+
+def readme():
+    with open('README.md') as f:
+        return f.read()
+
+
 setup(
     name='cyhy-mailer',
     version=__version__,
     description='A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.',
+    long_description=readme(),
+    long_description_content_type='text/markdown',
 
     # NCATS "homepage"
     url='https://www.dhs.gov/cyber-incident-response',
     # The project's main homepage
-    download_url='https://github.com/jsf9k/cyhy-mailer',
+    download_url='https://github.com/dhs-ncats/cyhy-mailer',
 
     # Author details
     author='Department of Homeland Security, National Cybersecurity Assessments and Technical Services team',
@@ -48,22 +56,24 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='email sending,cyhy,cyber hygiene',
+    keywords='email sending,cyhy',
 
     packages=['cyhy.mailer'],
 
     install_requires=[
-        'docopt',
-        'pymongo',
-        'pystache',
-        'pyyaml'
+        'docopt>=0.6.2',
+        'pymongo>=3.6.1',
+        'pystache>=0.5.4',
+        'pyyaml>=3.12'
     ],
 
     extras_require={
-        # 'dev': ['check-manifest'],
-        'test': [
-            'tox',
-            'pytest'
+        'dev': [
+            'check-manifest>=0.36',
+            'pytest>=3.5.0',
+            'semver>=2.7.9',
+            'tox>=3.0.0',
+            'wheel>=0.31.0'
         ],
     },
 
