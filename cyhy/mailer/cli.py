@@ -372,30 +372,31 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
             continue
 
         ###
-        # Find and mail the CYHY report, if necessary
+        # Find and mail the CyHy report, if necessary
         ###
         if cyhy_report_dir:
             cyhy_report_glob = '{}/cyhy-{}-*.pdf'.format(cyhy_report_dir, id)
-            cyhy_report_filenames = glob.glob(cyhy_report_glob)
+            cyhy_report_filenames = sorted(glob.glob(cyhy_report_glob))
 
-            # Exactly one CYHY report should match
+            # Exactly one CyHy report should match
             if len(cyhy_report_filenames) > 1:
                 logging.warn('More than one Cyber Hygiene report found for agency with ID {}'.format(id))
             elif not cyhy_report_filenames:
                 # This is an error since we are starting from the list
-                # of CYHY agencys and they should all have reports
+                # of CyHy agencys and they should all have reports
                 logging.error('No Cyber Hygiene report found for agency with ID {}'.format(id))
 
             if cyhy_report_filenames:
-                # We take the last filename since, if there happens to
-                # be more than one, we hope it is the latest.
+                # We take the last filename since, if there happens to be more
+                # than one, it should the latest.  (This is because we sorted
+                # the glob results.)
                 cyhy_attachment_filename = cyhy_report_filenames[-1]
 
                 # Extract the report date from the report filename
                 match = re.search(r'-(?P<date>\d{4}-[01]\d-[0-3]\d)T', cyhy_attachment_filename)
                 report_date = datetime.datetime.strptime(match.group('date'), '%Y-%m-%d').strftime('%B %d, %Y')
 
-                # Construct the CYHY message to send
+                # Construct the CyHy message to send
                 message = CyhyMessage(to_emails, cyhy_attachment_filename, acronym, report_date)
 
                 try:
@@ -406,26 +407,27 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
         ###
         # Find and mail the trustymail report, if necessary
         #
-        # This is very similar to the CYHY block but slightly
+        # This is very similar to the CyHy block but slightly
         # different.  I need to figure out how to isolate the common
         # functionality into a class or functions.
         ###
         if tmail_report_dir:
             tmail_report_glob = '{}/cyhy-{}-*.pdf'.format(tmail_report_dir, id)
-            tmail_report_filenames = glob.glob(tmail_report_glob)
+            tmail_report_filenames = sorted(glob.glob(tmail_report_glob))
 
             # At most one Tmail report should match
             if len(tmail_report_filenames) > 1:
                 logging.warn('More than one Trustworthy Email report found for agency with ID {}'.format(id))
             elif not tmail_report_filenames:
                 # This is only at info since we are starting from the
-                # list of CYHY agencys.  Many of them will not have
+                # list of CyHy agencys.  Many of them will not have
                 # Tmail reports.
                 logging.info('No Trustworthy Email report found for agency with ID {}'.format(id))
 
             if tmail_report_filenames:
-                # We take the last filename since, if there happens to
-                # be more than one, we hope it is the latest.
+                # We take the last filename since, if there happens to be more
+                # than one, it should the latest.  (This is because we sorted
+                # the glob results.)
                 tmail_attachment_filename = tmail_report_filenames[-1]
 
                 # Extract the report date from the report filename
@@ -443,26 +445,27 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
         ###
         # Find and mail the https report, if necessary
         #
-        # This is very similar to the CYHY block but slightly
+        # This is very similar to the CyHy block but slightly
         # different.  I need to figure out how to isolate the common
         # functionality into a class or functions.
         ###
         if https_report_dir:
             https_report_glob = '{}/cyhy-{}-*.pdf'.format(https_report_dir, id)
-            https_report_filenames = glob.glob(https_report_glob)
+            https_report_filenames = sorted(glob.glob(https_report_glob))
 
             # At most one HTTPS report should match
             if len(https_report_filenames) > 1:
                 logging.warn('More than one HTTPS report found for agency with ID {}'.format(id))
             elif not https_report_filenames:
                 # This is only at info since we are starting from the
-                # list of CYHY agencys.  Many of them will not have
+                # list of CyHy agencys.  Many of them will not have
                 # HTTPS reports.
                 logging.info('No HTTPS report found for agency with ID {}'.format(id))
 
             if https_report_filenames:
-                # We take the last filename since, if there happens to
-                # be more than one, we hope it is the latest.
+                # We take the last filename since, if there happens to be more
+                # than one, it should the latest.  (This is because we sorted
+                # the glob results.)
                 https_attachment_filename = https_report_filenames[-1]
 
                 # Extract the report date from the report filename
@@ -480,21 +483,21 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
     ###
     # Find and mail the Cybex report, if necessary
     #
-    # This is very similar to the CYHY block but slightly different.
+    # This is very similar to the CyHy block but slightly different.
     # I need to figure out how to isolate the common functionality
     # into a class or functions.
     ###
     if cybex_report_dir:
         cybex_report_glob = '{}/Federal_Cyber_Exposure_Scorecard-*.pdf'.format(cybex_report_dir)
-        cybex_report_filenames = glob.glob(cybex_report_glob)
+        cybex_report_filenames = sorted(glob.glob(cybex_report_glob))
         cybex_critical_open_csv_glob = '{}/cybex_open_tickets_critical_*.csv'.format(cybex_report_dir)
-        cybex_critical_open_csv_filenames = glob.glob(cybex_critical_open_csv_glob)
+        cybex_critical_open_csv_filenames = sorted(glob.glob(cybex_critical_open_csv_glob))
         cybex_critical_closed_csv_glob = '{}/cybex_closed_tickets_critical_*.csv'.format(cybex_report_dir)
-        cybex_critical_closed_csv_filenames = glob.glob(cybex_critical_closed_csv_glob)
+        cybex_critical_closed_csv_filenames = sorted(glob.glob(cybex_critical_closed_csv_glob))
         cybex_high_open_csv_glob = '{}/cybex_open_tickets_high_*.csv'.format(cybex_report_dir)
-        cybex_high_open_csv_filenames = glob.glob(cybex_high_open_csv_glob)
+        cybex_high_open_csv_filenames = sorted(glob.glob(cybex_high_open_csv_glob))
         cybex_high_closed_csv_glob = '{}/cybex_closed_tickets_high_*.csv'.format(cybex_report_dir)
-        cybex_high_closed_csv_filenames = glob.glob(cybex_high_closed_csv_glob)
+        cybex_high_closed_csv_filenames = sorted(glob.glob(cybex_high_closed_csv_glob))
 
         # At most one Cybex report and CSV should match
         if len(cybex_report_filenames) > 1:
@@ -519,8 +522,9 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
             logging.error('No Cybex high closed CSV found')
 
         if cybex_report_filenames and cybex_critical_open_csv_filenames and cybex_critical_closed_csv_filenames and cybex_high_open_csv_filenames and cybex_high_closed_csv_filenames:
-            # We take the last filename since, if there happens to be
-            # more than one, we hope it is the latest.
+            # We take the last filename since, if there happens to be more than
+            # one, it should the latest.  (This is because we sorted the glob
+            # results.)
             cybex_report_filename = cybex_report_filenames[-1]
             cybex_critical_open_csv_filename = cybex_critical_open_csv_filenames[-1]
             cybex_critical_closed_csv_filename = cybex_critical_closed_csv_filenames[-1]
@@ -540,22 +544,23 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
                 logging.error('Unable to send Cybex report', exc_info=True, stack_info=True)
 
     ###
-    # Find and mail the CYHY sample report, if it is present
+    # Find and mail the CyHy sample report, if it is present
     ###
     sample_cyhy_report_emailed = False
     if cyhy_report_dir:
         cyhy_sample_report_glob = '{}/cyhy-SAMPLE-*.pdf'.format(cyhy_report_dir)
-        cyhy_sample_report_filenames = glob.glob(cyhy_sample_report_glob)
+        cyhy_sample_report_filenames = sorted(glob.glob(cyhy_sample_report_glob))
 
-        # Exactly one CYHY sample report should match
+        # Exactly one CyHy sample report should match
         if len(cyhy_sample_report_filenames) > 1:
             logging.warn('More than one Cyber Hygiene sample report found')
         elif not cyhy_sample_report_filenames:
             logging.warn('No Cyber Hygiene sample report found')
 
         if cyhy_sample_report_filenames:
-            # We take the last filename since, if there happens to be
-            # more than one, we hope it is the latest.
+            # We take the last filename since, if there happens to be more than
+            # one, it should the latest.  (This is because we sorted the glob
+            # results.)
             cyhy_attachment_filename = cyhy_sample_report_filenames[-1]
 
             # Extract the report date from the report filename
