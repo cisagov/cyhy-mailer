@@ -25,7 +25,7 @@ Options:
                                then no Cybex report will be sent.
   -m --mail-server=SERVER      The hostname or IP address of the mail server
                                that should send the messages.
-                               [default: smtp01.ncats.dhs.gov]
+                               [default: smtp01.ncats.cyber.dhs.gov]
   -p --mail-port=PORT          The port to use when connecting to the mail
                                server that should send the messages.
                                [default: 25]
