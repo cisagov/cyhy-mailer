@@ -3,9 +3,8 @@
 """cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
 
 Usage:
-  cyhy-mailer report [options]
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -32,6 +31,9 @@ Options:
   -c --db-creds-file=FILENAME  A YAML file containing the Cyber
                                Hygiene database credentials.
                                [default: /run/secrets/database_creds.yml]
+  --batch-size=SIZE            The batch size to use when retrieving results
+                               from the Mongo database.  If not present then
+                               the default Mongo batch size will be used.
   --summary-to=EMAILS          A comma-separated list of email addresses to
                                which the summary statistics should be sent at
                                the end of the run.  If not specified then no
@@ -201,7 +203,7 @@ def get_all_descendants(db, parent):
     return descendants
 
 
-def get_cyhy_requests(db):
+def get_cyhy_requests(db, batch_size):
     """Return a cursor that can be used to iterate over the Cyber Hygiene
     agencies.
 
@@ -211,6 +213,10 @@ def get_cyhy_requests(db):
         The Mongo database from which Cyber Hygiene agency data can be
         retrieved.
 
+    batch_size : int
+        The batch size to use when retrieving results from the Mongo
+        database.  If None then the default will be used.
+
     Returns
     -------
     pymongo.cursor.Cursor: A cursor that can be used to iterate over
@@ -218,12 +224,20 @@ def get_cyhy_requests(db):
 
     Throws
     ------
-    pymongo.errors.TypeError: If unable to connect to the requested
-    server
+    TypeError: If unable to connect to the requested server, or if
+    batch_size is not an int or None.
+
+    ValueError: If batch_size is negative.
+
+    pymongo.errors.InvalidOperation: If the cursor has already been
+    used.  The batch size cannot be set on a cursor that has already
+    been used.
     """
     try:
         requests = db.requests.find({'retired': {'$ne': True}, 'report_types': 'CYHY'}, {'_id': True, 'agency.acronym': True, 'agency.contacts.email': True, 'agency.contacts.type': True})
-    except TypeError:
+        if batch_size is not None:
+            requests.batch_size(batch_size)
+    except (TypeError, ValueError, pymongo.errors.InvalidOperation):
         logging.critical('There was an error with the MongoDB query that retrieves the list of agencies', exc_info=True)
         raise
 
@@ -314,7 +328,7 @@ def send_message(mail_server, message, counter=None):
     return counter
 
 
-def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, cybex_report_dir, summary_to):
+def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, cybex_report_dir, summary_to):
     """Given the parameters, send out Cyber Hygiene, Trustworthy
     Email, HTTPS reports, and a summary email out as appropriate.
 
@@ -323,6 +337,10 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
     db : MongoDatabase
         The Mongo database from which Cyber Hygiene agency data can
         be retrieved.
+
+    batch_size : int
+        The batch size to use when retrieving results from the Mongo
+        database.  If None then the default will be used.
 
     mail_server : smtplib.SMTP
         The mail server via which outgoing mail should be sent.
@@ -350,12 +368,13 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
         None then no summary will be sent.
     """
     try:
-        requests = get_cyhy_requests(db)
+        requests = get_cyhy_requests(db, batch_size)
     except TypeError:
         return 4
 
     try:
         total_agencies = requests.count()
+        logging.debug('Total agencies = {}'.format(total_agencies))
     except pymongo.errors.OperationFailure:
         logging.critical('Mongo database error while counting the number of request documents returned', exc_info=True)
     agencies_emailed_cyhy_reports = 0
@@ -610,7 +629,7 @@ def do_report(db, mail_server, cyhy_report_dir, tmail_report_dir, https_report_d
             logging.error('Unable to send cyhy-mailer report summary', exc_info=True, stack_info=True)
 
 
-def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_body, summary_to):
+def do_adhoc(db, batch_size, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_body, summary_to):
     """Given the parameters, send out an email to the appropriate
     recipients.
 
@@ -619,6 +638,10 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
     db : MongoDatabase
         The Mongo database from which Cyber Hygiene agency data can
         be retrieved.
+
+    batch_size : int
+        The batch size to use when retrieving results from the Mongo
+        database.  If None then the default will be used.
 
     mail_server : smtplib.SMTP
         The mail server via which outgoing mail should be sent.
@@ -662,7 +685,7 @@ def do_adhoc(db, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_b
     emails = []
     if cyhy:
         try:
-            requests = get_cyhy_requests(db)
+            requests = get_cyhy_requests(db, batch_size)
         except TypeError:
             return 4
 
@@ -761,10 +784,16 @@ def main():
         logging.critical('There was an error connecting to the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
         return 3
 
+    try:
+        batch_size = int(args['--batch-size'])
+    except ValueError:
+        logging.critical('The value {} cannot be interpreted as an integer'.format(args['--batch-size']), exc_info=True)
+        return 4
+
     if args['report']:
-        do_report(db, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--cybex-report-dir'], args['--summary-to'])
+        do_report(db, batch_size, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--cybex-report-dir'], args['--summary-to'])
     elif args['adhoc']:
-        do_adhoc(db, mail_server, args['--to'], args['--cyhy'], args['--cyhy-federal'], args['--subject'], args['--html-body'], args['--text-body'], args['--summary-to'])
+        do_adhoc(db, batch_size, mail_server, args['--to'], args['--cyhy'], args['--cyhy-federal'], args['--subject'], args['--html-body'], args['--text-body'], args['--summary-to'])
 
     # Close the connection to the mail server
     mail_server.quit()
