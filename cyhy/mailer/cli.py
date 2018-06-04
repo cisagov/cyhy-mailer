@@ -394,7 +394,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
         # Find and mail the CyHy report, if necessary
         ###
         if cyhy_report_dir:
-            cyhy_report_glob = '{}/cyhy-{}-*.pdf'.format(cyhy_report_dir, id)
+            # The '2' is necessary because in some cases we have both XYZ and
+            # XYZ-AB as stakeholders.  Without the '2' the glob would include
+            # both for the ID XYZ.
+            cyhy_report_glob = '{}/cyhy-{}-2*.pdf'.format(cyhy_report_dir, id)
             cyhy_report_filenames = sorted(glob.glob(cyhy_report_glob))
 
             # Exactly one CyHy report should match
@@ -431,7 +434,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
         # functionality into a class or functions.
         ###
         if tmail_report_dir:
-            tmail_report_glob = '{}/cyhy-{}-*.pdf'.format(tmail_report_dir, id)
+            # The '2' is necessary because in some cases we have both XYZ and
+            # XYZ-AB as stakeholders.  Without the '2' the glob would include
+            # both for the ID XYZ.
+            tmail_report_glob = '{}/cyhy-{}-2*.pdf'.format(tmail_report_dir, id)
             tmail_report_filenames = sorted(glob.glob(tmail_report_glob))
 
             # At most one Tmail report should match
@@ -469,7 +475,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
         # functionality into a class or functions.
         ###
         if https_report_dir:
-            https_report_glob = '{}/cyhy-{}-*.pdf'.format(https_report_dir, id)
+            # The '2' is necessary because in some cases we have both XYZ and
+            # XYZ-AB as stakeholders.  Without the '2' the glob would include
+            # both for the ID XYZ.
+            https_report_glob = '{}/cyhy-{}-2*.pdf'.format(https_report_dir, id)
             https_report_filenames = sorted(glob.glob(https_report_glob))
 
             # At most one HTTPS report should match
@@ -567,7 +576,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
     ###
     sample_cyhy_report_emailed = False
     if cyhy_report_dir:
-        cyhy_sample_report_glob = '{}/cyhy-SAMPLE-*.pdf'.format(cyhy_report_dir)
+        # The '2' is necessary because in some cases we have both XYZ and
+        # XYZ-AB as stakeholders.  Without the '2' the glob would include both
+        # for the ID XYZ.
+        cyhy_sample_report_glob = '{}/cyhy-SAMPLE-2*.pdf'.format(cyhy_report_dir)
         cyhy_sample_report_filenames = sorted(glob.glob(cyhy_sample_report_glob))
 
         # Exactly one CyHy sample report should match
