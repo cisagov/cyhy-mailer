@@ -796,11 +796,13 @@ def main():
         logging.critical('There was an error connecting to the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
         return 3
 
-    try:
-        batch_size = int(args['--batch-size'])
-    except ValueError:
-        logging.critical('The value {} cannot be interpreted as an integer'.format(args['--batch-size']), exc_info=True)
-        return 4
+    batch_size = args['--batch-size']
+    if batch_size is not None:
+        try:
+            batch_size = int(batch-size)
+        except ValueError:
+            logging.critical('The value {} cannot be interpreted as an integer'.format(args['--batch-size']), exc_info=True)
+            return 4
 
     if args['report']:
         do_report(db, batch_size, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--cybex-report-dir'], args['--summary-to'])
