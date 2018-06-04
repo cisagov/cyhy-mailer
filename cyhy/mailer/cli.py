@@ -799,7 +799,7 @@ def main():
     batch_size = args['--batch-size']
     if batch_size is not None:
         try:
-            batch_size = int(batch-size)
+            batch_size = int(batch_size)
         except ValueError:
             logging.critical('The value {} cannot be interpreted as an integer'.format(args['--batch-size']), exc_info=True)
             return 4
