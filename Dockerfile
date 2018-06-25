@@ -12,9 +12,9 @@ RUN apk --no-cache add openssl shadow wget
 RUN pip3 install --upgrade pip setuptools
 
 # Install cyhy-mailer
-RUN mkdir cyhy-mailer \
-    && wget -q -O - https://api.github.com/repos/dhs-ncats/cyhy-mailer/tarball | tar xz --strip-components=1 -C cyhy-mailer \
-    && pip3 install --upgrade ./cyhy-mailer
+RUN mkdir cyhy-mailer
+RUN wget -q -O - https://api.github.com/repos/dhs-ncats/cyhy-mailer/tarball | tar xz --strip-components=1 -C cyhy-mailer
+RUN pip3 install --upgrade ./cyhy-mailer
 
 # Create unprivileged user
 ENV MAILER_HOME=/home/mailer
