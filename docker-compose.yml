@@ -7,7 +7,7 @@ secrets:
 services:
   mailer:
     build: .
-    image: 'cyhy-mailer:1.0.5'
+    image: 'dhsncats/cyhy-mailer:1.0.5'
     secrets:
       - source: database_creds
         target: database_creds.yml
