@@ -359,8 +359,8 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
         then no HTTPS reports will be sent.
 
     cybex_scorecard_dir : str
-        The directory where the Cybex report can be found.  If None
-        then no Cybex report will be sent.
+        The directory where the Cybex scorecard can be found.  If None
+        then no Cybex scorecard will be sent.
 
     summary_to : str
         A comma-separated list of email addresses to which the
