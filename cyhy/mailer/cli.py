@@ -3,7 +3,7 @@
 """cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
 
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
@@ -19,9 +19,9 @@ Options:
   --https-report-dir=DIRECTORY The directory where the https-scan PDF reports
                                are located.  If not specified then no https-scan
                                reports will be sent.
-  --cybex-report-dir=DIRECTORY The directory where the Cybex PDF
-                               report is located.  If not specified
-                               then no Cybex report will be sent.
+  --cybex-scorecard-dir=DIRECTORY The directory where the Cybex PDF
+                               scorecard is located.  If not specified
+                               then no Cybex scorecard will be sent.
   -m --mail-server=SERVER      The hostname or IP address of the mail server
                                that should send the messages.
                                [default: smtp01.ncats.cyber.dhs.gov]
@@ -328,7 +328,7 @@ def send_message(mail_server, message, counter=None):
     return counter
 
 
-def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, cybex_report_dir, summary_to):
+def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, cybex_scorecard_dir, summary_to):
     """Given the parameters, send out Cyber Hygiene, Trustworthy
     Email, HTTPS reports, and a summary email out as appropriate.
 
@@ -358,7 +358,7 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
         The directory where the HTTPS reports can be found.  If None
         then no HTTPS reports will be sent.
 
-    cybex_report_dir : str
+    cybex_scorecard_dir : str
         The directory where the Cybex report can be found.  If None
         then no Cybex report will be sent.
 
@@ -515,16 +515,16 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
     # I need to figure out how to isolate the common functionality
     # into a class or functions.
     ###
-    if cybex_report_dir:
-        cybex_report_glob = '{}/Federal_Cyber_Exposure_Scorecard-*.pdf'.format(cybex_report_dir)
+    if cybex_scorecard_dir:
+        cybex_report_glob = '{}/Federal_Cyber_Exposure_Scorecard-*.pdf'.format(cybex_scorecard_dir)
         cybex_report_filenames = sorted(glob.glob(cybex_report_glob))
-        cybex_critical_open_csv_glob = '{}/cybex_open_tickets_critical_*.csv'.format(cybex_report_dir)
+        cybex_critical_open_csv_glob = '{}/cybex_open_tickets_critical_*.csv'.format(cybex_scorecard_dir)
         cybex_critical_open_csv_filenames = sorted(glob.glob(cybex_critical_open_csv_glob))
-        cybex_critical_closed_csv_glob = '{}/cybex_closed_tickets_critical_*.csv'.format(cybex_report_dir)
+        cybex_critical_closed_csv_glob = '{}/cybex_closed_tickets_critical_*.csv'.format(cybex_scorecard_dir)
         cybex_critical_closed_csv_filenames = sorted(glob.glob(cybex_critical_closed_csv_glob))
-        cybex_high_open_csv_glob = '{}/cybex_open_tickets_high_*.csv'.format(cybex_report_dir)
+        cybex_high_open_csv_glob = '{}/cybex_open_tickets_high_*.csv'.format(cybex_scorecard_dir)
         cybex_high_open_csv_filenames = sorted(glob.glob(cybex_high_open_csv_glob))
-        cybex_high_closed_csv_glob = '{}/cybex_closed_tickets_high_*.csv'.format(cybex_report_dir)
+        cybex_high_closed_csv_glob = '{}/cybex_closed_tickets_high_*.csv'.format(cybex_scorecard_dir)
         cybex_high_closed_csv_filenames = sorted(glob.glob(cybex_high_closed_csv_glob))
 
         # At most one Cybex report and CSV should match
@@ -805,7 +805,7 @@ def main():
             return 4
 
     if args['report']:
-        do_report(db, batch_size, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--cybex-report-dir'], args['--summary-to'])
+        do_report(db, batch_size, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--cybex-scorecard-dir'], args['--summary-to'])
     elif args['adhoc']:
         do_adhoc(db, batch_size, mail_server, args['--to'], args['--cyhy'], args['--cyhy-federal'], args['--subject'], args['--html-body'], args['--text-body'], args['--summary-to'])
 

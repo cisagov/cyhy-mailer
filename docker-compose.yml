@@ -24,4 +24,4 @@ services:
       - type: bind
         source: /var/cyhy/weekly_reporting/scorecards/latest
         target: /cybex_scorecard
-    command: ["report", "--cyhy-report-dir=/cyhy_reports/", "--cybex-report-dir=/cybex_scorecard/", "--tmail-report-dir=/trustymail_reports/", "--https-report-dir=/pshtt_reports/", "--db-creds-file=/run/secrets/database_creds.yml", "--summary-to=ncats@hq.dhs.gov,jeremy.frasier@beta.dhs.gov"]
+    command: ["report", "--cyhy-report-dir=/cyhy_reports/", "--cybex-scorecard-dir=/cybex_scorecard/", "--tmail-report-dir=/trustymail_reports/", "--https-report-dir=/pshtt_reports/", "--db-creds-file=/run/secrets/database_creds.yml", "--summary-to=ncats@hq.dhs.gov,jeremy.frasier@beta.dhs.gov"]
