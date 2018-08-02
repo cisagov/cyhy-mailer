@@ -797,13 +797,13 @@ def main():
 
     try:
         mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
-        if smtp_user and smtp_pass:
+        if smtp_user and smtp_password:
             mail_server.starttls()
             # smtplib docs recommend calling ehlo() after starttls().  See
             # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls
             # for details.
             mail_server.ehlo()
-            mail_server.login(smtp_user, smtp_pass)
+            mail_server.login(smtp_user, smtp_password)
     except (smtplib.SMTPConnectError, smtplib.SMTPHeloError, smtplib.SMTPAuthenticationError, smtplib.SMTPNotSupportedError, smtplib.SMTPException, timeout):
         logging.critical('There was an error connecting to or authenticating with the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
         return 3
