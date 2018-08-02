@@ -10,8 +10,8 @@ class Test(unittest.TestCase):
 
         message = Message(to)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
-        self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
+        self.assertEqual(message['CC'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com')
 
     def test_one_param_multiple_recipients(self):
@@ -19,8 +19,8 @@ class Test(unittest.TestCase):
 
         message = Message(to)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
-        self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
+        self.assertEqual(message['CC'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
     def test_six_params_single_cc(self):

@@ -20,9 +20,9 @@ class Message(MIMEMultipart):
         should be sent.
     """
 
-    DefaultFrom = 'ncats@hq.dhs.gov'
+    DefaultFrom = 'reports@cyber.dhs.gov'
 
-    DefaultCc = ['ncats@hq.dhs.gov']
+    DefaultCc = ['reports@cyber.dhs.gov']
 
     def __init__(self, to_addrs, subject=None, text_body=None, html_body=None, from_addr=DefaultFrom, cc_addrs=DefaultCc):
         """Construct an instance.

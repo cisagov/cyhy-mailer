@@ -3,8 +3,8 @@
 """cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
 
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -24,10 +24,14 @@ Options:
                                then no Cybex scorecard will be sent.
   -m --mail-server=SERVER      The hostname or IP address of the mail server
                                that should send the messages.
-                               [default: smtp01.ncats.cyber.dhs.gov]
+                               [default: email-smtp.us-east-1.amazonaws.com]
   -p --mail-port=PORT          The port to use when connecting to the mail
                                server that should send the messages.
-                               [default: 25]
+                               [default: 587]
+  -u --smtp-user=SMTP_USER     This is the username that is used to authenticate
+                               into the mail server
+  -x --smtp-password=SMTP_PASS This is the password that is used to authenticate
+                               into the mail server
   -c --db-creds-file=FILENAME  A YAML file containing the Cyber
                                Hygiene database credentials.
                                [default: /run/secrets/database_creds.yml]
@@ -600,7 +604,7 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
 
             # Construct the report message to send
             subject = 'Sample Cyber Hygiene Report - {}'.format(report_date)
-            message = ReportMessage(['ncats@hq.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
+            message = ReportMessage(['reports@cyber.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
 
             try:
                 sample_cyhy_report_emailed = bool(send_message(mail_server, message, 0))
@@ -789,9 +793,17 @@ def main():
         return 2
 
     try:
-        mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
-        # It would be nice if we could use server.starttls() here, but the
-        # postfix server on SMTP01 doesn't yet support it.
+        if args['--smtp-user'] and args['--smtp-pass']:
+            mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
+            mail_server.ehlo()
+            mail_server.starttls()
+            # stmplib docs recommend calling ehlo() before & after starttls()
+            mail_server.ehlo()
+            mail_server.login(args['--smtp-user'], args['--smtp-pass'])
+        else:
+            mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
+            # It would be nice if we could use server.starttls() here, but the
+            # postfix server on SMTP01 doesn't yet support it.
     except (smtplib.SMTPConnectError, timeout):
         logging.critical('There was an error connecting to the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
         return 3

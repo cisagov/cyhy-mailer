@@ -13,9 +13,9 @@ class Test(unittest.TestCase):
 
         message = HttpsMessage(to, pdf, agency_acronym, report_date)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'CLARKE - HTTPS Report - December 15, 2001 Results')
-        self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['CC'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com')
 
         # Grab the bytes that comprise the attachment
@@ -46,7 +46,7 @@ The NCATS Team
 National Cybersecurity Assessments and Technical Services (NCATS)
 National Cybersecurity and Communications Integration Center
 U.S. Department of Homeland Security
-ncats@hq.dhs.gov
+reports@cyber.dhs.gov
 
 ----changelog----
 03/28/2017
@@ -79,7 +79,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity and Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a>
+<a href=""mailto:reports@cyber.dhs.gov""> reports@cyber.dhs.gov </a>
 </p>
 </div>
 </p><br>
@@ -107,9 +107,9 @@ U.S. Department of Homeland Security <br/>
 
         message = HttpsMessage(to, pdf, agency_acronym, report_date)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'CLARKE - HTTPS Report - December 15, 2001 Results')
-        self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['CC'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
         # Grab the bytes that comprise the attachment
@@ -140,7 +140,7 @@ The NCATS Team
 National Cybersecurity Assessments and Technical Services (NCATS)
 National Cybersecurity and Communications Integration Center
 U.S. Department of Homeland Security
-ncats@hq.dhs.gov
+reports@cyber.dhs.gov
 
 ----changelog----
 03/28/2017
@@ -173,7 +173,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity and Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a>
+<a href=""mailto:reports@cyber.dhs.gov""> reports@cyber.dhs.gov </a>
 </p>
 </div>
 </p><br>
@@ -236,7 +236,7 @@ The NCATS Team
 National Cybersecurity Assessments and Technical Services (NCATS)
 National Cybersecurity and Communications Integration Center
 U.S. Department of Homeland Security
-ncats@hq.dhs.gov
+reports@cyber.dhs.gov
 
 ----changelog----
 03/28/2017
@@ -269,7 +269,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity and Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a>
+<a href=""mailto:reports@cyber.dhs.gov""> reports@cyber.dhs.gov </a>
 </p>
 </div>
 </p><br>
@@ -332,7 +332,7 @@ The NCATS Team
 National Cybersecurity Assessments and Technical Services (NCATS)
 National Cybersecurity and Communications Integration Center
 U.S. Department of Homeland Security
-ncats@hq.dhs.gov
+reports@cyber.dhs.gov
 
 ----changelog----
 03/28/2017
@@ -365,7 +365,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity and Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a>
+<a href=""mailto:reports@cyber.dhs.gov""> reports@cyber.dhs.gov </a>
 </p>
 </div>
 </p><br>
