@@ -3,8 +3,8 @@
 """cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
 
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -24,10 +24,14 @@ Options:
                                then no Cybex scorecard will be sent.
   -m --mail-server=SERVER      The hostname or IP address of the mail server
                                that should send the messages.
-                               [default: smtp01.ncats.cyber.dhs.gov]
+                               [default: email-smtp.us-east-1.amazonaws.com]
   -p --mail-port=PORT          The port to use when connecting to the mail
                                server that should send the messages.
-                               [default: 25]
+                               [default: 587]
+  -u --smtp-user=SMTP_USER     This is the username that is used to authenticate
+                               into the mail server
+  -x --smtp-password=SMTP_PASS This is the password that is used to authenticate
+                               into the mail server
   -c --db-creds-file=FILENAME  A YAML file containing the Cyber
                                Hygiene database credentials.
                                [default: /run/secrets/database_creds.yml]
@@ -787,13 +791,21 @@ def main():
     except ValueError:
         logging.critical('The value {} cannot be interpreted as a valid port'.format(args['--mail-port']), exc_info=True)
         return 2
+    # We want these values to be None if the corresponding keys do not exist
+    smtp_user = args.get('--smtp-user')
+    smtp_password = args.get('--smtp-pass')
 
     try:
         mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
-        # It would be nice if we could use server.starttls() here, but the
-        # postfix server on SMTP01 doesn't yet support it.
-    except (smtplib.SMTPConnectError, timeout):
-        logging.critical('There was an error connecting to the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
+        if smtp_user and smtp_password:
+            mail_server.starttls()
+            # smtplib docs recommend calling ehlo() after starttls().  See
+            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls
+            # for details.
+            mail_server.ehlo()
+            mail_server.login(smtp_user, smtp_password)
+    except (smtplib.SMTPConnectError, smtplib.SMTPHeloError, smtplib.SMTPAuthenticationError, smtplib.SMTPNotSupportedError, smtplib.SMTPException, timeout):
+        logging.critical('There was an error connecting to or authenticating with the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
         return 3
 
     batch_size = args['--batch-size']

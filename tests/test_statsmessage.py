@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
 
         message = StatsMessage(to, strings)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'cyhy-mailer summary from {}'.format(date))
         self.assertEqual(message['To'], 'recipient@example.com')
 
@@ -77,7 +77,7 @@ U.S. Department of Homeland Security<br>
 
         message = StatsMessage(to, strings)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'cyhy-mailer summary from {}'.format(date))
         self.assertEqual(message['To'], 'recipient@example.com')
 

@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
 
         message = CybexMessage(pdf, csv, csv, csv, csv, report_date)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'Cybex Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], None)
         self.assertEqual(message['To'], 'ncats@hq.dhs.gov')

@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
 
         message = TmailMessage(to, pdf, agency_acronym, report_date)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'CLARKE - Trustworthy Email Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com')
@@ -82,7 +82,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity & Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a> </p>
+<a href=""mailto:ncats@hq.dhs.gov"">ncats@hq.dhs.gov</a></p>
 </div></p><br>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>
@@ -101,7 +101,7 @@ U.S. Department of Homeland Security <br/>
 
         message = TmailMessage(to, pdf, agency_acronym, report_date)
 
-        self.assertEqual(message['From'], 'ncats@hq.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'CLARKE - Trustworthy Email Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
@@ -170,7 +170,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity & Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a> </p>
+<a href=""mailto:ncats@hq.dhs.gov"">ncats@hq.dhs.gov</a></p>
 </div></p><br>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>
@@ -260,7 +260,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity & Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a> </p>
+<a href=""mailto:ncats@hq.dhs.gov"">ncats@hq.dhs.gov</a></p>
 </div></p><br>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>
@@ -350,7 +350,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity & Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a> </p>
+<a href=""mailto:ncats@hq.dhs.gov"">ncats@hq.dhs.gov</a></p>
 </div></p><br>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>

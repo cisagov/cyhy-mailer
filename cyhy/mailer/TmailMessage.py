@@ -78,7 +78,7 @@ The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
 National Cybersecurity & Communications Integration Center<br/>
 U.S. Department of Homeland Security <br/>
-<a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a> </p>
+<a href=""mailto:ncats@hq.dhs.gov"">ncats@hq.dhs.gov</a></p>
 </div></p><br>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>
