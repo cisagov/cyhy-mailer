@@ -604,7 +604,7 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
 
             # Construct the report message to send
             subject = 'Sample Cyber Hygiene Report - {}'.format(report_date)
-            message = ReportMessage(['reports@cyber.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
+            message = ReportMessage(['ncats@hq.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
 
             try:
                 sample_cyhy_report_emailed = bool(send_message(mail_server, message, 0))
