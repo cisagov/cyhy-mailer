@@ -604,7 +604,7 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
 
             # Construct the report message to send
             subject = 'Sample Cyber Hygiene Report - {}'.format(report_date)
-            message = ReportMessage(['reports@cyber.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
+            message = ReportMessage(['ncats@hq.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
 
             try:
                 sample_cyhy_report_emailed = bool(send_message(mail_server, message, 0))
@@ -791,21 +791,21 @@ def main():
     except ValueError:
         logging.critical('The value {} cannot be interpreted as a valid port'.format(args['--mail-port']), exc_info=True)
         return 2
+    # We want these values to be None if the corresponding keys do not exist
+    smtp_user = args.get('--smtp-user')
+    smtp_password = args.get('--smtp-pass')
 
     try:
-        if args['--smtp-user'] and args['--smtp-pass']:
-            mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
-            mail_server.ehlo()
+        mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
+        if smtp_user and smtp_password:
             mail_server.starttls()
-            # stmplib docs recommend calling ehlo() before & after starttls()
+            # smtplib docs recommend calling ehlo() after starttls().  See
+            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls
+            # for details.
             mail_server.ehlo()
-            mail_server.login(args['--smtp-user'], args['--smtp-pass'])
-        else:
-            mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
-            # It would be nice if we could use server.starttls() here, but the
-            # postfix server on SMTP01 doesn't yet support it.
-    except (smtplib.SMTPConnectError, timeout):
-        logging.critical('There was an error connecting to the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
+            mail_server.login(smtp_user, smtp_password)
+    except (smtplib.SMTPConnectError, smtplib.SMTPHeloError, smtplib.SMTPAuthenticationError, smtplib.SMTPNotSupportedError, smtplib.SMTPException, timeout):
+        logging.critical('There was an error connecting to or authenticating with the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
         return 3
 
     batch_size = args['--batch-size']
