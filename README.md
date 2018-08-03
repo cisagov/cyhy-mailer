@@ -24,10 +24,10 @@ pip install git+https://github.com/dhs-ncats/cyhy-mailer.git
 ## Usage ##
 
 ```bash
+
 Usage:
-  cyhy-mailer report [options]
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-report-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -42,18 +42,25 @@ Options:
   --https-report-dir=DIRECTORY The directory where the https-scan PDF reports
                                are located.  If not specified then no https-scan
                                reports will be sent.
-  --cybex-report-dir=DIRECTORY The directory where the Cybex PDF
-                               report is located.  If not specified
-                               then no Cybex report will be sent.
+  --cybex-scorecard-dir=DIRECTORY The directory where the Cybex PDF
+                               scorecard is located.  If not specified
+                               then no Cybex scorecard will be sent.
   -m --mail-server=SERVER      The hostname or IP address of the mail server
                                that should send the messages.
-                               [default: smtp01.ncats.dhs.gov]
+                               [default: email-smtp.us-east-1.amazonaws.com]
   -p --mail-port=PORT          The port to use when connecting to the mail
                                server that should send the messages.
-                               [default: 25]
+                               [default: 587]
+  -u --smtp-user=SMTP_USER     This is the username that is used to authenticate
+                               into the mail server
+  -x --smtp-password=SMTP_PASS This is the password that is used to authenticate
+                               into the mail server
   -c --db-creds-file=FILENAME  A YAML file containing the Cyber
                                Hygiene database credentials.
                                [default: /run/secrets/database_creds.yml]
+  --batch-size=SIZE            The batch size to use when retrieving results
+                               from the Mongo database.  If not present then
+                               the default Mongo batch size will be used.
   --summary-to=EMAILS          A comma-separated list of email addresses to
                                which the summary statistics should be sent at
                                the end of the run.  If not specified then no
