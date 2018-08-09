@@ -3,8 +3,8 @@
 """cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
 
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME] [--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME] [--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -35,6 +35,9 @@ Options:
   -c --db-creds-file=FILENAME  A YAML file containing the Cyber
                                Hygiene database credentials.
                                [default: /run/secrets/database_creds.yml]
+  --smtp-creds-file=FILENAME   A YAML file containing the Cyber Hygiene SMTP
+                               credentials.
+                               [default: /run/secrets/smtp_creds.yml]
   --batch-size=SIZE            The batch size to use when retrieving results
                                from the Mongo database.  If not present then
                                the default Mongo batch size will be used.
@@ -129,6 +132,38 @@ def database_from_config_file(config_filename):
 
     db_connection = MongoClient(host=db_uri, tz_aware=True)
     return db_connection[db_name]
+
+
+def smtp_creds_from_config_file(cred_filename):
+    """Given the name of the YAML file containing the credential
+    information, return a dictionary containing the username and
+    password.
+
+    The configuration file should something look like this:
+        user: penguin
+        password: ilovefish
+
+    Parameters
+    ----------
+    cred_filename : str
+        The name of the YAML file containing the credential
+        information
+
+    Returns
+    -------
+    dict: A dictionary containing the username and password.
+
+    Throws
+    ------
+    OSError: If the database configuration file does not exist
+
+    yaml.YAMLError: If the YAML in the database configuration file is
+    invalid
+    """
+    with open(cred_filename, 'r') as stream:
+        creds = yaml.load(stream)
+
+    return creds
 
 
 def get_emails_from_request(request):
@@ -794,6 +829,12 @@ def main():
     # We want these values to be None if the corresponding keys do not exist
     smtp_user = args.get('--smtp-user')
     smtp_password = args.get('--smtp-pass')
+    smtp_creds_file = args.get('--smtp-creds-file')
+
+    if smtp_creds_file is not None:
+        creds = smtp_creds_from_config_file(smtp_creds_file)
+        smtp_user = creds['user']
+        smtp_password = creds['password']
 
     try:
         mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
