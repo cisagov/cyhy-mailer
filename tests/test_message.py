@@ -10,7 +10,7 @@ class Test(unittest.TestCase):
 
         message = Message(to)
 
-        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
+        self.assertEqual(message['From'], 'reports@ncats.cyber.dhs.gov')
         self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com')
 
@@ -19,7 +19,7 @@ class Test(unittest.TestCase):
 
         message = Message(to)
 
-        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
+        self.assertEqual(message['From'], 'reports@ncats.cyber.dhs.gov')
         self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
