@@ -499,7 +499,7 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 report_date = datetime.datetime.strptime(match.group('date'), '%Y-%m-%d').strftime('%B %d, %Y')
 
                 # Construct the Tmail message to send
-                message = TmailMessage(['jeremy.frasier@beta.dhs.gov'], tmail_attachment_filename, acronym, report_date, cc_addrs=None)
+                message = TmailMessage(to_emails, tmail_attachment_filename, acronym, report_date)
 
                 try:
                     agencies_emailed_tmail_reports = send_message(mail_server, message, agencies_emailed_tmail_reports)
@@ -540,7 +540,7 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 report_date = datetime.datetime.strptime(match.group('date'), '%Y-%m-%d').strftime('%B %d, %Y')
 
                 # Construct the HTTPS message to send
-                message = HttpsMessage(['jeremy.frasier@beta.dhs.gov'], https_attachment_filename, acronym, report_date, cc_addrs=None)
+                message = HttpsMessage(to_emails, https_attachment_filename, acronym, report_date)
 
                 try:
                     agencies_emailed_https_reports = send_message(mail_server, message, agencies_emailed_https_reports)
