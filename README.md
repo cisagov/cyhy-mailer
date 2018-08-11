@@ -26,8 +26,8 @@ pip install git+https://github.com/dhs-ncats/cyhy-mailer.git
 ```bash
 
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME] [--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME] [--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -58,6 +58,9 @@ Options:
   -c --db-creds-file=FILENAME  A YAML file containing the Cyber
                                Hygiene database credentials.
                                [default: /run/secrets/database_creds.yml]
+  --smtp-creds-file=FILENAME   A YAML file containing the Cyber Hygiene SMTP
+                               credentials.
+                               [default: /run/secrets/smtp_creds.yml]
   --batch-size=SIZE            The batch size to use when retrieving results
                                from the Mongo database.  If not present then
                                the default Mongo batch size will be used.

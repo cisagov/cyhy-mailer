@@ -3,25 +3,29 @@ version: '3.2'
 secrets:
   database_creds:
     file: ./secrets/database_creds.yml
+  smtp_creds:
+    file: ./secrets/smtp_creds.yml
 
 services:
   mailer:
-    build: .
-    image: 'dhsncats/cyhy-mailer:1.0.7'
+    image: 'dhsncats/cyhy-mailer:1.0.8'
     secrets:
       - source: database_creds
         target: database_creds.yml
+      - source: smtp_creds
+        target: smtp_creds.yml
     volumes:
-      - type: bind
-        source: /var/cyhy/weekly_reporting/report_archive/latest
-        target: /cyhy_reports
+      # - type: bind
+      #   source: /var/cyhy/weekly_reporting/report_archive/latest
+      #   target: /cyhy_reports
       - type: bind
         source: /var/cyhy/orchestrator/output/archive/latest/reporting/trustymail_reports
         target: /trustymail_reports
       - type: bind
         source: /var/cyhy/orchestrator/output/archive/latest/reporting/pshtt_reports
         target: /pshtt_reports
-      - type: bind
-        source: /var/cyhy/weekly_reporting/scorecards/latest
-        target: /cybex_scorecard
-    command: ["report", "--cyhy-report-dir=/cyhy_reports/", "--cybex-scorecard-dir=/cybex_scorecard/", "--tmail-report-dir=/trustymail_reports/", "--https-report-dir=/pshtt_reports/", "--db-creds-file=/run/secrets/database_creds.yml", "--summary-to=ncats@hq.dhs.gov,jeremy.frasier@beta.dhs.gov"]
+      # - type: bind
+      #   source: /var/cyhy/weekly_reporting/scorecards/latest
+      #   target: /cybex_scorecard
+    # command: ["report", "--cyhy-report-dir=/cyhy_reports/", "--cybex-scorecard-dir=/cybex_scorecard/", "--tmail-report-dir=/trustymail_reports/", "--https-report-dir=/pshtt_reports/", "--db-creds-file=/run/secrets/database_creds.yml", "--summary-to=ncats@hq.dhs.gov,jeremy.frasier@beta.dhs.gov"]
+    command: ["report", "--tmail-report-dir=/trustymail_reports/", "--https-report-dir=/pshtt_reports/", "--db-creds-file=/run/secrets/database_creds.yml", "--smtp-creds-file=/run/secrets/smtp_creds.yml", "--summary-to=ncats@hq.dhs.gov,jeremy.frasier@beta.dhs.gov"]
