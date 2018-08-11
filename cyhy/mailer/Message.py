@@ -20,7 +20,7 @@ class Message(MIMEMultipart):
         should be sent.
     """
 
-    DefaultFrom = 'reports@ncats.cyber.dhs.gov'
+    DefaultFrom = 'reports@cyber.dhs.gov'
 
     DefaultCc = ['ncats@hq.dhs.gov']
 

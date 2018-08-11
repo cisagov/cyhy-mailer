@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
 
         message = CyhyMessage(to, pdf, agency_acronym, report_date)
 
-        self.assertEqual(message['From'], 'reports@ncats.cyber.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'CLARKE - Cyber Hygiene Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com')
@@ -77,7 +77,7 @@ U.S. Department of Homeland Security<br>
 
         message = CyhyMessage(to, pdf, agency_acronym, report_date)
 
-        self.assertEqual(message['From'], 'reports@ncats.cyber.dhs.gov')
+        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
         self.assertEqual(message['Subject'], 'CLARKE - Cyber Hygiene Report - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
