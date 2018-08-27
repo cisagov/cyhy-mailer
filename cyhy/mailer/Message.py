@@ -18,13 +18,19 @@ class Message(MIMEMultipart):
     DefaultCc : list of str
         The default value for the CC addresses to which the message
         should be sent.
+
+    DefaultReplyTo : str
+        The default value for the address to which replies should be
+        directed.
     """
 
     DefaultFrom = 'reports@cyber.dhs.gov'
 
     DefaultCc = ['ncats@hq.dhs.gov']
 
-    def __init__(self, to_addrs, subject=None, text_body=None, html_body=None, from_addr=DefaultFrom, cc_addrs=DefaultCc):
+    DefaultReplyTo = 'ncats@hq.dhs.gov'
+
+    def __init__(self, to_addrs, subject=None, text_body=None, html_body=None, from_addr=DefaultFrom, cc_addrs=DefaultCc, reply_to_addr=DefaultReplyTo):
         """Construct an instance.
 
         Parameters
@@ -48,6 +54,9 @@ class Message(MIMEMultipart):
         cc_addrs : array of str
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
+
+        reply_to_addr : str
+            The email address to which replies should be sent.
         """
         MIMEMultipart.__init__(self, 'mixed')
 
@@ -60,6 +69,10 @@ class Message(MIMEMultipart):
         if cc_addrs:
             self['CC'] = ','.join(cc_addrs)
             logging.debug('Message to be sent as CC to: %s', self['CC'])
+
+        if reply_to_addr:
+            self['Reply-To'] = reply_to_addr
+            logging.debug('Replies to be sent to: %s', self['Reply-To'])
 
         if subject:
             self['Subject'] = subject
