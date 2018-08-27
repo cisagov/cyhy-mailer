@@ -460,10 +460,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 # Construct the CyHy message to send
                 message = CyhyMessage(to_emails, cyhy_attachment_filename, acronym, report_date)
 
-                try:
-                    agencies_emailed_cyhy_reports = send_message(mail_server, message, agencies_emailed_cyhy_reports)
-                except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    logging.error('Unable to send Cyber Hygiene report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
+                # try:
+                #     agencies_emailed_cyhy_reports = send_message(mail_server, message, agencies_emailed_cyhy_reports)
+                # except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+                #     logging.error('Unable to send Cyber Hygiene report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
         ###
         # Find and mail the trustymail report, if necessary
@@ -501,10 +501,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 # Construct the Tmail message to send
                 message = TmailMessage(to_emails, tmail_attachment_filename, acronym, report_date)
 
-                try:
-                    agencies_emailed_tmail_reports = send_message(mail_server, message, agencies_emailed_tmail_reports)
-                except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    logging.error('Unable to send Trustworthy Email report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
+                # try:
+                #     agencies_emailed_tmail_reports = send_message(mail_server, message, agencies_emailed_tmail_reports)
+                # except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+                #     logging.error('Unable to send Trustworthy Email report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
         ###
         # Find and mail the https report, if necessary
@@ -542,10 +542,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 # Construct the HTTPS message to send
                 message = HttpsMessage(to_emails, https_attachment_filename, acronym, report_date)
 
-                try:
-                    agencies_emailed_https_reports = send_message(mail_server, message, agencies_emailed_https_reports)
-                except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    logging.error('Unable to send HTTPS report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
+                # try:
+                #     agencies_emailed_https_reports = send_message(mail_server, message, agencies_emailed_https_reports)
+                # except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+                #     logging.error('Unable to send HTTPS report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
 
     ###
     # Find and mail the Cybex report, if necessary
@@ -605,10 +605,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
             # Construct the Cybex message to send
             message = CybexMessage(cybex_report_filename, cybex_critical_open_csv_filename, cybex_critical_closed_csv_filename, cybex_high_open_csv_filename, cybex_high_closed_csv_filename, report_date)
 
-            try:
-                cybex_report_emailed = bool(send_message(mail_server, message, 0))
-            except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                logging.error('Unable to send Cybex report', exc_info=True, stack_info=True)
+            # try:
+            #     cybex_report_emailed = bool(send_message(mail_server, message, 0))
+            # except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+            #     logging.error('Unable to send Cybex report', exc_info=True, stack_info=True)
 
     ###
     # Find and mail the CyHy sample report, if it is present
@@ -641,10 +641,10 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
             subject = 'Sample Cyber Hygiene Report - {}'.format(report_date)
             message = ReportMessage(['ncats@hq.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
 
-            try:
-                sample_cyhy_report_emailed = bool(send_message(mail_server, message, 0))
-            except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                logging.error('Unable to send sample Cyber Hygiene report', exc_info=True, stack_info=True)
+            # try:
+            #     sample_cyhy_report_emailed = bool(send_message(mail_server, message, 0))
+            # except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
+            #     logging.error('Unable to send sample Cyber Hygiene report', exc_info=True, stack_info=True)
 
     # Print out and log some statistics
     cyhy_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Cyber Hygiene reports.'.format(total_agencies, agencies_emailed_cyhy_reports, 100.0 * agencies_emailed_cyhy_reports / total_agencies)
