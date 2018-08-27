@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /var/cyhy/cyhy-mailer
-docker-compose up
+docker-compose up -d
