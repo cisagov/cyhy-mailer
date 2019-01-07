@@ -274,13 +274,14 @@ def get_federal_cyhy_requests(db):
 
 
 class UnableToSendError(Exception):
-    """Raised when there an error is encountered when attempting to send
-an email message
+    """Raised when an error is encountered when attempting to send an
+email message
 
     Attributes
     ----------
     response : dict
         The response returned by boto3.
+
     """
     def __init__(self, response):
         self.response = response
