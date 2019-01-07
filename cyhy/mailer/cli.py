@@ -3,8 +3,8 @@
 """cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
 
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME] [--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME] [--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -22,22 +22,9 @@ Options:
   --cybex-scorecard-dir=DIRECTORY The directory where the Cybex PDF
                                scorecard is located.  If not specified
                                then no Cybex scorecard will be sent.
-  -m --mail-server=SERVER      The hostname or IP address of the mail server
-                               that should send the messages.
-                               [default: email-smtp.us-east-1.amazonaws.com]
-  -p --mail-port=PORT          The port to use when connecting to the mail
-                               server that should send the messages.
-                               [default: 587]
-  -u --smtp-user=SMTP_USER     This is the username that is used to authenticate
-                               into the mail server
-  -x --smtp-password=SMTP_PASS This is the password that is used to authenticate
-                               into the mail server
   -c --db-creds-file=FILENAME  A YAML file containing the Cyber
                                Hygiene database credentials.
                                [default: /run/secrets/database_creds.yml]
-  --smtp-creds-file=FILENAME   A YAML file containing the Cyber Hygiene SMTP
-                               credentials.
-                               [default: /run/secrets/smtp_creds.yml]
   --batch-size=SIZE            The batch size to use when retrieving results
                                from the Mongo database.  If not present then
                                the default Mongo batch size will be used.
@@ -70,9 +57,8 @@ import docopt
 import glob
 import logging
 import re
-import smtplib
-from socket import timeout
 
+import boto3
 from pymongo import MongoClient
 import pymongo.errors
 import yaml
@@ -85,6 +71,11 @@ from cyhy.mailer.Message import Message
 from cyhy.mailer.ReportMessage import ReportMessage
 from cyhy.mailer.StatsMessage import StatsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
+
+
+class Error(Exception):
+    """A base class for exceptions used in this module"""
+    pass
 
 
 def database_from_config_file(config_filename):
@@ -132,38 +123,6 @@ def database_from_config_file(config_filename):
 
     db_connection = MongoClient(host=db_uri, tz_aware=True)
     return db_connection[db_name]
-
-
-def smtp_creds_from_config_file(cred_filename):
-    """Given the name of the YAML file containing the credential
-    information, return a dictionary containing the username and
-    password.
-
-    The configuration file should something look like this:
-        user: penguin
-        password: ilovefish
-
-    Parameters
-    ----------
-    cred_filename : str
-        The name of the YAML file containing the credential
-        information
-
-    Returns
-    -------
-    dict: A dictionary containing the username and password.
-
-    Throws
-    ------
-    OSError: If the database configuration file does not exist
-
-    yaml.YAMLError: If the YAML in the database configuration file is
-    invalid
-    """
-    with open(cred_filename, 'r') as stream:
-        creds = yaml.load(stream)
-
-    return creds
 
 
 def get_emails_from_request(request):
@@ -314,13 +273,26 @@ def get_federal_cyhy_requests(db):
     return requests
 
 
-def send_message(mail_server, message, counter=None):
+class UnableToSendError(Exception):
+    """Raised when there an error is encountered when attempting to send
+an email message
+
+    Attributes
+    ----------
+    response : dict
+        The response returned by boto3.
+    """
+    def __init__(self, response):
+        self.response = response
+
+
+def send_message(ses_client, message, counter=None):
     """Send a message.
 
     Parameters
     ----------
-    mail_server : smtplib.SMTP
-        The mail server via which the message is to be sent.
+    ses_client : boto3.client
+        The boto3 SES client via which the message is to be sent.
 
     message : email.message.Message
         The email message that is to be sent.
@@ -336,38 +308,29 @@ def send_message(mail_server, message, counter=None):
 
     Throws
     ------
-    smtplib.SMTPRecipientsRefused: If all recipients are refused.
-
-    smtplib.SMTPHelpError: If the server did not reply properly to the
-    HELO greeting.
-
-    smtplib.SMTPSenderRefused: If the server did not accept the from
-    address.
-
-    smtp.SMTPDataError: If the server replied with an unexpected error
-    code.
-
-    smtp.SMTPNotSupportedError: If SMTP is not supported by the server.
-
+    UnableToSendError: If an error is encountered when attempting to
+    send the message.
     """
     # "Are you silly?  I'm still gonna send it!"
     #   -- Larry Enticer
-    try:
-        mail_server.send_message(message)
-        if counter is not None:
-            counter += 1
-    except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-        # See
-        # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.sendmail
-        # for a full list of the exceptions that smtplib.SMTP.send_message can
-        # throw.
-        logging.error('Unable to send message', exc_info=True, stack_info=True)
-        raise
+    response = ses_client.send_raw_email(
+        RawMessage={'Data': message.as_string()}
+    )
+
+    # Check for errors
+    status_code = response['ResponseMetadata']['HTTPStatusCode']
+    if status_code != 200:
+        logging.error('Unable to send message.  '
+                      'Response from boto3 is: {}'.format(response))
+        raise UnableToSendError(response)
+
+    if counter is not None:
+        counter += 1
 
     return counter
 
 
-def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, https_report_dir, cybex_scorecard_dir, summary_to):
+def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, https_report_dir, cybex_scorecard_dir, summary_to):
     """Given the parameters, send out Cyber Hygiene, Trustworthy
     Email, HTTPS reports, and a summary email out as appropriate.
 
@@ -381,8 +344,8 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
         The batch size to use when retrieving results from the Mongo
         database.  If None then the default will be used.
 
-    mail_server : smtplib.SMTP
-        The mail server via which outgoing mail should be sent.
+    ses_client : boto3.client
+        The boto3 SES client via which the message is to be sent.
 
     cyhy_report_dir : str
         The directory where the Cyber Hygiene reports can be found.
@@ -461,9 +424,13 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 message = CyhyMessage(to_emails, cyhy_attachment_filename, acronym, report_date)
 
                 try:
-                    agencies_emailed_cyhy_reports = send_message(mail_server, message, agencies_emailed_cyhy_reports)
-                except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    logging.error('Unable to send Cyber Hygiene report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
+                    agencies_emailed_cyhy_reports = send_message(ses_client,
+                                                                 message,
+                                                                 agencies_emailed_cyhy_reports)
+                except UnableToSendError:
+                    logging.error('Unable to send Cyber Hygiene report for '
+                                  'agency with ID {}'.format(id),
+                                  exc_info=True, stack_info=True)
 
         ###
         # Find and mail the trustymail report, if necessary
@@ -502,9 +469,13 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 message = TmailMessage(to_emails, tmail_attachment_filename, acronym, report_date)
 
                 try:
-                    agencies_emailed_tmail_reports = send_message(mail_server, message, agencies_emailed_tmail_reports)
-                except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    logging.error('Unable to send Trustworthy Email report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
+                    agencies_emailed_tmail_reports = send_message(ses_client,
+                                                                  message,
+                                                                  agencies_emailed_tmail_reports)
+                except UnableToSendError:
+                    logging.error('Unable to send Trustworthy Email report '
+                                  'for agency with ID {}'.format(id),
+                                  exc_info=True, stack_info=True)
 
         ###
         # Find and mail the https report, if necessary
@@ -543,9 +514,13 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 message = HttpsMessage(to_emails, https_attachment_filename, acronym, report_date)
 
                 try:
-                    agencies_emailed_https_reports = send_message(mail_server, message, agencies_emailed_https_reports)
-                except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                    logging.error('Unable to send HTTPS report for agency with ID {}'.format(id), exc_info=True, stack_info=True)
+                    agencies_emailed_https_reports = send_message(ses_client,
+                                                                  message,
+                                                                  agencies_emailed_https_reports)
+                except UnableToSendError:
+                    logging.error('Unable to send HTTPS report '
+                                  'for agency with ID {}'.format(id),
+                                  exc_info=True, stack_info=True)
 
     ###
     # Find and mail the Cybex report, if necessary
@@ -606,9 +581,11 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
             message = CybexMessage(cybex_report_filename, cybex_critical_open_csv_filename, cybex_critical_closed_csv_filename, cybex_high_open_csv_filename, cybex_high_closed_csv_filename, report_date)
 
             try:
-                cybex_report_emailed = bool(send_message(mail_server, message, 0))
-            except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                logging.error('Unable to send Cybex report', exc_info=True, stack_info=True)
+                cybex_report_emailed = bool(send_message(ses_client,
+                                                         message, 0))
+            except UnableToSendError:
+                logging.error('Unable to send Cyber Exposure Scorecard',
+                              exc_info=True, stack_info=True)
 
     ###
     # Find and mail the CyHy sample report, if it is present
@@ -642,9 +619,11 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
             message = ReportMessage(['ncats@hq.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
 
             try:
-                sample_cyhy_report_emailed = bool(send_message(mail_server, message, 0))
-            except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                logging.error('Unable to send sample Cyber Hygiene report', exc_info=True, stack_info=True)
+                sample_cyhy_report_emailed = bool(send_message(ses_client,
+                                                               message, 0))
+            except UnableToSendError:
+                logging.error('Unable to send sample Cyber Hygiene report',
+                              exc_info=True, stack_info=True)
 
     # Print out and log some statistics
     cyhy_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Cyber Hygiene reports.'.format(total_agencies, agencies_emailed_cyhy_reports, 100.0 * agencies_emailed_cyhy_reports / total_agencies)
@@ -675,12 +654,13 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
     if summary_to:
         message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string, cybex_stats_string, sample_cyhy_stats_string])
         try:
-            send_message(mail_server, message)
-        except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-            logging.error('Unable to send cyhy-mailer report summary', exc_info=True, stack_info=True)
+            send_message(ses_client, message)
+        except UnableToSendError:
+            logging.error('Unable to send cyhy-mailer report summary',
+                          exc_info=True, stack_info=True)
 
 
-def do_adhoc(db, batch_size, mail_server, to, cyhy, cyhy_federal, subject, html_body, text_body, summary_to):
+def do_adhoc(db, batch_size, ses_client, to, cyhy, cyhy_federal, subject, html_body, text_body, summary_to):
     """Given the parameters, send out an email to the appropriate
     recipients.
 
@@ -694,8 +674,8 @@ def do_adhoc(db, batch_size, mail_server, to, cyhy, cyhy_federal, subject, html_
         The batch size to use when retrieving results from the Mongo
         database.  If None then the default will be used.
 
-    mail_server : smtplib.SMTP
-        The mail server via which outgoing mail should be sent.
+    ses_client : boto3.client
+        The boto3 SES client via which the message is to be sent.
 
     to : str
         A comma-separated list of additional email addresses to which
@@ -770,9 +750,12 @@ def do_adhoc(db, batch_size, mail_server, to, cyhy, cyhy_federal, subject, html_
         message = Message([email], subject, text, html)
 
         try:
-            ad_hoc_emails_sent = send_message(mail_server, message, ad_hoc_emails_sent)
-        except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-            logging.error('Unable to send ad hoc email to {}'.format(email), exc_info=True, stack_info=True)
+            ad_hoc_emails_sent = send_message(ses_client,
+                                              message,
+                                              ad_hoc_emails_sent)
+        except UnableToSendError:
+            logging.error('Unable to send ad hoc email to {} '.format(email),
+                          exc_info=True, stack_info=True)
 
     # Print out and log some statistics
     stats_string = 'Out of {} ad hoc emails to be sent, {} ({:.2f}%) were sent.'.format(ad_hoc_emails_to_send, ad_hoc_emails_sent, 100.0 * ad_hoc_emails_sent / ad_hoc_emails_to_send)
@@ -785,9 +768,10 @@ def do_adhoc(db, batch_size, mail_server, to, cyhy, cyhy_federal, subject, html_
     if summary_to:
         message = StatsMessage(summary_to.split(','), [stats_string])
         try:
-            send_message(mail_server, message)
-        except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-            logging.error('Unable to send cyhy-mailer ad hoc summary', exc_info=True, stack_info=True)
+            send_message(ses_client, message)
+        except UnableToSendError:
+            logging.error('Unable to send cyhy-mailer ad hoc summary',
+                          exc_info=True, stack_info=True)
 
 
 def main():
@@ -819,35 +803,7 @@ def main():
         logging.critical('The database in {} does not exist'.format(db_creds_file), exc_info=True)
         return 1
 
-    # Set up the connection to the mail server
-    mail_server_hostname = args['--mail-server']
-    try:
-        mail_server_port = int(args['--mail-port'])
-    except ValueError:
-        logging.critical('The value {} cannot be interpreted as a valid port'.format(args['--mail-port']), exc_info=True)
-        return 2
-    # We want these values to be None if the corresponding keys do not exist
-    smtp_user = args.get('--smtp-user')
-    smtp_password = args.get('--smtp-pass')
-    smtp_creds_file = args.get('--smtp-creds-file')
-
-    if smtp_creds_file is not None:
-        creds = smtp_creds_from_config_file(smtp_creds_file)
-        smtp_user = creds['user']
-        smtp_password = creds['password']
-
-    try:
-        mail_server = smtplib.SMTP(mail_server_hostname, mail_server_port)
-        if smtp_user and smtp_password:
-            mail_server.starttls()
-            # smtplib docs recommend calling ehlo() after starttls().  See
-            # https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls
-            # for details.
-            mail_server.ehlo()
-            mail_server.login(smtp_user, smtp_password)
-    except (smtplib.SMTPConnectError, smtplib.SMTPHeloError, smtplib.SMTPAuthenticationError, smtplib.SMTPNotSupportedError, smtplib.SMTPException, timeout):
-        logging.critical('There was an error connecting to or authenticating with the mail server on port {} of {}'.format(mail_server_port, mail_server_hostname), exc_info=True)
-        return 3
+    ses_client = boto3.client('ses')
 
     batch_size = args['--batch-size']
     if batch_size is not None:
@@ -858,12 +814,9 @@ def main():
             return 4
 
     if args['report']:
-        do_report(db, batch_size, mail_server, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--cybex-scorecard-dir'], args['--summary-to'])
+        do_report(db, batch_size, ses_client, args['--cyhy-report-dir'], args['--tmail-report-dir'], args['--https-report-dir'], args['--cybex-scorecard-dir'], args['--summary-to'])
     elif args['adhoc']:
-        do_adhoc(db, batch_size, mail_server, args['--to'], args['--cyhy'], args['--cyhy-federal'], args['--subject'], args['--html-body'], args['--text-body'], args['--summary-to'])
-
-    # Close the connection to the mail server
-    mail_server.quit()
+        do_adhoc(db, batch_size, ses_client, args['--to'], args['--cyhy'], args['--cyhy-federal'], args['--subject'], args['--html-body'], args['--text-body'], args['--summary-to'])
 
     # Stop logging and clean up
     logging.shutdown()
