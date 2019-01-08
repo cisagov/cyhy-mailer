@@ -3,6 +3,8 @@ version: '3.2'
 secrets:
   database_creds:
     file: ./secrets/database_creds.yml
+  aws_config:
+    file: ./secrets/aws_config
 
 services:
   mailer:
@@ -10,6 +12,11 @@ services:
     secrets:
       - source: database_creds
         target: database_creds.yml
+      - source: aws_config
+        target: aws_config
+    environment:
+      - AWS_CONFIG_FILE=/run/secrets/aws_config
+      - AWS_PROFILE=default
     volumes:
       # - type: bind
       #   source: /var/cyhy/weekly_reporting/report_archive/latest
