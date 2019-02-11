@@ -21,19 +21,18 @@ class Test(unittest.TestCase):
         for part in message.walk():
             # multipart/* are just containers
             if part.get_content_type() == 'text/plain':
-                text_body = '''Bonjour!
+                text_body = '''Greetings!
 
 Here is the cyhy-mailer summary from the run ending at {}:
 * First string
 
 Please direct feedback and questions to ncats-dev@beta.dhs.gov and/or the cyhy-mailer GitHub project.
 
-Au revoir,
+Regards,
 The NCATS Development Team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency
 ncats-dev@beta.dhs.gov
 '''.format(date)
                 self.assertEqual(part.get_payload(), text_body)
@@ -42,7 +41,7 @@ ncats-dev@beta.dhs.gov
 <head></head>
 <body>
 <div style="font-size:14.5">
-<p>Bonjour!</p>
+<p>Greetings!</p>
 
 <p>
 Here is the cyhy-mailer summary from {}:
@@ -58,11 +57,10 @@ href="https://github.com/dhs-ncats/cyhy-mailer">cyhy-mailer GitHub
 project</a>.</p>
 
 <p>
-Au revoir,<br>
+Regards,<br>
 The NCATS Development Team<br><br>
 National Cybersecurity Assessments and Technical Services (NCATS)<br>
-National Cybersecurity and Communications Integration Center<br>
-U.S. Department of Homeland Security<br>
+Cybersecurity and Infrastructure Security Agency<br>
 <a href="mailto:ncats-dev@beta.dhs.gov">ncats-dev@beta.dhs.gov</a>
 </div>
 </body>
@@ -85,7 +83,7 @@ U.S. Department of Homeland Security<br>
         for part in message.walk():
             # multipart/* are just containers
             if part.get_content_type() == 'text/plain':
-                text_body = '''Bonjour!
+                text_body = '''Greetings!
 
 Here is the cyhy-mailer summary from the run ending at {}:
 * First string
@@ -93,12 +91,11 @@ Here is the cyhy-mailer summary from the run ending at {}:
 
 Please direct feedback and questions to ncats-dev@beta.dhs.gov and/or the cyhy-mailer GitHub project.
 
-Au revoir,
+Regards,
 The NCATS Development Team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency
 ncats-dev@beta.dhs.gov
 '''.format(date)
                 self.assertEqual(part.get_payload(), text_body)
@@ -107,7 +104,7 @@ ncats-dev@beta.dhs.gov
 <head></head>
 <body>
 <div style="font-size:14.5">
-<p>Bonjour!</p>
+<p>Greetings!</p>
 
 <p>
 Here is the cyhy-mailer summary from {}:
@@ -124,11 +121,10 @@ href="https://github.com/dhs-ncats/cyhy-mailer">cyhy-mailer GitHub
 project</a>.</p>
 
 <p>
-Au revoir,<br>
+Regards,<br>
 The NCATS Development Team<br><br>
 National Cybersecurity Assessments and Technical Services (NCATS)<br>
-National Cybersecurity and Communications Integration Center<br>
-U.S. Department of Homeland Security<br>
+Cybersecurity and Infrastructure Security Agency<br>
 <a href="mailto:ncats-dev@beta.dhs.gov">ncats-dev@beta.dhs.gov</a>
 </div>
 </body>
