@@ -5,8 +5,9 @@ from cyhy.mailer.ReportMessage import ReportMessage
 
 
 class CybexMessage(ReportMessage):
-    """A class representing an email message with a Cybex report PDF
-    attachment and a CSV attachment containing Cybex data.
+    """A class representing an email message with a Cyber Exposure
+    scorecard PDF attachment and a CSV attachment containing Cyber
+    Exposure data.
 
     Static attributes
     -----------------
@@ -25,15 +26,16 @@ class CybexMessage(ReportMessage):
     HtmlBody : str
         The mustache template to use when constructing the HTML
         message body.
+
     """
 
     DefaultTo = ['ncats@hq.dhs.gov']
 
-    Subject = 'Cybex Report - {{report_date}} Results'
+    Subject = 'Cyber Exposure Scorecard - {{report_date}} Results'
 
     TextBody = '''Greetings,
 
-The Cybex report from {{report_date}} is attached for your review.
+The Cyber Exposure scorecard from {{report_date}} is attached for your review.
 
 If you have any questions, please contact our office.
 
@@ -53,7 +55,8 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 <body>
 <p>Greetings,</p>
 
-<p>The Cybex report from {{report_date}} is attached for your review.</p>
+<p>The Cyber Exposure scorecard from {{report_date}} is attached for your
+review.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
