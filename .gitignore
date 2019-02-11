@@ -8,9 +8,7 @@
 **/__pycache__
 .pytest_cache
 .tox
-
-# Python venv
-venv/
+.python-version
 
 # Docker secrets
 secrets
