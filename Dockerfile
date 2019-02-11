@@ -1,5 +1,5 @@
-FROM python:3.6.4-alpine3.7
-MAINTAINER Shane Frasier <jeremy.frasier@beta.dhs.gov>
+FROM python:alpine
+MAINTAINER Shane Frasier <jeremy.frasier@trio.dhs.gov>
 
 # Install shadow so we have adduser and addgroup.  This is a build
 # dependency that will be removed at the end.
