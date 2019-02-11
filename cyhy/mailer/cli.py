@@ -571,25 +571,25 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
 
         # At most one Cybex report and CSV should match
         if len(cybex_report_filenames) > 1:
-            logging.warn('More than one Cybex report found')
+            logging.warn('More than one CybEx scorecard found')
         elif not cybex_report_filenames:
-            logging.error('No Cybex report found')
+            logging.error('No CybEx scorecard found')
         if len(cybex_critical_open_csv_filenames) > 1:
-            logging.warn('More than one Cybex critical open CSV found')
+            logging.warn('More than one CybEx critical open CSV found')
         elif not cybex_critical_open_csv_filenames:
-            logging.error('No Cybex critical open CSV found')
+            logging.error('No CybEx critical open CSV found')
         if len(cybex_critical_closed_csv_filenames) > 1:
-            logging.warn('More than one Cybex critical closed CSV found')
+            logging.warn('More than one CybEx critical closed CSV found')
         elif not cybex_critical_closed_csv_filenames:
-            logging.error('No Cybex critical closed CSV found')
+            logging.error('No CybEx critical closed CSV found')
         if len(cybex_high_open_csv_filenames) > 1:
-            logging.warn('More than one Cybex high open CSV found')
+            logging.warn('More than one CybEx high open CSV found')
         elif not cybex_high_open_csv_filenames:
-            logging.error('No Cybex high open CSV found')
+            logging.error('No CybEx high open CSV found')
         if len(cybex_high_closed_csv_filenames) > 1:
-            logging.warn('More than one Cybex high closed CSV found')
+            logging.warn('More than one CybEx high closed CSV found')
         elif not cybex_high_closed_csv_filenames:
-            logging.error('No Cybex high closed CSV found')
+            logging.error('No CybEx high closed CSV found')
 
         if cybex_report_filenames and cybex_critical_open_csv_filenames and cybex_critical_closed_csv_filenames and cybex_high_open_csv_filenames and cybex_high_closed_csv_filenames:
             # We take the last filename since, if there happens to be more than
@@ -611,7 +611,7 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
             try:
                 cybex_report_emailed = bool(send_message(mail_server, message, 0))
             except (smtplib.SMTPRecipientsRefused, smtplib.SMTPHeloError, smtplib.SMTPSenderRefused, smtplib.SMTPDataError, smtplib.SMTPNotSupportedError):
-                logging.error('Unable to send Cybex report', exc_info=True, stack_info=True)
+                logging.error('Unable to send Cyber Exposure scorecard', exc_info=True, stack_info=True)
 
     ###
     # Find and mail the CyHy sample report, if it is present
@@ -654,9 +654,9 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
     tmail_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / federal_agencies:.2}%) were emailed Trustworthy Email reports.'
     https_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / federal_agencies:.2}%) were emailed HTTPS reports.'
     if cybex_report_emailed:
-        cybex_stats_string = 'Cybex report was emailed.'
+        cybex_stats_string = 'Cyber Exposure scorecard was emailed.'
     else:
-        cybex_stats_string = 'Cybex report was not emailed.'
+        cybex_stats_string = 'Cyber Exposure scorecard was not emailed.'
     if sample_cyhy_report_emailed:
         sample_cyhy_stats_string = 'Sample Cyber Hygiene report was emailed.'
     else:

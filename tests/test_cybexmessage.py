@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
         message = CybexMessage(pdf, csv, csv, csv, csv, report_date)
 
         self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
-        self.assertEqual(message['Subject'], 'Cybex Report - December 15, 2001 Results')
+        self.assertEqual(message['Subject'], 'Cyber Exposure Scorecard - December 15, 2001 Results')
         self.assertEqual(message['CC'], None)
         self.assertEqual(message['To'], 'ncats@hq.dhs.gov')
 
@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
             elif part.get_content_type() == 'text/plain':
                 text_body = '''Greetings,
 
-The Cybex report from December 15, 2001 is attached for your review.
+The Cyber Exposure scorecard from December 15, 2001 is attached for your review.
 
 If you have any questions, please contact our office.
 
@@ -51,7 +51,8 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 <body>
 <p>Greetings,</p>
 
-<p>The Cybex report from December 15, 2001 is attached for your review.</p>
+<p>The Cyber Exposure scorecard from December 15, 2001 is attached for your
+review.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -83,7 +84,7 @@ U.S. Department of Homeland Security<br>
         message = CybexMessage(pdf, csv, csv, csv, csv, report_date, to_addrs=to, from_addr=fm, cc_addrs=cc)
 
         self.assertEqual(message['From'], fm)
-        self.assertEqual(message['Subject'], 'Cybex Report - December 15, 2001 Results')
+        self.assertEqual(message['Subject'], 'Cyber Exposure Scorecard - December 15, 2001 Results')
         self.assertEqual(message['CC'], 'cc@example.com,cc2@example.com')
         self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
 
@@ -100,7 +101,7 @@ U.S. Department of Homeland Security<br>
             elif part.get_content_type() == 'text/plain':
                 text_body = '''Greetings,
 
-The Cybex report from December 15, 2001 is attached for your review.
+The Cyber Exposure scorecard from December 15, 2001 is attached for your review.
 
 If you have any questions, please contact our office.
 
@@ -121,7 +122,8 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 <body>
 <p>Greetings,</p>
 
-<p>The Cybex report from December 15, 2001 is attached for your review.</p>
+<p>The Cyber Exposure scorecard from December 15, 2001 is attached for your
+review.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
