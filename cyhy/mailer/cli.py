@@ -408,12 +408,15 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
     """
     try:
         requests = get_cyhy_requests(db, batch_size)
+        federal_requests = get_federal_cyhy_requests(db)
     except TypeError:
         return 4
 
     try:
         total_agencies = requests.count()
+        federal_agencies = federal_requests.count()
         logging.debug(f'Total agencies = {total_agencies}')
+        logging.debug(f'Federal agencies = {federal_agencies}')
     except pymongo.errors.OperationFailure:
         logging.critical('Mongo database error while counting the number of request documents returned', exc_info=True)
     agencies_emailed_cyhy_reports = 0
@@ -648,8 +651,8 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
 
     # Print out and log some statistics
     cyhy_stats_string = f'Out of {total_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / total_agencies:.2}%) were emailed Cyber Hygiene reports.'
-    tmail_stats_string = f'Out of {total_agencies} Cyber Hygiene agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / total_agencies:.2}%) were emailed Trustworthy Email reports.'
-    https_stats_string = f'Out of {total_agencies} Cyber Hygiene agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / total_agencies:.2}%) were emailed HTTPS reports.'
+    tmail_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / federal_agencies:.2}%) were emailed Trustworthy Email reports.'
+    https_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / federal_agencies:.2}%) were emailed HTTPS reports.'
     if cybex_report_emailed:
         cybex_stats_string = 'Cybex report was emailed.'
     else:
