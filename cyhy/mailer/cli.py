@@ -147,7 +147,7 @@ def get_emails_from_request(request):
     # ...but let's log a warning about them.
     for c in request['agency']['contacts']:
         if 'type' not in c or 'email' not in c or not c['email'].split():
-            logging.warn('Agency with ID {} has a contact that is missing an email and/or type attribute!'.format(id))
+            logging.warn(f'Agency with ID {id} has a contact that is missing an email and/or type attribute!')
 
     distro_emails = [c['email'] for c in contacts if c['type'] == 'DISTRO']
     technical_emails = [c['email'] for c in contacts if c['type'] == 'TECHNICAL']
@@ -155,7 +155,7 @@ def get_emails_from_request(request):
     # There should be zero or one distro email, so log a warning if
     # there are multiple.
     if len(distro_emails) > 1:
-        logging.warn('More than one DISTRO email address for agency with ID {}'.format(id))
+        logging.warn(f'More than one DISTRO email address for agency with ID {id}')
 
     # Send to the distro email, if it exists.  Otherwise, send to the
     # technical emails.
@@ -165,7 +165,7 @@ def get_emails_from_request(request):
 
     # At this point to_emails should contain at least one email
     if not to_emails:
-        logging.error('No emails found for ID {}'.format(id))
+        logging.error(f'No emails found for ID {id}')
 
     return to_emails
 
@@ -372,12 +372,15 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
     """
     try:
         requests = get_cyhy_requests(db, batch_size)
+        federal_requests = get_federal_cyhy_requests(db)
     except TypeError:
         return 4
 
     try:
         total_agencies = requests.count()
-        logging.debug('Total agencies = {}'.format(total_agencies))
+        federal_agencies = federal_requests.count()
+        logging.debug(f'Total agencies = {total_agencies}')
+        logging.debug(f'Federal agencies = {federal_agencies}')
     except pymongo.errors.OperationFailure:
         logging.critical('Mongo database error while counting the number of request documents returned', exc_info=True)
     agencies_emailed_cyhy_reports = 0
@@ -400,16 +403,16 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
             # The '2' is necessary because in some cases we have both XYZ and
             # XYZ-AB as stakeholders.  Without the '2' the glob would include
             # both for the ID XYZ.
-            cyhy_report_glob = '{}/cyhy-{}-2*.pdf'.format(cyhy_report_dir, id)
+            cyhy_report_glob = f'{cyhy_report_dir}/cyhy-{id}-2*.pdf'
             cyhy_report_filenames = sorted(glob.glob(cyhy_report_glob))
 
             # Exactly one CyHy report should match
             if len(cyhy_report_filenames) > 1:
-                logging.warn('More than one Cyber Hygiene report found for agency with ID {}'.format(id))
+                logging.warn(f'More than one Cyber Hygiene report found for agency with ID {id}')
             elif not cyhy_report_filenames:
                 # This is an error since we are starting from the list
                 # of CyHy agencys and they should all have reports
-                logging.error('No Cyber Hygiene report found for agency with ID {}'.format(id))
+                logging.error(f'No Cyber Hygiene report found for agency with ID {id}')
 
             if cyhy_report_filenames:
                 # We take the last filename since, if there happens to be more
@@ -429,8 +432,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
                                                                  message,
                                                                  agencies_emailed_cyhy_reports)
                 except UnableToSendError:
-                    logging.error('Unable to send Cyber Hygiene report for '
-                                  'agency with ID {}'.format(id),
+                    logging.error('Unable to send Cyber Hygiene report for agency with ID {id}',
                                   exc_info=True, stack_info=True)
 
         ###
@@ -444,17 +446,17 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
             # The '2' is necessary because in some cases we have both XYZ and
             # XYZ-AB as stakeholders.  Without the '2' the glob would include
             # both for the ID XYZ.
-            tmail_report_glob = '{}/cyhy-{}-2*.pdf'.format(tmail_report_dir, id)
+            tmail_report_glob = f'{tmail_report_dir}/cyhy-{id}-2*.pdf'
             tmail_report_filenames = sorted(glob.glob(tmail_report_glob))
 
             # At most one Tmail report should match
             if len(tmail_report_filenames) > 1:
-                logging.warn('More than one Trustworthy Email report found for agency with ID {}'.format(id))
+                logging.warn(f'More than one Trustworthy Email report found for agency with ID {id}')
             elif not tmail_report_filenames:
                 # This is only at info since we are starting from the
                 # list of CyHy agencys.  Many of them will not have
                 # Tmail reports.
-                logging.info('No Trustworthy Email report found for agency with ID {}'.format(id))
+                logging.info(f'No Trustworthy Email report found for agency with ID {id}')
 
             if tmail_report_filenames:
                 # We take the last filename since, if there happens to be more
@@ -474,8 +476,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
                                                                   message,
                                                                   agencies_emailed_tmail_reports)
                 except UnableToSendError:
-                    logging.error('Unable to send Trustworthy Email report '
-                                  'for agency with ID {}'.format(id),
+                    logging.error(f'Unable to send Trustworthy Email report for agency with ID {id}',
                                   exc_info=True, stack_info=True)
 
         ###
@@ -489,17 +490,17 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
             # The '2' is necessary because in some cases we have both XYZ and
             # XYZ-AB as stakeholders.  Without the '2' the glob would include
             # both for the ID XYZ.
-            https_report_glob = '{}/cyhy-{}-2*.pdf'.format(https_report_dir, id)
+            https_report_glob = f'{https_report_dir}/cyhy-{id}-2*.pdf'
             https_report_filenames = sorted(glob.glob(https_report_glob))
 
             # At most one HTTPS report should match
             if len(https_report_filenames) > 1:
-                logging.warn('More than one HTTPS report found for agency with ID {}'.format(id))
+                logging.warn(f'More than one HTTPS report found for agency with ID {id}')
             elif not https_report_filenames:
                 # This is only at info since we are starting from the
                 # list of CyHy agencys.  Many of them will not have
                 # HTTPS reports.
-                logging.info('No HTTPS report found for agency with ID {}'.format(id))
+                logging.info(f'No HTTPS report found for agency with ID {id}')
 
             if https_report_filenames:
                 # We take the last filename since, if there happens to be more
@@ -519,8 +520,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
                                                                   message,
                                                                   agencies_emailed_https_reports)
                 except UnableToSendError:
-                    logging.error('Unable to send HTTPS report '
-                                  'for agency with ID {}'.format(id),
+                    logging.error(f'Unable to send HTTPS report for agency with ID {id}',
                                   exc_info=True, stack_info=True)
 
     ###
@@ -531,38 +531,38 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
     # into a class or functions.
     ###
     if cybex_scorecard_dir:
-        cybex_report_glob = '{}/Federal_Cyber_Exposure_Scorecard-*.pdf'.format(cybex_scorecard_dir)
+        cybex_report_glob = f'{cybex_scorecard_dir}/Federal_Cyber_Exposure_Scorecard-*.pdf'
         cybex_report_filenames = sorted(glob.glob(cybex_report_glob))
-        cybex_critical_open_csv_glob = '{}/cybex_open_tickets_critical_*.csv'.format(cybex_scorecard_dir)
+        cybex_critical_open_csv_glob = f'{cybex_scorecard_dir}/cybex_open_tickets_critical_*.csv'
         cybex_critical_open_csv_filenames = sorted(glob.glob(cybex_critical_open_csv_glob))
-        cybex_critical_closed_csv_glob = '{}/cybex_closed_tickets_critical_*.csv'.format(cybex_scorecard_dir)
+        cybex_critical_closed_csv_glob = f'{cybex_scorecard_dir}/cybex_closed_tickets_critical_*.csv'
         cybex_critical_closed_csv_filenames = sorted(glob.glob(cybex_critical_closed_csv_glob))
-        cybex_high_open_csv_glob = '{}/cybex_open_tickets_high_*.csv'.format(cybex_scorecard_dir)
+        cybex_high_open_csv_glob = f'{cybex_scorecard_dir}/cybex_open_tickets_high_*.csv'
         cybex_high_open_csv_filenames = sorted(glob.glob(cybex_high_open_csv_glob))
-        cybex_high_closed_csv_glob = '{}/cybex_closed_tickets_high_*.csv'.format(cybex_scorecard_dir)
+        cybex_high_closed_csv_glob = f'{cybex_scorecard_dir}/cybex_closed_tickets_high_*.csv'
         cybex_high_closed_csv_filenames = sorted(glob.glob(cybex_high_closed_csv_glob))
 
         # At most one Cybex report and CSV should match
         if len(cybex_report_filenames) > 1:
-            logging.warn('More than one Cybex report found')
+            logging.warn('More than one CybEx scorecard found')
         elif not cybex_report_filenames:
-            logging.error('No Cybex report found')
+            logging.error('No CybEx scorecard found')
         if len(cybex_critical_open_csv_filenames) > 1:
-            logging.warn('More than one Cybex critical open CSV found')
+            logging.warn('More than one CybEx critical open CSV found')
         elif not cybex_critical_open_csv_filenames:
-            logging.error('No Cybex critical open CSV found')
+            logging.error('No CybEx critical open CSV found')
         if len(cybex_critical_closed_csv_filenames) > 1:
-            logging.warn('More than one Cybex critical closed CSV found')
+            logging.warn('More than one CybEx critical closed CSV found')
         elif not cybex_critical_closed_csv_filenames:
-            logging.error('No Cybex critical closed CSV found')
+            logging.error('No CybEx critical closed CSV found')
         if len(cybex_high_open_csv_filenames) > 1:
-            logging.warn('More than one Cybex high open CSV found')
+            logging.warn('More than one CybEx high open CSV found')
         elif not cybex_high_open_csv_filenames:
-            logging.error('No Cybex high open CSV found')
+            logging.error('No CybEx high open CSV found')
         if len(cybex_high_closed_csv_filenames) > 1:
-            logging.warn('More than one Cybex high closed CSV found')
+            logging.warn('More than one CybEx high closed CSV found')
         elif not cybex_high_closed_csv_filenames:
-            logging.error('No Cybex high closed CSV found')
+            logging.error('No CybEx high closed CSV found')
 
         if cybex_report_filenames and cybex_critical_open_csv_filenames and cybex_critical_closed_csv_filenames and cybex_high_open_csv_filenames and cybex_high_closed_csv_filenames:
             # We take the last filename since, if there happens to be more than
@@ -596,7 +596,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
         # The '2' is necessary because in some cases we have both XYZ and
         # XYZ-AB as stakeholders.  Without the '2' the glob would include both
         # for the ID XYZ.
-        cyhy_sample_report_glob = '{}/cyhy-SAMPLE-2*.pdf'.format(cyhy_report_dir)
+        cyhy_sample_report_glob = f'{cyhy_report_dir}/cyhy-SAMPLE-2*.pdf'
         cyhy_sample_report_filenames = sorted(glob.glob(cyhy_sample_report_glob))
 
         # Exactly one CyHy sample report should match
@@ -616,7 +616,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
             report_date = datetime.datetime.strptime(match.group('date'), '%Y-%m-%d').strftime('%B %d, %Y')
 
             # Construct the report message to send
-            subject = 'Sample Cyber Hygiene Report - {}'.format(report_date)
+            subject = f'Sample Cyber Hygiene Report - {report_date}'
             message = ReportMessage(['ncats@hq.dhs.gov'], subject, None, None, cyhy_attachment_filename, cc_addrs=None)
 
             try:
@@ -627,13 +627,13 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
                               exc_info=True, stack_info=True)
 
     # Print out and log some statistics
-    cyhy_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Cyber Hygiene reports.'.format(total_agencies, agencies_emailed_cyhy_reports, 100.0 * agencies_emailed_cyhy_reports / total_agencies)
-    tmail_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed Trustworthy Email reports.'.format(total_agencies, agencies_emailed_tmail_reports, 100.0 * agencies_emailed_tmail_reports / total_agencies)
-    https_stats_string = 'Out of {} Cyber Hygiene agencies, {} ({:.2f}%) were emailed HTTPS reports.'.format(total_agencies, agencies_emailed_https_reports, 100.0 * agencies_emailed_https_reports / total_agencies)
+    cyhy_stats_string = f'Out of {total_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / total_agencies:.2}%) were emailed Cyber Hygiene reports.'
+    tmail_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / federal_agencies:.2}%) were emailed Trustworthy Email reports.'
+    https_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / federal_agencies:.2}%) were emailed HTTPS reports.'
     if cybex_report_emailed:
-        cybex_stats_string = 'Cybex report was emailed.'
+        cybex_stats_string = 'Cyber Exposure scorecard was emailed.'
     else:
-        cybex_stats_string = 'Cybex report was not emailed.'
+        cybex_stats_string = 'Cyber Exposure scorecard was not emailed.'
     if sample_cyhy_report_emailed:
         sample_cyhy_stats_string = 'Sample Cyber Hygiene report was emailed.'
     else:
@@ -755,11 +755,11 @@ def do_adhoc(db, batch_size, ses_client, to, cyhy, cyhy_federal, subject, html_b
                                               message,
                                               ad_hoc_emails_sent)
         except UnableToSendError:
-            logging.error('Unable to send ad hoc email to {} '.format(email),
+            logging.error(f'Unable to send ad hoc email to {email} ',
                           exc_info=True, stack_info=True)
 
     # Print out and log some statistics
-    stats_string = 'Out of {} ad hoc emails to be sent, {} ({:.2f}%) were sent.'.format(ad_hoc_emails_to_send, ad_hoc_emails_sent, 100.0 * ad_hoc_emails_sent / ad_hoc_emails_to_send)
+    stats_string = f'Out of {ad_hoc_emails_to_send} ad hoc emails to be sent, {ad_hoc_emails_sent} ({100.0 * ad_hoc_emails_sent / ad_hoc_emails_to_send:.2}%) were sent.'
     logging.info(stats_string)
     print(stats_string)
 
@@ -789,19 +789,19 @@ def main():
     try:
         db = database_from_config_file(db_creds_file)
     except OSError:
-        logging.critical('Database configuration file {} does not exist'.format(db_creds_file), exc_info=True)
+        logging.critical(f'Database configuration file {db_creds_file} does not exist', exc_info=True)
         return 1
     except yaml.YAMLError:
-        logging.critical('Database configuration file {} does not contain valid YAML'.format(db_creds_file), exc_info=True)
+        logging.critical(f'Database configuration file {db_creds_file} does not contain valid YAML', exc_info=True)
         return 1
     except KeyError:
-        logging.critical('Database configuration file {} does not contain the expected keys'.format(db_creds_file), exc_info=True)
+        logging.critical(f'Database configuration file {db_creds_file} does not contain the expected keys', exc_info=True)
         return 1
     except pymongo.errors.ConnectionError:
-        logging.critical('Unable to connect to the database server in {}'.format(db_creds_file), exc_info=True)
+        logging.critical(f'Unable to connect to the database server in {db_creds_file}', exc_info=True)
         return 1
     except pymongo.errors.InvalidName:
-        logging.critical('The database in {} does not exist'.format(db_creds_file), exc_info=True)
+        logging.critical(f'The database in {db_creds_file} does not exist', exc_info=True)
         return 1
 
     ses_client = boto3.client('ses')
@@ -811,7 +811,7 @@ def main():
         try:
             batch_size = int(batch_size)
         except ValueError:
-            logging.critical('The value {} cannot be interpreted as an integer'.format(args['--batch-size']), exc_info=True)
+            logging.critical(f'The value {args["--batch-size"]} cannot be interpreted as an integer', exc_info=True)
             return 4
 
     if args['report']:

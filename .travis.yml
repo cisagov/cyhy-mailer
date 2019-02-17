@@ -11,10 +11,11 @@ env:
     - DOCKER_USER=jsf9k
     - secure: "g3qn0JOrncGsKm22muuj1vpLnmV2P3vaIDU6f3XOb2zPhpFO6P9Ptq/hhV6TCj6uil5A41qOuw3/m/DFxSQQS08U+WhXhDodCH0xP3OxrhtX4c9MXo5cB4Y9Fd8UehqGs4E5cRbVOQglQ5t98xP+iVa5dBpbEyqw2V06EO6SCYNlBrvjn2dNPUbSfUFkA211AOq4b3meRW+OwOJ7I69mlb90aKCaYODuOYF+LjSftLqkEgHYIxVscBvaQxfeXI0/mfo9D3wKqTU1JI2xFiUub5fGRtxhUVOKMdgFz9aizmxdbjl5Xga8/3+6Iw/5bdSkLkf6/z7/V9tuEpNVywPh5Df30C0NT8Wn27+odQx5OKjnnN0d4SfIPbhPl5hPKn9qcVvdB8aRnbAedLcbWOIP6dq1Dx/Z3/E4MWDoO6JMM8iJ5m9jRx0T7BZs6GiKMUf69d49a00PdgvmMdN/6FjKXZYw97359iiF2NQi0WabtC6HTH/SJR68Sc45pFDw1WqIIYCw7O93mc94AdG69fu9sAh50tLat0NYr16Q8+b+CQUmtTvsBogQZGOTJgfqH32AFXcF2Rb0h/f+QDHrWZPhFqW2vzeMPRAL8JJ+a9mD+1mrCjMCNuC23WkOI7MWZ4gyMhWMncFUvIwqUk4JFhyOLjKGEcBni+zCred2S3SJip4="
 
-python:
-  - '3.4'
-  - '3.5'
-  - '3.6'
+matrix:
+    include:
+        - python: 3.7
+          dist: xenial
+          sudo: true
 
 install:
   - pip install -e .[dev]
@@ -33,4 +34,4 @@ deploy:
     script: bash travis_scripts/deploy_to_docker_hub.sh
     on:
       tags: true
-      python: '3.6'
+      python: '3.7'
