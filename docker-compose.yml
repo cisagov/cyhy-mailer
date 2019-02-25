@@ -19,7 +19,7 @@ services:
       - AWS_PROFILE=default
     volumes:
       - type: bind
-        source: /var/cyhy/weekly_reporting/report_archive/latest
+        source: /home/jeremy.frasier/cyhy_reports/latest
         target: /cyhy_reports
       - type: bind
         source: /var/cyhy/orchestrator/output/archive/latest/reporting/trustymail_reports
