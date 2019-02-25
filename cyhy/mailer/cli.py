@@ -650,9 +650,9 @@ def do_report(db, batch_size, mail_server, cyhy_report_dir, tmail_report_dir, ht
                 logging.error('Unable to send sample Cyber Hygiene report', exc_info=True, stack_info=True)
 
     # Print out and log some statistics
-    cyhy_stats_string = f'Out of {total_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / total_agencies:.2}%) were emailed Cyber Hygiene reports.'
-    tmail_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / federal_agencies:.2}%) were emailed Trustworthy Email reports.'
-    https_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / federal_agencies:.2}%) were emailed HTTPS reports.'
+    cyhy_stats_string = f'Out of {total_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / total_agencies:.2f}%) were emailed Cyber Hygiene reports.'
+    tmail_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / federal_agencies:.2f}%) were emailed Trustworthy Email reports.'
+    https_stats_string = f'Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / federal_agencies:.2f}%) were emailed HTTPS reports.'
     if cybex_report_emailed:
         cybex_stats_string = 'Cyber Exposure scorecard was emailed.'
     else:
