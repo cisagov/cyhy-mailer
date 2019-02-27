@@ -23,7 +23,7 @@ install:
   - pip install flake8 pytest-cov coveralls
 
 script:
-  - shellcheck bump_version.sh tag.sh start.sh
+  - shellcheck bump_version.sh tag.sh start.sh travis_scripts/build_docker_image.sh travis_scripts/deploy_to_docker_hub.sh
   - pytest --cov=cyhy/mailer
   - flake8 .
   - bash travis_scripts/build_docker_image.sh
