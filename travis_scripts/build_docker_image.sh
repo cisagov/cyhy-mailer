@@ -5,4 +5,4 @@ set -o errexit
 set -o pipefail
 
 version=$(./bump_version.sh show)
-docker build -t "${IMAGE_NAME}:$version" .
+docker build -t "$IMAGE_NAME":"$version" .
