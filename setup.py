@@ -28,7 +28,7 @@ setup(
     download_url='https://github.com/cisagov/cyhy-mailer',
 
     # Author details
-    author='Department of Homeland Security, National Cybersecurity Assessments and Technical Services team',
+    author='Cyber and Infrastructure Security Agency',
     author_email='ncats@hq.dhs.gov',
 
     license='License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication',
