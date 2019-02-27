@@ -25,7 +25,7 @@ setup(
     # NCATS "homepage"
     url='https://www.dhs.gov/cyber-incident-response',
     # The project's main homepage
-    download_url='https://github.com/dhs-ncats/cyhy-mailer',
+    download_url='https://github.com/cisagov/cyhy-mailer',
 
     # Author details
     author='Department of Homeland Security, National Cybersecurity Assessments and Technical Services team',
