@@ -3,7 +3,7 @@ setup module for cyhy-mailer
 
 Based on:
 
-- https://github.com/dhs-ncats/cyhy-mailer
+- https://github.com/cisagov/cyhy-mailer
 """
 
 from setuptools import setup
@@ -23,12 +23,12 @@ setup(
     long_description_content_type='text/markdown',
 
     # NCATS "homepage"
-    url='https://www.dhs.gov/cyber-incident-response',
+    url="https://www.us-cert.gov/resources/ncats",
     # The project's main homepage
-    download_url='https://github.com/dhs-ncats/cyhy-mailer',
+    download_url='https://github.com/cisagov/cyhy-mailer',
 
     # Author details
-    author='Department of Homeland Security, National Cybersecurity Assessments and Technical Services team',
+    author='Cyber and Infrastructure Security Agency',
     author_email='ncats@hq.dhs.gov',
 
     license='License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication',
@@ -61,6 +61,7 @@ setup(
     packages=['cyhy.mailer'],
 
     install_requires=[
+        'boto3>=1.9.74'
         'docopt>=0.6.2',
         'pymongo>=3.6.1',
         'pystache>=0.5.4',

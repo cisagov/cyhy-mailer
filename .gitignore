@@ -8,6 +8,8 @@
 **/__pycache__
 .pytest_cache
 .tox
+
+# pyenv
 .python-version
 
 # Docker secrets

@@ -1,7 +1,7 @@
 # cyhy-mailer :postal_horn: :mailbox: #
 
-[![Build Status](https://travis-ci.org/dhs-ncats/cyhy-mailer.svg?branch=develop)](https://travis-ci.org/dhs-ncats/cyhy-mailer)
-[![Coverage Status](https://coveralls.io/repos/github/dhs-ncats/cyhy-mailer/badge.svg?branch=develop)](https://coveralls.io/github/dhs-ncats/cyhy-mailer?branch=develop)
+[![Build Status](https://travis-ci.org/cisagov/cyhy-mailer.svg?branch=develop)](https://travis-ci.org/cisagov/cyhy-mailer)
+[![Coverage Status](https://coveralls.io/repos/github/cisagov/cyhy-mailer/badge.svg?branch=develop)](https://coveralls.io/github/cisagov/cyhy-mailer?branch=develop)
 
 `cyhy-mailer` is a tool for emailing Cyber Hygiene, `https-scan`, and
 `trustymail` reports to the appropriate technical or distribution
@@ -16,9 +16,9 @@ pip install /path/to/cyhy-mailer
 ```
 
 Or, if you prefer, you can install directly from
-[the GitHub repository](https://github.com/dhs-ncats/cyhy-mailer):
+[the GitHub repository](https://github.com/cisagov/cyhy-mailer):
 ```bash
-pip install git+https://github.com/dhs-ncats/cyhy-mailer.git
+pip install git+https://github.com/cisagov/cyhy-mailer.git
 ```
 
 ## Usage ##
