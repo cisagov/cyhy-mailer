@@ -59,6 +59,7 @@ import logging
 import re
 
 import boto3
+import botocore.exceptions.ClientError
 from pymongo import MongoClient
 import pymongo.errors
 import yaml
@@ -309,8 +310,11 @@ def send_message(ses_client, message, counter=None):
 
     Throws
     ------
-    UnableToSendError: If an error is encountered when attempting to
-    send the message.
+    botocore.exceptions.ClientError: If an error is encountered when
+    attempting to send the message.
+
+    UnableToSendError: If the response from sending the message is
+    anything other than 200.
     """
     # "Are you silly?  I'm still gonna send it!"
     #   -- Larry Enticer
@@ -431,7 +435,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
                     agencies_emailed_cyhy_reports = send_message(ses_client,
                                                                  message,
                                                                  agencies_emailed_cyhy_reports)
-                except UnableToSendError:
+                except (UnableToSendError, botocore.exceptions.ClientError):
                     logging.error('Unable to send Cyber Hygiene report for agency with ID {id}',
                                   exc_info=True, stack_info=True)
 
@@ -475,7 +479,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
                     agencies_emailed_tmail_reports = send_message(ses_client,
                                                                   message,
                                                                   agencies_emailed_tmail_reports)
-                except UnableToSendError:
+                except (UnableToSendError, botocore.exceptions.ClientError):
                     logging.error(f'Unable to send Trustworthy Email report for agency with ID {id}',
                                   exc_info=True, stack_info=True)
 
@@ -519,7 +523,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
                     agencies_emailed_https_reports = send_message(ses_client,
                                                                   message,
                                                                   agencies_emailed_https_reports)
-                except UnableToSendError:
+                except (UnableToSendError, botocore.exceptions.ClientError):
                     logging.error(f'Unable to send HTTPS report for agency with ID {id}',
                                   exc_info=True, stack_info=True)
 
@@ -584,7 +588,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
             try:
                 cybex_report_emailed = bool(send_message(ses_client,
                                                          message, 0))
-            except UnableToSendError:
+            except (UnableToSendError, botocore.exceptions.ClientError):
                 logging.error('Unable to send Cyber Exposure Scorecard',
                               exc_info=True, stack_info=True)
 
@@ -622,7 +626,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
             try:
                 sample_cyhy_report_emailed = bool(send_message(ses_client,
                                                                message, 0))
-            except UnableToSendError:
+            except (UnableToSendError, botocore.exceptions.ClientError):
                 logging.error('Unable to send sample Cyber Hygiene report',
                               exc_info=True, stack_info=True)
 
@@ -656,7 +660,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
         message = StatsMessage(summary_to.split(','), [cyhy_stats_string, tmail_stats_string, https_stats_string, cybex_stats_string, sample_cyhy_stats_string])
         try:
             send_message(ses_client, message)
-        except UnableToSendError:
+        except (UnableToSendError, botocore.exceptions.ClientError):
             logging.error('Unable to send cyhy-mailer report summary',
                           exc_info=True, stack_info=True)
 
@@ -754,7 +758,7 @@ def do_adhoc(db, batch_size, ses_client, to, cyhy, cyhy_federal, subject, html_b
             ad_hoc_emails_sent = send_message(ses_client,
                                               message,
                                               ad_hoc_emails_sent)
-        except UnableToSendError:
+        except (UnableToSendError, botocore.exceptions.ClientError):
             logging.error(f'Unable to send ad hoc email to {email} ',
                           exc_info=True, stack_info=True)
 
@@ -770,7 +774,7 @@ def do_adhoc(db, batch_size, ses_client, to, cyhy, cyhy_federal, subject, html_b
         message = StatsMessage(summary_to.split(','), [stats_string])
         try:
             send_message(ses_client, message)
-        except UnableToSendError:
+        except (UnableToSendError, botocore.exceptions.ClientError):
             logging.error('Unable to send cyhy-mailer ad hoc summary',
                           exc_info=True, stack_info=True)
 
