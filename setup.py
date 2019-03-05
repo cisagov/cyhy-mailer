@@ -61,7 +61,7 @@ setup(
     packages=['cyhy.mailer'],
 
     install_requires=[
-        'boto3>=1.9.74'
+        'boto3>=1.9.74',
         'docopt>=0.6.2',
         'pymongo>=3.6.1',
         'pystache>=0.5.4',
