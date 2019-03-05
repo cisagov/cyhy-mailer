@@ -1,4 +1,5 @@
 language: python
+dist: xenial
 
 services:
   - docker
@@ -12,8 +13,6 @@ env:
 matrix:
     include:
         - python: 3.7
-          dist: xenial
-          sudo: true
 
 before_install:
   - sudo apt-get install -y shellcheck
