@@ -1,6 +1,6 @@
 # cyhy-mailer :postal_horn: :mailbox: #
 
-[![Build Status](https://travis-ci.org/cisagov/cyhy-mailer.svg?branch=develop)](https://travis-ci.org/cisagov/cyhy-mailer)
+[![Build Status](https://travis-ci.com/cisagov/cyhy-mailer.svg?branch=develop)](https://travis-ci.com/cisagov/cyhy-mailer)
 [![Coverage Status](https://coveralls.io/repos/github/cisagov/cyhy-mailer/badge.svg?branch=develop)](https://coveralls.io/github/cisagov/cyhy-mailer?branch=develop)
 
 `cyhy-mailer` is a tool for emailing Cyber Hygiene, `https-scan`, and
