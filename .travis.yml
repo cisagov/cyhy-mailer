@@ -23,8 +23,8 @@ install:
 
 script:
   - shellcheck *.sh travis_scripts/*.sh
-  - docker-compose config -f docker-compose.yml -f docker-compose.bod.yml
-  - docker-compose config -f docker-compose.yml -f docker-compose.cyhy.yml
+  - docker-compose -f docker-compose.yml -f docker-compose.bod.yml config
+  - docker-compose -f docker-compose.yml -f docker-compose.cyhy.yml config
   - pytest --cov=cyhy/mailer
   - flake8 .
   - bash travis_scripts/build_docker_image.sh
