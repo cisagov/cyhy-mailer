@@ -56,6 +56,8 @@ ncats@hq.dhs.gov
 ----changelog----
 12/11/2017
 * Known issue: The fed.us TLD is inaccurately represented in some reports.
+03/29/2019
+* If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores.
 -----------------
 '''
                 self.assertEqual(part.get_payload(), text_body)
@@ -87,6 +89,8 @@ U.S. Department of Homeland Security <br/>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>
 <b>* Known issue:</b> The fed.us TLD is inaccurately represented in some reports.</p>
+<p><i>03/29/2019</i></p>
+<b>* </b> If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores. </p>
 <p>--------------------</p>
 </body>
 </html>
@@ -144,6 +148,8 @@ ncats@hq.dhs.gov
 ----changelog----
 12/11/2017
 * Known issue: The fed.us TLD is inaccurately represented in some reports.
+03/29/2019
+* If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores.
 -----------------
 '''
                 self.assertEqual(part.get_payload(), body)
@@ -175,6 +181,8 @@ U.S. Department of Homeland Security <br/>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>
 <b>* Known issue:</b> The fed.us TLD is inaccurately represented in some reports.</p>
+<p><i>03/29/2019</i></p>
+<b>* </b> If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores. </p>
 <p>--------------------</p>
 </body>
 </html>
@@ -234,6 +242,8 @@ ncats@hq.dhs.gov
 ----changelog----
 12/11/2017
 * Known issue: The fed.us TLD is inaccurately represented in some reports.
+03/29/2019
+* If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores.
 -----------------
 '''
                 self.assertEqual(part.get_payload(), body)
@@ -265,6 +275,8 @@ U.S. Department of Homeland Security <br/>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>
 <b>* Known issue:</b> The fed.us TLD is inaccurately represented in some reports.</p>
+<p><i>03/29/2019</i></p>
+<b>* </b> If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores. </p>
 <p>--------------------</p>
 </body>
 </html>
@@ -324,6 +336,8 @@ ncats@hq.dhs.gov
 ----changelog----
 12/11/2017
 * Known issue: The fed.us TLD is inaccurately represented in some reports.
+03/29/2019
+* If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores.
 -----------------
 '''
                 self.assertEqual(part.get_payload(), body)
@@ -355,6 +369,8 @@ U.S. Department of Homeland Security <br/>
 <p>----changelog----</p>
 <p><i>12/11/2017</i></p>
 <b>* Known issue:</b> The fed.us TLD is inaccurately represented in some reports.</p>
+<p><i>03/29/2019</i></p>
+<b>* </b> If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores. </p>
 <p>--------------------</p>
 </body>
 </html>
