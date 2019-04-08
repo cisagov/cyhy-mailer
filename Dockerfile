@@ -13,7 +13,7 @@ RUN pip3 install --upgrade pip setuptools
 
 # Install cyhy-mailer
 RUN mkdir cyhy-mailer
-RUN wget -q -O - https://api.github.com/repos/cisagov/cyhy-mailer/tarball | tar xz --strip-components=1 -C cyhy-mailer
+RUN wget -q -O - https://github.com/cisagov/cyhy-mailer/tarball | tar xz --strip-components=1 -C cyhy-mailer
 RUN pip3 install --upgrade ./cyhy-mailer
 
 # Create unprivileged user
