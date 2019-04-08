@@ -766,7 +766,7 @@ def do_adhoc(db, batch_size, ses_client, to, cyhy, cyhy_federal, subject, html_b
                           exc_info=True, stack_info=True)
 
     # Print out and log some statistics
-    stats_string = f'Out of {ad_hoc_emails_to_send} ad hoc emails to be sent, {ad_hoc_emails_sent} ({100.0 * ad_hoc_emails_sent / ad_hoc_emails_to_send:.2}%) were sent.'
+    stats_string = f'Out of {ad_hoc_emails_to_send} ad hoc emails to be sent, {ad_hoc_emails_sent} ({100.0 * ad_hoc_emails_sent / ad_hoc_emails_to_send:.2f}%) were sent.'
     logging.info(stats_string)
     print(stats_string)
 
