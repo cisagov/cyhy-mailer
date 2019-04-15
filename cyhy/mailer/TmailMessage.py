@@ -23,9 +23,9 @@ class TmailMessage(ReportMessage):
         message body.
     """
 
-    Subject = '{{acronym}} - Trustworthy Email Report - {{report_date}} Results'
+    Subject = "{{acronym}} - Trustworthy Email Report - {{report_date}} Results"
 
-    TextBody = '''Greetings {{acronym}},
+    TextBody = """Greetings {{acronym}},
 
 Attached is your Trustworthy Email Report. This report presents your organization's support of SPF and DMARC, two email authentication standards, as published at your .gov domains. The data in this report comes from a scan that took place on {{report_date}}.
 
@@ -56,9 +56,9 @@ ncats@hq.dhs.gov
 03/29/2019
 * If an SMTP-responsive hostname does not have an SPF record set, but it is covered by a valid DMARC record with a policy of reject, we now count the hostname as compliant with respect to SPF.  This change is being made to more closely align with the exact language in BOD 18-01.  As a result, users may see an increase in SPF record compliance scores.
 -----------------
-'''
+"""
 
-    HtmlBody = '''<html>
+    HtmlBody = """<html>
 <head></head>
 <body>
 <div style=""font-size:14.5"">
@@ -90,9 +90,17 @@ U.S. Department of Homeland Security <br/>
 <p>--------------------</p>
 </body>
 </html>
-'''
+"""
 
-    def __init__(self, to_addrs, pdf_filename, agency_acronym, report_date, from_addr=Message.DefaultFrom, cc_addrs=Message.DefaultCc):
+    def __init__(
+        self,
+        to_addrs,
+        pdf_filename,
+        agency_acronym,
+        report_date,
+        from_addr=Message.DefaultFrom,
+        cc_addrs=Message.DefaultCc,
+    ):
         """Construct an instance.
 
         Parameters
@@ -122,14 +130,20 @@ U.S. Department of Homeland Security <br/>
             address to which this message should be sent.
         """
         # This is the data mustache will use to render the templates
-        mustache_data = {
-            'acronym': agency_acronym,
-            'report_date': report_date
-        }
+        mustache_data = {"acronym": agency_acronym, "report_date": report_date}
 
         # Render the templates
         subject = pystache.render(TmailMessage.Subject, mustache_data)
         text_body = pystache.render(TmailMessage.TextBody, mustache_data)
         html_body = pystache.render(TmailMessage.HtmlBody, mustache_data)
 
-        ReportMessage.__init__(self, to_addrs, subject, text_body, html_body, pdf_filename, from_addr, cc_addrs)
+        ReportMessage.__init__(
+            self,
+            to_addrs,
+            subject,
+            text_body,
+            html_body,
+            pdf_filename,
+            from_addr,
+            cc_addrs,
+        )

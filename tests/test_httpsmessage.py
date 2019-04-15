@@ -4,31 +4,32 @@ from cyhy.mailer.HttpsMessage import HttpsMessage
 
 
 class Test(unittest.TestCase):
-
     def test_four_params_single_recipient(self):
-        to = ['recipient@example.com']
-        pdf = './tests/data/pdf-sample.pdf'
-        agency_acronym = 'CLARKE'
-        report_date = 'December 15, 2001'
+        to = ["recipient@example.com"]
+        pdf = "./tests/data/pdf-sample.pdf"
+        agency_acronym = "CLARKE"
+        report_date = "December 15, 2001"
 
         message = HttpsMessage(to, pdf, agency_acronym, report_date)
 
-        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
-        self.assertEqual(message['Subject'], 'CLARKE - HTTPS Report - December 15, 2001 Results')
-        self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
-        self.assertEqual(message['To'], 'recipient@example.com')
+        self.assertEqual(message["From"], "reports@cyber.dhs.gov")
+        self.assertEqual(
+            message["Subject"], "CLARKE - HTTPS Report - December 15, 2001 Results"
+        )
+        self.assertEqual(message["CC"], "ncats@hq.dhs.gov")
+        self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
-        bytes = open(pdf, 'rb').read()
+        bytes = open(pdf, "rb").read()
 
         # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
-            if part.get_content_type() == 'application/pdf':
+            if part.get_content_type() == "application/pdf":
                 self.assertEqual(part.get_payload(decode=True), bytes)
-                self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
-            elif part.get_content_type() == 'text/plain':
-                text_body = '''Greetings CLARKE,
+                self.assertEqual(part.get_filename(), "pdf-sample.pdf")
+            elif part.get_content_type() == "text/plain":
+                text_body = """Greetings CLARKE,
 
 Attached is your latest HTTPS Report.
 
@@ -61,10 +62,10 @@ ncats@hq.dhs.gov
 * Fixed: A flaw in the report logic would sometimes cause the "Results" section of the PDF to inaccurately represent raw pshtt scores. This error would also represent domains that were "HSTS Preload Ready" or "HSTS Preload Pending" as preloaded (a checkmark).
 * Added: The report will now represent domains with "bad chain" errors (but not hostname or expired certificate errors) that otherwise satisfy M-15-13 as compliant. This is in line with M-15-13 not requiring the use of a particular certificate authority
 --------------------
-'''
+"""
                 self.assertEqual(part.get_payload(), text_body)
-            elif part.get_content_type() == 'text/html':
-                html_body = '''<html>
+            elif part.get_content_type() == "text/html":
+                html_body = """<html>
 <head></head>
 <body>
 <div style=""font-size:14.5"">
@@ -96,33 +97,35 @@ U.S. Department of Homeland Security <br/>
 <p>--------------------</p>
 </body>
 </html>
-'''
+"""
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_four_params_multiple_recipients(self):
-        to = ['recipient@example.com', 'recipient2@example.com']
-        pdf = './tests/data/pdf-sample.pdf'
-        agency_acronym = 'CLARKE'
-        report_date = 'December 15, 2001'
+        to = ["recipient@example.com", "recipient2@example.com"]
+        pdf = "./tests/data/pdf-sample.pdf"
+        agency_acronym = "CLARKE"
+        report_date = "December 15, 2001"
 
         message = HttpsMessage(to, pdf, agency_acronym, report_date)
 
-        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
-        self.assertEqual(message['Subject'], 'CLARKE - HTTPS Report - December 15, 2001 Results')
-        self.assertEqual(message['CC'], 'ncats@hq.dhs.gov')
-        self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
+        self.assertEqual(message["From"], "reports@cyber.dhs.gov")
+        self.assertEqual(
+            message["Subject"], "CLARKE - HTTPS Report - December 15, 2001 Results"
+        )
+        self.assertEqual(message["CC"], "ncats@hq.dhs.gov")
+        self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment
-        bytes = open(pdf, 'rb').read()
+        bytes = open(pdf, "rb").read()
 
         # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
-            if part.get_content_type() == 'application/pdf':
+            if part.get_content_type() == "application/pdf":
                 self.assertEqual(part.get_payload(decode=True), bytes)
-                self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
-            elif part.get_content_type() == 'text/plain':
-                body = '''Greetings CLARKE,
+                self.assertEqual(part.get_filename(), "pdf-sample.pdf")
+            elif part.get_content_type() == "text/plain":
+                body = """Greetings CLARKE,
 
 Attached is your latest HTTPS Report.
 
@@ -155,10 +158,10 @@ ncats@hq.dhs.gov
 * Fixed: A flaw in the report logic would sometimes cause the "Results" section of the PDF to inaccurately represent raw pshtt scores. This error would also represent domains that were "HSTS Preload Ready" or "HSTS Preload Pending" as preloaded (a checkmark).
 * Added: The report will now represent domains with "bad chain" errors (but not hostname or expired certificate errors) that otherwise satisfy M-15-13 as compliant. This is in line with M-15-13 not requiring the use of a particular certificate authority
 --------------------
-'''
+"""
                 self.assertEqual(part.get_payload(), body)
-            elif part.get_content_type() == 'text/html':
-                html_body = '''<html>
+            elif part.get_content_type() == "text/html":
+                html_body = """<html>
 <head></head>
 <body>
 <div style=""font-size:14.5"">
@@ -190,35 +193,39 @@ U.S. Department of Homeland Security <br/>
 <p>--------------------</p>
 </body>
 </html>
-'''
+"""
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_six_params_single_cc(self):
-        to = ['recipient@example.com', 'recipient2@example.com']
-        pdf = './tests/data/pdf-sample.pdf'
-        fm = 'sender@example.com'
-        cc = ['cc@example.com']
-        agency_acronym = 'CLARKE'
-        report_date = 'December 15, 2001'
+        to = ["recipient@example.com", "recipient2@example.com"]
+        pdf = "./tests/data/pdf-sample.pdf"
+        fm = "sender@example.com"
+        cc = ["cc@example.com"]
+        agency_acronym = "CLARKE"
+        report_date = "December 15, 2001"
 
-        message = HttpsMessage(to, pdf, agency_acronym, report_date, from_addr=fm, cc_addrs=cc)
+        message = HttpsMessage(
+            to, pdf, agency_acronym, report_date, from_addr=fm, cc_addrs=cc
+        )
 
-        self.assertEqual(message['From'], fm)
-        self.assertEqual(message['Subject'], 'CLARKE - HTTPS Report - December 15, 2001 Results')
-        self.assertEqual(message['CC'], 'cc@example.com')
-        self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
+        self.assertEqual(message["From"], fm)
+        self.assertEqual(
+            message["Subject"], "CLARKE - HTTPS Report - December 15, 2001 Results"
+        )
+        self.assertEqual(message["CC"], "cc@example.com")
+        self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment
-        bytes = open(pdf, 'rb').read()
+        bytes = open(pdf, "rb").read()
 
         # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
-            if part.get_content_type() == 'application/pdf':
+            if part.get_content_type() == "application/pdf":
                 self.assertEqual(part.get_payload(decode=True), bytes)
-                self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
-            elif part.get_content_type() == 'text/plain':
-                body = '''Greetings CLARKE,
+                self.assertEqual(part.get_filename(), "pdf-sample.pdf")
+            elif part.get_content_type() == "text/plain":
+                body = """Greetings CLARKE,
 
 Attached is your latest HTTPS Report.
 
@@ -251,10 +258,10 @@ ncats@hq.dhs.gov
 * Fixed: A flaw in the report logic would sometimes cause the "Results" section of the PDF to inaccurately represent raw pshtt scores. This error would also represent domains that were "HSTS Preload Ready" or "HSTS Preload Pending" as preloaded (a checkmark).
 * Added: The report will now represent domains with "bad chain" errors (but not hostname or expired certificate errors) that otherwise satisfy M-15-13 as compliant. This is in line with M-15-13 not requiring the use of a particular certificate authority
 --------------------
-'''
+"""
                 self.assertEqual(part.get_payload(), body)
-            elif part.get_content_type() == 'text/html':
-                html_body = '''<html>
+            elif part.get_content_type() == "text/html":
+                html_body = """<html>
 <head></head>
 <body>
 <div style=""font-size:14.5"">
@@ -286,35 +293,39 @@ U.S. Department of Homeland Security <br/>
 <p>--------------------</p>
 </body>
 </html>
-'''
+"""
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_six_params_multiple_cc(self):
-        to = ['recipient@example.com', 'recipient2@example.com']
-        pdf = './tests/data/pdf-sample.pdf'
-        fm = 'sender@example.com'
-        cc = ['cc@example.com', 'cc2@example.com']
-        agency_acronym = 'CLARKE'
-        report_date = 'December 15, 2001'
+        to = ["recipient@example.com", "recipient2@example.com"]
+        pdf = "./tests/data/pdf-sample.pdf"
+        fm = "sender@example.com"
+        cc = ["cc@example.com", "cc2@example.com"]
+        agency_acronym = "CLARKE"
+        report_date = "December 15, 2001"
 
-        message = HttpsMessage(to, pdf, agency_acronym, report_date, from_addr=fm, cc_addrs=cc)
+        message = HttpsMessage(
+            to, pdf, agency_acronym, report_date, from_addr=fm, cc_addrs=cc
+        )
 
-        self.assertEqual(message['From'], fm)
-        self.assertEqual(message['Subject'], 'CLARKE - HTTPS Report - December 15, 2001 Results')
-        self.assertEqual(message['CC'], 'cc@example.com,cc2@example.com')
-        self.assertEqual(message['To'], 'recipient@example.com,recipient2@example.com')
+        self.assertEqual(message["From"], fm)
+        self.assertEqual(
+            message["Subject"], "CLARKE - HTTPS Report - December 15, 2001 Results"
+        )
+        self.assertEqual(message["CC"], "cc@example.com,cc2@example.com")
+        self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment
-        bytes = open(pdf, 'rb').read()
+        bytes = open(pdf, "rb").read()
 
         # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
-            if part.get_content_type() == 'application/pdf':
+            if part.get_content_type() == "application/pdf":
                 self.assertEqual(part.get_payload(decode=True), bytes)
-                self.assertEqual(part.get_filename(), 'pdf-sample.pdf')
-            elif part.get_content_type() == 'text/plain':
-                body = '''Greetings CLARKE,
+                self.assertEqual(part.get_filename(), "pdf-sample.pdf")
+            elif part.get_content_type() == "text/plain":
+                body = """Greetings CLARKE,
 
 Attached is your latest HTTPS Report.
 
@@ -347,10 +358,10 @@ ncats@hq.dhs.gov
 * Fixed: A flaw in the report logic would sometimes cause the "Results" section of the PDF to inaccurately represent raw pshtt scores. This error would also represent domains that were "HSTS Preload Ready" or "HSTS Preload Pending" as preloaded (a checkmark).
 * Added: The report will now represent domains with "bad chain" errors (but not hostname or expired certificate errors) that otherwise satisfy M-15-13 as compliant. This is in line with M-15-13 not requiring the use of a particular certificate authority
 --------------------
-'''
+"""
                 self.assertEqual(part.get_payload(), body)
-            elif part.get_content_type() == 'text/html':
-                html_body = '''<html>
+            elif part.get_content_type() == "text/html":
+                html_body = """<html>
 <head></head>
 <body>
 <div style=""font-size:14.5"">
@@ -382,9 +393,9 @@ U.S. Department of Homeland Security <br/>
 <p>--------------------</p>
 </body>
 </html>
-'''
+"""
                 self.assertEqual(part.get_payload(), html_body)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

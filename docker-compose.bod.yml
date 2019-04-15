@@ -1,17 +1,24 @@
+---
 version: '3.7'
 
 services:
   mailer:
     volumes:
       - type: bind
-        source: /var/cyhy/orchestrator/output/archive/latest/reporting/trustymail_reports
+        source: >-
+          /var/cyhy/orchestrator/output/archive/latest/reporting/
+          trustymail_reports
         target: /trustymail_reports
       - type: bind
-        source: /var/cyhy/orchestrator/output/archive/latest/reporting/pshtt_reports
+        source: >-
+          /var/cyhy/orchestrator/output/archive/latest/reporting/
+          pshtt_reports
         target: /pshtt_reports
     command:
-      - "report"
-      - "--tmail-report-dir=/trustymail_reports/"
-      - "--https-report-dir=/pshtt_reports/"
-      - "--db-creds-file=/run/secrets/database_creds.yml"
-      - "--summary-to=ncats@hq.dhs.gov,jeremy.frasier@trio.dhs.gov,ncats-dev@beta.dhs.gov"
+      - report
+      - '--tmail-report-dir=/trustymail_reports/'
+      - '--https-report-dir=/pshtt_reports/'
+      - '--db-creds-file=/run/secrets/database_creds.yml'
+      - >-
+        --summary-to=ncats@hq.dhs.gov,jeremy.frasier@trio.dhs.gov,
+        ncats-dev@beta.dhs.gov

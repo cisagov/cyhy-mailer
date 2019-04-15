@@ -29,11 +29,11 @@ class CybexMessage(ReportMessage):
 
     """
 
-    DefaultTo = ['ncats@hq.dhs.gov']
+    DefaultTo = ["ncats@hq.dhs.gov"]
 
-    Subject = 'Cyber Exposure Scorecard - {{report_date}} Results'
+    Subject = "Cyber Exposure Scorecard - {{report_date}} Results"
 
-    TextBody = '''Greetings,
+    TextBody = """Greetings,
 
 The Cyber Exposure scorecard from {{report_date}} is attached for your review.
 
@@ -48,9 +48,9 @@ U.S. Department of Homeland Security
 ncats@hq.dhs.gov
 
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
-'''
+"""
 
-    HtmlBody = '''<html>
+    HtmlBody = """<html>
 <head></head>
 <body>
 <p>Greetings,</p>
@@ -71,9 +71,20 @@ U.S. Department of Homeland Security<br>
 <p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
 </body>
 </html>
-'''
+"""
 
-    def __init__(self, pdf_filename, critical_open_csv_filename, critical_closed_csv_filename, high_open_csv_filename, high_closed_csv_filename, report_date, to_addrs=DefaultTo, from_addr=Message.DefaultFrom, cc_addrs=None):
+    def __init__(
+        self,
+        pdf_filename,
+        critical_open_csv_filename,
+        critical_closed_csv_filename,
+        high_open_csv_filename,
+        high_closed_csv_filename,
+        report_date,
+        to_addrs=DefaultTo,
+        from_addr=Message.DefaultFrom,
+        cc_addrs=None,
+    ):
         """Construct an instance.
 
         Parameters
@@ -114,16 +125,23 @@ U.S. Department of Homeland Security<br>
             address to which this message should be sent.
         """
         # This is the data mustache will use to render the templates
-        mustache_data = {
-            'report_date': report_date
-        }
+        mustache_data = {"report_date": report_date}
 
         # Render the templates
         subject = pystache.render(CybexMessage.Subject, mustache_data)
         text_body = pystache.render(CybexMessage.TextBody, mustache_data)
         html_body = pystache.render(CybexMessage.HtmlBody, mustache_data)
 
-        ReportMessage.__init__(self, to_addrs, subject, text_body, html_body, pdf_filename, from_addr, cc_addrs)
+        ReportMessage.__init__(
+            self,
+            to_addrs,
+            subject,
+            text_body,
+            html_body,
+            pdf_filename,
+            from_addr,
+            cc_addrs,
+        )
 
         self.attach_csv(critical_open_csv_filename)
         self.attach_csv(critical_closed_csv_filename)

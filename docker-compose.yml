@@ -1,3 +1,4 @@
+---
 version: '3.7'
 
 secrets:
@@ -8,7 +9,7 @@ secrets:
 
 services:
   mailer:
-    image: 'dhsncats/cyhy-mailer:1.1.5'
+    image: 'dhsncats/cyhy-mailer:1.2.0'
     secrets:
       - source: database_creds
         target: database_creds.yml

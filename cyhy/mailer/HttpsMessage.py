@@ -23,9 +23,9 @@ class HttpsMessage(ReportMessage):
         message body.
     """
 
-    Subject = '{{acronym}} - HTTPS Report - {{report_date}} Results'
+    Subject = "{{acronym}} - HTTPS Report - {{report_date}} Results"
 
-    TextBody = '''Greetings {{acronym}},
+    TextBody = """Greetings {{acronym}},
 
 Attached is your latest HTTPS Report.
 
@@ -58,9 +58,9 @@ ncats@hq.dhs.gov
 * Fixed: A flaw in the report logic would sometimes cause the "Results" section of the PDF to inaccurately represent raw pshtt scores. This error would also represent domains that were "HSTS Preload Ready" or "HSTS Preload Pending" as preloaded (a checkmark).
 * Added: The report will now represent domains with "bad chain" errors (but not hostname or expired certificate errors) that otherwise satisfy M-15-13 as compliant. This is in line with M-15-13 not requiring the use of a particular certificate authority
 --------------------
-'''
+"""
 
-    HtmlBody = '''<html>
+    HtmlBody = """<html>
 <head></head>
 <body>
 <div style=""font-size:14.5"">
@@ -92,9 +92,17 @@ U.S. Department of Homeland Security <br/>
 <p>--------------------</p>
 </body>
 </html>
-'''
+"""
 
-    def __init__(self, to_addrs, pdf_filename, agency_acronym, report_date, from_addr=Message.DefaultFrom, cc_addrs=Message.DefaultCc):
+    def __init__(
+        self,
+        to_addrs,
+        pdf_filename,
+        agency_acronym,
+        report_date,
+        from_addr=Message.DefaultFrom,
+        cc_addrs=Message.DefaultCc,
+    ):
         """Construct an instance.
 
         Parameters
@@ -124,14 +132,20 @@ U.S. Department of Homeland Security <br/>
             address to which this message should be sent.
         """
         # This is the data mustache will use to render the templates
-        mustache_data = {
-            'acronym': agency_acronym,
-            'report_date': report_date
-        }
+        mustache_data = {"acronym": agency_acronym, "report_date": report_date}
 
         # Render the templates
         subject = pystache.render(HttpsMessage.Subject, mustache_data)
         text_body = pystache.render(HttpsMessage.TextBody, mustache_data)
         html_body = pystache.render(HttpsMessage.HtmlBody, mustache_data)
 
-        ReportMessage.__init__(self, to_addrs, subject, text_body, html_body, pdf_filename, from_addr, cc_addrs)
+        ReportMessage.__init__(
+            self,
+            to_addrs,
+            subject,
+            text_body,
+            html_body,
+            pdf_filename,
+            from_addr,
+            cc_addrs,
+        )

@@ -24,9 +24,9 @@ class StatsMessage(Message):
         message body.
     """
 
-    Subject = 'cyhy-mailer summary from {{date}}'
+    Subject = "cyhy-mailer summary from {{date}}"
 
-    TextBody = '''Greetings!
+    TextBody = """Greetings!
 
 Here is the cyhy-mailer summary from the run ending at {{date}}:
 {{#strings}}
@@ -41,9 +41,9 @@ The NCATS Development Team
 National Cybersecurity Assessments and Technical Services (NCATS)
 Cybersecurity and Infrastructure Security Agency
 ncats-dev@beta.dhs.gov
-'''
+"""
 
-    HtmlBody = '''<html>
+    HtmlBody = """<html>
 <head></head>
 <body>
 <div style="font-size:14.5">
@@ -73,7 +73,7 @@ Cybersecurity and Infrastructure Security Agency<br>
 </div>
 </body>
 </html>
-'''
+"""
 
     def __init__(self, to_addrs, list_of_strings):
         """Construct an instance.
@@ -95,8 +95,8 @@ Cybersecurity and Infrastructure Security Agency<br>
         now = now.replace(microsecond=0)
         # This is the data mustache will use to render the templates
         mustache_data = {
-            'date': now.isoformat(),
-            'strings': [{'string': s} for s in list_of_strings]
+            "date": now.isoformat(),
+            "strings": [{"string": s} for s in list_of_strings],
         }
 
         # Render the templates
