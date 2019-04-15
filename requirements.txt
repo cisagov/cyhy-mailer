@@ -1,4 +1,1 @@
-boto3 >= 1.9
-docopt >= 0.6.2
-https://api.github.com/repos/cisagov/mongo-db-from-config/tarball/develop
-pystache>=0.5.4
+-e .

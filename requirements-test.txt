@@ -1,6 +1,1 @@
--r requirements.txt
-coveralls
-pre-commit
-pytest
-pytest-cov
-semver
+-e .[test]
