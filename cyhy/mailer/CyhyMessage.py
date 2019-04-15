@@ -23,9 +23,9 @@ class CyhyMessage(ReportMessage):
         message body.
     """
 
-    Subject = '{{acronym}} - Cyber Hygiene Report - {{report_date}} Results'
+    Subject = "{{acronym}} - Cyber Hygiene Report - {{report_date}} Results"
 
-    TextBody = '''Greetings {{acronym}},
+    TextBody = """Greetings {{acronym}},
 
 The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
 
@@ -40,9 +40,9 @@ U.S. Department of Homeland Security
 ncats@hq.dhs.gov
 
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
-'''
+"""
 
-    HtmlBody = '''<html>
+    HtmlBody = """<html>
 <head></head>
 <body>
 <p>Greetings {{acronym}},</p>
@@ -62,9 +62,17 @@ U.S. Department of Homeland Security<br>
 <p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
 </body>
 </html>
-'''
+"""
 
-    def __init__(self, to_addrs, pdf_filename, agency_acronym, report_date, from_addr=Message.DefaultFrom, cc_addrs=Message.DefaultCc):
+    def __init__(
+        self,
+        to_addrs,
+        pdf_filename,
+        agency_acronym,
+        report_date,
+        from_addr=Message.DefaultFrom,
+        cc_addrs=Message.DefaultCc,
+    ):
         """Construct an instance.
 
         Parameters
@@ -93,14 +101,20 @@ U.S. Department of Homeland Security<br>
             address to which this message should be sent.
         """
         # This is the data mustache will use to render the templates
-        mustache_data = {
-            'acronym': agency_acronym,
-            'report_date': report_date
-        }
+        mustache_data = {"acronym": agency_acronym, "report_date": report_date}
 
         # Render the templates
         subject = pystache.render(CyhyMessage.Subject, mustache_data)
         text_body = pystache.render(CyhyMessage.TextBody, mustache_data)
         html_body = pystache.render(CyhyMessage.HtmlBody, mustache_data)
 
-        ReportMessage.__init__(self, to_addrs, subject, text_body, html_body, pdf_filename, from_addr, cc_addrs)
+        ReportMessage.__init__(
+            self,
+            to_addrs,
+            subject,
+            text_body,
+            html_body,
+            pdf_filename,
+            from_addr,
+            cc_addrs,
+        )

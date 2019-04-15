@@ -5,23 +5,22 @@ from cyhy.mailer.StatsMessage import StatsMessage
 
 
 class Test(unittest.TestCase):
-
     def test_single_string(self):
-        to = ['recipient@example.com']
-        strings = ['First string']
+        to = ["recipient@example.com"]
+        strings = ["First string"]
         date = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
 
         message = StatsMessage(to, strings)
 
-        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
-        self.assertEqual(message['Subject'], 'cyhy-mailer summary from {}'.format(date))
-        self.assertEqual(message['To'], 'recipient@example.com')
+        self.assertEqual(message["From"], "reports@cyber.dhs.gov")
+        self.assertEqual(message["Subject"], "cyhy-mailer summary from {}".format(date))
+        self.assertEqual(message["To"], "recipient@example.com")
 
         # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
-            if part.get_content_type() == 'text/plain':
-                text_body = '''Greetings!
+            if part.get_content_type() == "text/plain":
+                text_body = """Greetings!
 
 Here is the cyhy-mailer summary from the run ending at {}:
 * First string
@@ -34,10 +33,12 @@ The NCATS Development Team
 National Cybersecurity Assessments and Technical Services (NCATS)
 Cybersecurity and Infrastructure Security Agency
 ncats-dev@beta.dhs.gov
-'''.format(date)
+""".format(
+                    date
+                )
                 self.assertEqual(part.get_payload(), text_body)
-            elif part.get_content_type() == 'text/html':
-                html_body = '''<html>
+            elif part.get_content_type() == "text/html":
+                html_body = """<html>
 <head></head>
 <body>
 <div style="font-size:14.5">
@@ -65,25 +66,27 @@ Cybersecurity and Infrastructure Security Agency<br>
 </div>
 </body>
 </html>
-'''.format(date)
+""".format(
+                    date
+                )
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_multiple_strings(self):
-        to = ['recipient@example.com']
-        strings = ['First string', 'Second string']
+        to = ["recipient@example.com"]
+        strings = ["First string", "Second string"]
         date = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
 
         message = StatsMessage(to, strings)
 
-        self.assertEqual(message['From'], 'reports@cyber.dhs.gov')
-        self.assertEqual(message['Subject'], 'cyhy-mailer summary from {}'.format(date))
-        self.assertEqual(message['To'], 'recipient@example.com')
+        self.assertEqual(message["From"], "reports@cyber.dhs.gov")
+        self.assertEqual(message["Subject"], "cyhy-mailer summary from {}".format(date))
+        self.assertEqual(message["To"], "recipient@example.com")
 
         # Make sure the correct body and PDF attachments were added
         for part in message.walk():
             # multipart/* are just containers
-            if part.get_content_type() == 'text/plain':
-                text_body = '''Greetings!
+            if part.get_content_type() == "text/plain":
+                text_body = """Greetings!
 
 Here is the cyhy-mailer summary from the run ending at {}:
 * First string
@@ -97,10 +100,12 @@ The NCATS Development Team
 National Cybersecurity Assessments and Technical Services (NCATS)
 Cybersecurity and Infrastructure Security Agency
 ncats-dev@beta.dhs.gov
-'''.format(date)
+""".format(
+                    date
+                )
                 self.assertEqual(part.get_payload(), text_body)
-            elif part.get_content_type() == 'text/html':
-                html_body = '''<html>
+            elif part.get_content_type() == "text/html":
+                html_body = """<html>
 <head></head>
 <body>
 <div style="font-size:14.5">
@@ -129,9 +134,11 @@ Cybersecurity and Infrastructure Security Agency<br>
 </div>
 </body>
 </html>
-'''.format(date)
+""".format(
+                    date
+                )
                 self.assertEqual(part.get_payload(), html_body)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

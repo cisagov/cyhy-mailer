@@ -24,13 +24,22 @@ class Message(MIMEMultipart):
         directed.
     """
 
-    DefaultFrom = 'reports@cyber.dhs.gov'
+    DefaultFrom = "reports@cyber.dhs.gov"
 
-    DefaultCc = ['ncats@hq.dhs.gov']
+    DefaultCc = ["ncats@hq.dhs.gov"]
 
-    DefaultReplyTo = 'ncats@hq.dhs.gov'
+    DefaultReplyTo = "ncats@hq.dhs.gov"
 
-    def __init__(self, to_addrs, subject=None, text_body=None, html_body=None, from_addr=DefaultFrom, cc_addrs=DefaultCc, reply_to_addr=DefaultReplyTo):
+    def __init__(
+        self,
+        to_addrs,
+        subject=None,
+        text_body=None,
+        html_body=None,
+        from_addr=DefaultFrom,
+        cc_addrs=DefaultCc,
+        reply_to_addr=DefaultReplyTo,
+    ):
         """Construct an instance.
 
         Parameters
@@ -58,25 +67,25 @@ class Message(MIMEMultipart):
         reply_to_addr : str
             The email address to which replies should be sent.
         """
-        MIMEMultipart.__init__(self, 'mixed')
+        MIMEMultipart.__init__(self, "mixed")
 
-        self['From'] = from_addr
-        logging.debug('Message to be sent from: %s', self['From'])
+        self["From"] = from_addr
+        logging.debug("Message to be sent from: %s", self["From"])
 
-        self['To'] = ','.join(to_addrs)
-        logging.debug('Message to be sent to: %s', self['To'])
+        self["To"] = ",".join(to_addrs)
+        logging.debug("Message to be sent to: %s", self["To"])
 
         if cc_addrs:
-            self['CC'] = ','.join(cc_addrs)
-            logging.debug('Message to be sent as CC to: %s', self['CC'])
+            self["CC"] = ",".join(cc_addrs)
+            logging.debug("Message to be sent as CC to: %s", self["CC"])
 
         if reply_to_addr:
-            self['Reply-To'] = reply_to_addr
-            logging.debug('Replies to be sent to: %s', self['Reply-To'])
+            self["Reply-To"] = reply_to_addr
+            logging.debug("Replies to be sent to: %s", self["Reply-To"])
 
         if subject:
-            self['Subject'] = subject
-            logging.debug('Message subject: %s', subject)
+            self["Subject"] = subject
+            logging.debug("Message subject: %s", subject)
 
         if html_body or text_body:
             self.attach_text_and_html_bodies(html_body, text_body)
@@ -95,20 +104,20 @@ class Message(MIMEMultipart):
         text : str
             The plain text to attach.
         """
-        textBody = MIMEMultipart('alternative')
+        textBody = MIMEMultipart("alternative")
 
         # The order is important here.  This order makes the HTML version the
         # default version that is displayed, as long as the client supports it.
         if text:
-            textBody.attach(MIMEText(text, 'plain'))
-            logging.debug('Message plain-text body: %s', text)
+            textBody.attach(MIMEText(text, "plain"))
+            logging.debug("Message plain-text body: %s", text)
 
         if html:
-            htmlPart = MIMEText(html, 'html')
+            htmlPart = MIMEText(html, "html")
             # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
-            htmlPart.add_header('Content-Disposition', 'inline')
+            htmlPart.add_header("Content-Disposition", "inline")
             textBody.attach(htmlPart)
-            logging.debug('Message HTML body: %s', html)
+            logging.debug("Message HTML body: %s", html)
 
         self.attach(textBody)
 
@@ -120,15 +129,15 @@ class Message(MIMEMultipart):
         pdf_filename : str
             The filename of the PDF file to attach.
         """
-        with open(pdf_filename, 'rb') as attachment:
-            part = MIMEApplication(attachment.read(), 'pdf')
+        with open(pdf_filename, "rb") as attachment:
+            part = MIMEApplication(attachment.read(), "pdf")
 
         encoders.encode_base64(part)
         # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
         _, filename = os.path.split(pdf_filename)
-        part.add_header('Content-Disposition', 'attachment', filename=filename)
+        part.add_header("Content-Disposition", "attachment", filename=filename)
         self.attach(part)
-        logging.debug('Message PDF attachment: %s', pdf_filename)
+        logging.debug("Message PDF attachment: %s", pdf_filename)
 
     def attach_csv(self, csv_filename):
         """Attach a CSV file to this message.
@@ -138,11 +147,11 @@ class Message(MIMEMultipart):
         csv_filename : str
             The filename of the CSV file to attach.
         """
-        with open(csv_filename, 'r') as attachment:
-            part = MIMEText(attachment.read(), 'csv')
+        with open(csv_filename, "r") as attachment:
+            part = MIMEText(attachment.read(), "csv")
 
         # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
         _, filename = os.path.split(csv_filename)
-        part.add_header('Content-Disposition', 'attachment', filename=filename)
+        part.add_header("Content-Disposition", "attachment", filename=filename)
         self.attach(part)
-        logging.debug('Message CSV attachment: %s', csv_filename)
+        logging.debug("Message CSV attachment: %s", csv_filename)
