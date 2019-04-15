@@ -11,8 +11,10 @@ services:
         source: /var/cyhy/reports/output/scorecards/latest
         target: /cybex_scorecard
     command:
-      - "report"
-      - "--cyhy-report-dir=/cyhy_reports/"
-      - "--cybex-scorecard-dir=/cybex_scorecard/"
-      - "--db-creds-file=/run/secrets/database_creds.yml"
-      - "--summary-to=ncats@hq.dhs.gov,jeremy.frasier@trio.dhs.gov,ncats-dev@beta.dhs.gov"
+      - report
+      - '--cyhy-report-dir=/cyhy_reports/'
+      - '--cybex-scorecard-dir=/cybex_scorecard/'
+      - '--db-creds-file=/run/secrets/database_creds.yml'
+      - >-
+        --summary-to=ncats@hq.dhs.gov,jeremy.frasier@trio.dhs.gov,
+        ncats-dev@beta.dhs.gov
