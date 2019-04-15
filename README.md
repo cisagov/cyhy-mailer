@@ -1,4 +1,4 @@
-# cyhy-mailer :postal_horn: :mailbox: #
+# cyhy-mailer #
 
 [![Build Status](https://travis-ci.com/cisagov/cyhy-mailer.svg?branch=develop)](https://travis-ci.com/cisagov/cyhy-mailer)
 [![Coverage Status](https://coveralls.io/repos/github/cisagov/cyhy-mailer/badge.svg?branch=develop)](https://coveralls.io/github/cisagov/cyhy-mailer?branch=develop)
@@ -11,12 +11,14 @@ e-mail addresses.
 
 After using `git` to clone the repository, you can install
 `cyhy-mailer` using `pip`:
+
 ```bash
 pip install /path/to/cyhy-mailer
 ```
 
 Or, if you prefer, you can install directly from
 [the GitHub repository](https://github.com/cisagov/cyhy-mailer):
+
 ```bash
 pip install git+https://github.com/cisagov/cyhy-mailer.git
 ```
@@ -24,10 +26,16 @@ pip install git+https://github.com/cisagov/cyhy-mailer.git
 ## Usage ##
 
 ```bash
-
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME] [--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT] [--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME] [--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY]
+[--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY]
+[--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT]
+[--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME]
+[--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME
+[--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT]
+[--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME]
+[--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
