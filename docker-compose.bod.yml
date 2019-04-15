@@ -1,13 +1,18 @@
+---
 version: '3.7'
 
 services:
   mailer:
     volumes:
       - type: bind
-        source: /var/cyhy/orchestrator/output/archive/latest/reporting/trustymail_reports
+        source: >-
+          /var/cyhy/orchestrator/output/archive/latest/reporting/
+          trustymail_reports
         target: /trustymail_reports
       - type: bind
-        source: /var/cyhy/orchestrator/output/archive/latest/reporting/pshtt_reports
+        source: >-
+          /var/cyhy/orchestrator/output/archive/latest/reporting/
+          pshtt_reports
         target: /pshtt_reports
     command:
       - "report"
