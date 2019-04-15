@@ -3,5 +3,4 @@ coveralls
 pre-commit
 pytest
 pytest-cov
-tox
-wheel
+semver
