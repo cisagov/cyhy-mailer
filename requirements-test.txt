@@ -1,5 +1,7 @@
 -r requirements.txt
+coveralls
 pre-commit
 pytest
+pytest-cov
 tox
 wheel
