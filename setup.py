@@ -55,7 +55,7 @@ setup(
         "test": ["coveralls", "pre-commit", "pytest", "pytest-cov", "semver"]
     },
     dependency_links=[
-        "http://github.com/cisagov/mongo-db-from-config/tarball/develop#egg=package-1.0"
+        "http://github.com/cisagov/mongo-db-from-config/tarball/develop#egg=mongo-db-from-config"
     ],
     entry_points={"console_scripts": ["cyhy-mailer = cyhy.mailer.cli:main"]},
 )
