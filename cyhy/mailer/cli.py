@@ -439,7 +439,7 @@ def do_report(db, batch_size, ses_client, cyhy_report_dir, tmail_report_dir, htt
                                                                  message,
                                                                  agencies_emailed_cyhy_reports)
                 except (UnableToSendError, ClientError):
-                    logging.error('Unable to send Cyber Hygiene report for agency with ID {id}',
+                    logging.error(f'Unable to send Cyber Hygiene report for agency with ID {id}',
                                   exc_info=True, stack_info=True)
 
         ###
