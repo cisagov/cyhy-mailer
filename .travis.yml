@@ -20,7 +20,7 @@ dq1Dx/Z3/E4MWDoO6JMM8iJ5m9jRx0T7BZs6GiKMUf69d49a00PdgvmMdN/6FjKXZYw973\
 D+1mrCjMCNuC23WkOI7MWZ4gyMhWMncFUvIwqUk4JFhyOLjKGEcBni+zCred2S3SJip4="
 
 install:
-  - pip install --upgrade -r requirements-text.txt
+  - pip install --upgrade -r requirements-test.txt
 
 script:
   - pre-commit run --all-files
