@@ -63,9 +63,8 @@ setup(
     install_requires=[
         'boto3>=1.9.74',
         'docopt>=0.6.2',
-        'pymongo>=3.6.1',
+        'https://api.github.com/repos/cisagov/mongo-db-from-config/tarball/develop',
         'pystache>=0.5.4',
-        'pyyaml>=3.12'
     ],
 
     extras_require={
