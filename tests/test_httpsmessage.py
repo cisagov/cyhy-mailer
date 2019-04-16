@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
 
 Attached is your latest HTTPS Report.
 
-This report is intended to assist your agency in complying with OMB M-15-13 and DHS Binding Operational Directive 18-01. (In December, the body of this report will be updated to reflect the web-centric requirements of the BOD beyond just HTTPS/HSTS.)
+This report is intended to assist your agency in complying with OMB M-15-13 and CISA Binding Operational Directive 18-01.
 
 This report includes all second-level .gov domains your agency owns and many known subdomains. Subdomains are gleaned from Cyber Hygiene scans, the General Services Administration's Digital Analytics Program, Censys.io, and data from the End of Term Web Archive. The data in this report comes from a scan that took place on December 15, 2001.
 
@@ -45,8 +45,7 @@ Cheers,
 The NCATS Team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
 ----changelog----
@@ -71,15 +70,14 @@ ncats@hq.dhs.gov
 <div style=""font-size:14.5"">
 <p>Greetings CLARKE,</p>
 <p>Attached is your latest HTTPS Report.</p>
-<p>This report is intended to assist your agency in complying with OMB <a href="https://https.cio.gov">M-15-13</a> and DHS <a href="https://cyber.dhs.gov">Binding Operational Directive 18-01</a>. (In December, the body of this report will be updated to reflect the web-centric requirements of the BOD beyond just HTTPS/HSTS.)</p>
+<p>This report is intended to assist your agency in complying with OMB <a href="https://https.cio.gov">M-15-13</a> and CISA <a href="https://cyber.dhs.gov/bod/18-01/">Binding Operational Directive 18-01</a>.</p>
 <p>This report includes all second-level .gov domains your agency owns and many known subdomains. Subdomains are gleaned from Cyber Hygiene scans, the General Services Administration's <a href="https://analytics.usa.gov/">Digital Analytics Program</a>, <a href=https://censys.io>Censys.io</a>, and data from the <a href="http://eotarchive.cdlib.org/">End of Term Web Archive</a>. The data in this report comes from a <b>scan that took place on December 15, 2001.</b></p>
 <p>The embedded CSV, pshtt-results.csv, contains the raw scores for compliance. <i>For domains where &ldquo;Live&rdquo; == &ldquo;True&rdquo;</i>, when &ldquo;Domain Supports HTTPS&rdquo;, &ldquo;Domain Enforces HTTPS&rdquo;, and &ldquo;Domain Uses Strong HSTS&rdquo; are all &ldquo;True&rdquo;, OR where &ldquo;HSTS Base Domain Preloaded&rdquo; is &ldquo;True&rdquo;, that domain is M-15-13 compliant. Domains where &ldquo;Live&rdquo; == &ldquo;False&rdquo; are not web-responsive and do not fall under M-15-13's scope.</p>
 <p>We welcome your feedback and questions.</p>
 Cheers,<br>
 The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
-National Cybersecurity and Communications Integration Center<br/>
-U.S. Department of Homeland Security <br/>
+Cybersecurity and Infrastructure Security Agency (CISA)<br />
 <a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a>
 </p>
 </div>
@@ -129,7 +127,7 @@ U.S. Department of Homeland Security <br/>
 
 Attached is your latest HTTPS Report.
 
-This report is intended to assist your agency in complying with OMB M-15-13 and DHS Binding Operational Directive 18-01. (In December, the body of this report will be updated to reflect the web-centric requirements of the BOD beyond just HTTPS/HSTS.)
+This report is intended to assist your agency in complying with OMB M-15-13 and CISA Binding Operational Directive 18-01.
 
 This report includes all second-level .gov domains your agency owns and many known subdomains. Subdomains are gleaned from Cyber Hygiene scans, the General Services Administration's Digital Analytics Program, Censys.io, and data from the End of Term Web Archive. The data in this report comes from a scan that took place on December 15, 2001.
 
@@ -141,8 +139,7 @@ Cheers,
 The NCATS Team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
 ----changelog----
@@ -167,15 +164,14 @@ ncats@hq.dhs.gov
 <div style=""font-size:14.5"">
 <p>Greetings CLARKE,</p>
 <p>Attached is your latest HTTPS Report.</p>
-<p>This report is intended to assist your agency in complying with OMB <a href="https://https.cio.gov">M-15-13</a> and DHS <a href="https://cyber.dhs.gov">Binding Operational Directive 18-01</a>. (In December, the body of this report will be updated to reflect the web-centric requirements of the BOD beyond just HTTPS/HSTS.)</p>
+<p>This report is intended to assist your agency in complying with OMB <a href="https://https.cio.gov">M-15-13</a> and CISA <a href="https://cyber.dhs.gov/bod/18-01/">Binding Operational Directive 18-01</a>.</p>
 <p>This report includes all second-level .gov domains your agency owns and many known subdomains. Subdomains are gleaned from Cyber Hygiene scans, the General Services Administration's <a href="https://analytics.usa.gov/">Digital Analytics Program</a>, <a href=https://censys.io>Censys.io</a>, and data from the <a href="http://eotarchive.cdlib.org/">End of Term Web Archive</a>. The data in this report comes from a <b>scan that took place on December 15, 2001.</b></p>
 <p>The embedded CSV, pshtt-results.csv, contains the raw scores for compliance. <i>For domains where &ldquo;Live&rdquo; == &ldquo;True&rdquo;</i>, when &ldquo;Domain Supports HTTPS&rdquo;, &ldquo;Domain Enforces HTTPS&rdquo;, and &ldquo;Domain Uses Strong HSTS&rdquo; are all &ldquo;True&rdquo;, OR where &ldquo;HSTS Base Domain Preloaded&rdquo; is &ldquo;True&rdquo;, that domain is M-15-13 compliant. Domains where &ldquo;Live&rdquo; == &ldquo;False&rdquo; are not web-responsive and do not fall under M-15-13's scope.</p>
 <p>We welcome your feedback and questions.</p>
 Cheers,<br>
 The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
-National Cybersecurity and Communications Integration Center<br/>
-U.S. Department of Homeland Security <br/>
+Cybersecurity and Infrastructure Security Agency (CISA)<br />
 <a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a>
 </p>
 </div>
@@ -229,7 +225,7 @@ U.S. Department of Homeland Security <br/>
 
 Attached is your latest HTTPS Report.
 
-This report is intended to assist your agency in complying with OMB M-15-13 and DHS Binding Operational Directive 18-01. (In December, the body of this report will be updated to reflect the web-centric requirements of the BOD beyond just HTTPS/HSTS.)
+This report is intended to assist your agency in complying with OMB M-15-13 and CISA Binding Operational Directive 18-01.
 
 This report includes all second-level .gov domains your agency owns and many known subdomains. Subdomains are gleaned from Cyber Hygiene scans, the General Services Administration's Digital Analytics Program, Censys.io, and data from the End of Term Web Archive. The data in this report comes from a scan that took place on December 15, 2001.
 
@@ -241,8 +237,7 @@ Cheers,
 The NCATS Team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
 ----changelog----
@@ -267,15 +262,14 @@ ncats@hq.dhs.gov
 <div style=""font-size:14.5"">
 <p>Greetings CLARKE,</p>
 <p>Attached is your latest HTTPS Report.</p>
-<p>This report is intended to assist your agency in complying with OMB <a href="https://https.cio.gov">M-15-13</a> and DHS <a href="https://cyber.dhs.gov">Binding Operational Directive 18-01</a>. (In December, the body of this report will be updated to reflect the web-centric requirements of the BOD beyond just HTTPS/HSTS.)</p>
+<p>This report is intended to assist your agency in complying with OMB <a href="https://https.cio.gov">M-15-13</a> and CISA <a href="https://cyber.dhs.gov/bod/18-01/">Binding Operational Directive 18-01</a>.</p>
 <p>This report includes all second-level .gov domains your agency owns and many known subdomains. Subdomains are gleaned from Cyber Hygiene scans, the General Services Administration's <a href="https://analytics.usa.gov/">Digital Analytics Program</a>, <a href=https://censys.io>Censys.io</a>, and data from the <a href="http://eotarchive.cdlib.org/">End of Term Web Archive</a>. The data in this report comes from a <b>scan that took place on December 15, 2001.</b></p>
 <p>The embedded CSV, pshtt-results.csv, contains the raw scores for compliance. <i>For domains where &ldquo;Live&rdquo; == &ldquo;True&rdquo;</i>, when &ldquo;Domain Supports HTTPS&rdquo;, &ldquo;Domain Enforces HTTPS&rdquo;, and &ldquo;Domain Uses Strong HSTS&rdquo; are all &ldquo;True&rdquo;, OR where &ldquo;HSTS Base Domain Preloaded&rdquo; is &ldquo;True&rdquo;, that domain is M-15-13 compliant. Domains where &ldquo;Live&rdquo; == &ldquo;False&rdquo; are not web-responsive and do not fall under M-15-13's scope.</p>
 <p>We welcome your feedback and questions.</p>
 Cheers,<br>
 The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
-National Cybersecurity and Communications Integration Center<br/>
-U.S. Department of Homeland Security <br/>
+Cybersecurity and Infrastructure Security Agency (CISA)<br />
 <a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a>
 </p>
 </div>
@@ -329,7 +323,7 @@ U.S. Department of Homeland Security <br/>
 
 Attached is your latest HTTPS Report.
 
-This report is intended to assist your agency in complying with OMB M-15-13 and DHS Binding Operational Directive 18-01. (In December, the body of this report will be updated to reflect the web-centric requirements of the BOD beyond just HTTPS/HSTS.)
+This report is intended to assist your agency in complying with OMB M-15-13 and CISA Binding Operational Directive 18-01.
 
 This report includes all second-level .gov domains your agency owns and many known subdomains. Subdomains are gleaned from Cyber Hygiene scans, the General Services Administration's Digital Analytics Program, Censys.io, and data from the End of Term Web Archive. The data in this report comes from a scan that took place on December 15, 2001.
 
@@ -341,8 +335,7 @@ Cheers,
 The NCATS Team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
 ----changelog----
@@ -367,15 +360,14 @@ ncats@hq.dhs.gov
 <div style=""font-size:14.5"">
 <p>Greetings CLARKE,</p>
 <p>Attached is your latest HTTPS Report.</p>
-<p>This report is intended to assist your agency in complying with OMB <a href="https://https.cio.gov">M-15-13</a> and DHS <a href="https://cyber.dhs.gov">Binding Operational Directive 18-01</a>. (In December, the body of this report will be updated to reflect the web-centric requirements of the BOD beyond just HTTPS/HSTS.)</p>
+<p>This report is intended to assist your agency in complying with OMB <a href="https://https.cio.gov">M-15-13</a> and CISA <a href="https://cyber.dhs.gov/bod/18-01/">Binding Operational Directive 18-01</a>.</p>
 <p>This report includes all second-level .gov domains your agency owns and many known subdomains. Subdomains are gleaned from Cyber Hygiene scans, the General Services Administration's <a href="https://analytics.usa.gov/">Digital Analytics Program</a>, <a href=https://censys.io>Censys.io</a>, and data from the <a href="http://eotarchive.cdlib.org/">End of Term Web Archive</a>. The data in this report comes from a <b>scan that took place on December 15, 2001.</b></p>
 <p>The embedded CSV, pshtt-results.csv, contains the raw scores for compliance. <i>For domains where &ldquo;Live&rdquo; == &ldquo;True&rdquo;</i>, when &ldquo;Domain Supports HTTPS&rdquo;, &ldquo;Domain Enforces HTTPS&rdquo;, and &ldquo;Domain Uses Strong HSTS&rdquo; are all &ldquo;True&rdquo;, OR where &ldquo;HSTS Base Domain Preloaded&rdquo; is &ldquo;True&rdquo;, that domain is M-15-13 compliant. Domains where &ldquo;Live&rdquo; == &ldquo;False&rdquo; are not web-responsive and do not fall under M-15-13's scope.</p>
 <p>We welcome your feedback and questions.</p>
 Cheers,<br>
 The NCATS Team<br><br />
 National Cybersecurity Assessments and Technical Services (NCATS)<br />
-National Cybersecurity and Communications Integration Center<br/>
-U.S. Department of Homeland Security <br/>
+Cybersecurity and Infrastructure Security Agency (CISA)<br />
 <a href=""mailto:ncats@hq.dhs.gov""> ncats@hq.dhs.gov </a>
 </p>
 </div>

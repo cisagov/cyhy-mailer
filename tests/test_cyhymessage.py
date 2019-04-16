@@ -40,11 +40,10 @@ Cheers,
 The NCATS team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
-WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.
 """
                 self.assertEqual(part.get_payload(), text_body)
             elif part.get_content_type() == "text/html":
@@ -61,11 +60,10 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 The NCATS team</p>
 
 <p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
-National Cybersecurity and Communications Integration Center<br>
-U.S. Department of Homeland Security<br>
+Cybersecurity and Infrastructure Security Agency (CISA)<br>
 <a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
 
-<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.</p>
 </body>
 </html>
 """
@@ -107,11 +105,10 @@ Cheers,
 The NCATS team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
-WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.
 """
                 self.assertEqual(part.get_payload(), body)
             elif part.get_content_type() == "text/html":
@@ -128,11 +125,10 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 The NCATS team</p>
 
 <p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
-National Cybersecurity and Communications Integration Center<br>
-U.S. Department of Homeland Security<br>
+Cybersecurity and Infrastructure Security Agency (CISA)<br>
 <a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
 
-<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.</p>
 </body>
 </html>
 """
@@ -178,11 +174,10 @@ Cheers,
 The NCATS team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
-WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.
 """
                 self.assertEqual(part.get_payload(), body)
             elif part.get_content_type() == "text/html":
@@ -199,11 +194,10 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 The NCATS team</p>
 
 <p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
-National Cybersecurity and Communications Integration Center<br>
-U.S. Department of Homeland Security<br>
+Cybersecurity and Infrastructure Security Agency (CISA)<br>
 <a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
 
-<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.</p>
 </body>
 </html>
 """
@@ -249,11 +243,10 @@ Cheers,
 The NCATS team
 
 National Cybersecurity Assessments and Technical Services (NCATS)
-National Cybersecurity and Communications Integration Center
-U.S. Department of Homeland Security
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
-WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.
+WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.
 """
                 self.assertEqual(part.get_payload(), body)
             elif part.get_content_type() == "text/html":
@@ -270,11 +263,10 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 The NCATS team</p>
 
 <p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
-National Cybersecurity and Communications Integration Center<br>
-U.S. Department of Homeland Security<br>
+Cybersecurity and Infrastructure Security Agency (CISA)<br>
 <a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
 
-<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized DHS official.</p>
+<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.</p>
 </body>
 </html>
 """
