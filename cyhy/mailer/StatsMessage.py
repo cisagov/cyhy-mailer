@@ -1,3 +1,5 @@
+"""This module contains the StatsMessage class."""
+
 import datetime
 
 import pystache
@@ -6,8 +8,7 @@ from cyhy.mailer.Message import Message
 
 
 class StatsMessage(Message):
-    """A class representing an email message containing summary statistics
-    for a cyhy-mailer run.
+    """An email message containing summary statistics for a run.
 
     Static attributes
     -----------------
@@ -22,6 +23,7 @@ class StatsMessage(Message):
     HtmlBody : str
         The mustache template to use when constructing the HTML
         message body.
+
     """
 
     Subject = "cyhy-mailer summary from {{date}}"
@@ -87,6 +89,7 @@ Cybersecurity and Infrastructure Security Agency<br>
         list_of_strings : array of str
             An array of string objects, each of which is a statement
             about the cyhy-mailer run.
+
         """
         # Grab the current date
         now = datetime.datetime.utcnow()

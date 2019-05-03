@@ -1,8 +1,7 @@
 """
-setup module for cyhy-mailer
+This is the setup module for cyhy-mailer.
 
 Based on:
-
 - https://packaging.python.org/distributing/
 - https://github.com/pypa/sampleproject/blob/master/setup.py
 """
@@ -12,6 +11,7 @@ from cyhy.mailer import __version__
 
 
 def readme():
+    """Read in and return the contents of the project's README.md file."""
     with open("README.md") as f:
         return f.read()
 

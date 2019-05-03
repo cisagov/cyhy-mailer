@@ -1,3 +1,5 @@
+"""This module contains the Message class."""
+
 from email import encoders
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
@@ -7,7 +9,7 @@ import os.path
 
 
 class Message(MIMEMultipart):
-    """A class representing an email message sent from the NCATS inbox.
+    """An email message sent from the NCATS inbox.
 
     Static attributes
     -----------------
@@ -22,6 +24,7 @@ class Message(MIMEMultipart):
     DefaultReplyTo : str
         The default value for the address to which replies should be
         directed.
+
     """
 
     DefaultFrom = "reports@cyber.dhs.gov"
@@ -66,6 +69,7 @@ class Message(MIMEMultipart):
 
         reply_to_addr : str
             The email address to which replies should be sent.
+
         """
         MIMEMultipart.__init__(self, "mixed")
 
@@ -91,10 +95,11 @@ class Message(MIMEMultipart):
             self.attach_text_and_html_bodies(html_body, text_body)
 
     def attach_text_and_html_bodies(self, html, text):
-        """Attach a plain text body and/or an HTML text body to this
-        message.  The HTML body will be the default version that is
-        displayed.  The text body will be displayed only if the client
-        does not support HTML.
+        """Attach a plain text body and/or an HTML text body to this message.
+
+        The HTML body will be the default version that is displayed.
+        The text body will be displayed only if the client does not
+        support HTML.
 
         Parameters
         ----------
@@ -103,6 +108,7 @@ class Message(MIMEMultipart):
 
         text : str
             The plain text to attach.
+
         """
         textBody = MIMEMultipart("alternative")
 
@@ -128,6 +134,7 @@ class Message(MIMEMultipart):
         ----------
         pdf_filename : str
             The filename of the PDF file to attach.
+
         """
         with open(pdf_filename, "rb") as attachment:
             part = MIMEApplication(attachment.read(), "pdf")
@@ -146,6 +153,7 @@ class Message(MIMEMultipart):
         ----------
         csv_filename : str
             The filename of the CSV file to attach.
+
         """
         with open(csv_filename, "r") as attachment:
             part = MIMEText(attachment.read(), "csv")

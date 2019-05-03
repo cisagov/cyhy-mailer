@@ -1,3 +1,5 @@
+"""This module contains the HttpsMessage class."""
+
 import pystache
 
 from cyhy.mailer.Message import Message
@@ -5,8 +7,7 @@ from cyhy.mailer.ReportMessage import ReportMessage
 
 
 class HttpsMessage(ReportMessage):
-    """A class representing an email message with an HTTPS report
-    PDF attachment.
+    """An email message with an HTTPS report PDF attachment.
 
     Static attributes
     -----------------
@@ -21,6 +22,7 @@ class HttpsMessage(ReportMessage):
     HtmlBody : str
         The mustache template to use when constructing the HTML
         message body.
+
     """
 
     Subject = "{{acronym}} - HTTPS Report - {{report_date}} Results"
@@ -128,6 +130,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br />
         cc_addrs : array of str
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
+
         """
         # This is the data mustache will use to render the templates
         mustache_data = {"acronym": agency_acronym, "report_date": report_date}
