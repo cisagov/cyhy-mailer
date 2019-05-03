@@ -1,10 +1,15 @@
+"""This module contains the tests for the ReportMessage class."""
+
 import unittest
 
 from cyhy.mailer.ReportMessage import ReportMessage
 
 
 class Test(unittest.TestCase):
+    """The tests for the ReportMessage class."""
+
     def test_five_params(self):
+        """Test the 5-parameter version of the constructor."""
         to = ["recipient@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         subject = "The subject"
@@ -33,6 +38,7 @@ class Test(unittest.TestCase):
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_seven_params(self):
+        """Test the 7-parameter version of the constructor."""
         to = ["recipient@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         subject = "The subject"

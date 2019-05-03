@@ -1,10 +1,15 @@
+"""This module contains the tests for the Message class."""
+
 import unittest
 
 from cyhy.mailer.Message import Message
 
 
 class Test(unittest.TestCase):
+    """The tests for the Message class."""
+
     def test_one_param_single_recipient(self):
+        """Test the 1-parameter version of the constructor."""
         to = ["recipient@example.com"]
 
         message = Message(to)
@@ -14,6 +19,7 @@ class Test(unittest.TestCase):
         self.assertEqual(message["To"], "recipient@example.com")
 
     def test_one_param_multiple_recipients(self):
+        """Test the 1-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
 
         message = Message(to)
@@ -23,6 +29,7 @@ class Test(unittest.TestCase):
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
     def test_six_params_single_cc(self):
+        """Test the 6-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         fm = "sender@example.com"
         cc = ["cc@example.com"]
@@ -46,6 +53,7 @@ class Test(unittest.TestCase):
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_six_params_multiple_cc(self):
+        """Test the 6-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         fm = "sender@example.com"
         cc = ["cc@example.com", "cc2@example.com"]

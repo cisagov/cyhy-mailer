@@ -1,10 +1,15 @@
+"""This module contains the tests for the TmailMessage class."""
+
 import unittest
 
 from cyhy.mailer.TmailMessage import TmailMessage
 
 
 class Test(unittest.TestCase):
+    """The tests for the TmailMessage class."""
+
     def test_four_params_single_recipient(self):
+        """Test the 4-parameter version of the constructor."""
         to = ["recipient@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         agency_acronym = "CLARKE"
@@ -98,6 +103,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br />
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_four_params_multiple_recipients(self):
+        """Test the 4-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         agency_acronym = "CLARKE"
@@ -191,6 +197,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br />
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_six_params_single_cc(self):
+        """Test the 6-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         fm = "sender@example.com"
@@ -288,6 +295,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br />
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_six_params_multiple_cc(self):
+        """Test the 6-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         fm = "sender@example.com"
