@@ -1,3 +1,5 @@
+"""This module contains the CybexMessage class."""
+
 import pystache
 
 from cyhy.mailer.Message import Message
@@ -5,9 +7,7 @@ from cyhy.mailer.ReportMessage import ReportMessage
 
 
 class CybexMessage(ReportMessage):
-    """A class representing an email message with a Cyber Exposure
-    scorecard PDF attachment and a CSV attachment containing Cyber
-    Exposure data.
+    """An email message with the Cyber Exposure scorecard attachments.
 
     Static attributes
     -----------------
@@ -121,6 +121,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         cc_addrs : array of str
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
+
         """
         # This is the data mustache will use to render the templates
         mustache_data = {"report_date": report_date}

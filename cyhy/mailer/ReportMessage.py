@@ -1,9 +1,10 @@
+"""This module contains the ReportMessage class."""
+
 from cyhy.mailer.Message import Message
 
 
 class ReportMessage(Message):
-    """A class representing an email message with a report PDF attachment.
-    """
+    """An email message with a report PDF attachment."""
 
     def __init__(
         self,
@@ -42,6 +43,7 @@ class ReportMessage(Message):
         cc_addrs : array of str
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
+
         """
         Message.__init__(
             self, to_addrs, subject, text_body, html_body, from_addr, cc_addrs

@@ -1,10 +1,15 @@
+"""This module contains the tests for the CybexMessage class."""
+
 import unittest
 
 from cyhy.mailer.CybexMessage import CybexMessage
 
 
 class Test(unittest.TestCase):
-    def test_three_params(self):
+    """The tests for the CybexMessage class."""
+
+    def test_six_params(self):
+        """Test the 6-parameter version of the constructor."""
         pdf = "./tests/data/pdf-sample.pdf"
         csv = "./tests/data/csv-sample.csv"
         report_date = "December 15, 2001"
@@ -72,7 +77,8 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
                 self.assertEqual(part.get_payload(), csv_text)
                 self.assertEqual(part.get_filename(), "csv-sample.csv")
 
-    def test_six_params(self):
+    def test_nine_params(self):
+        """Test the 9-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         csv = "./tests/data/csv-sample.csv"

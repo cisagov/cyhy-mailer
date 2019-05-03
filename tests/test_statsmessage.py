@@ -1,3 +1,5 @@
+"""This module contains the tests for the StatsMessage class."""
+
 import datetime
 import unittest
 
@@ -5,7 +7,10 @@ from cyhy.mailer.StatsMessage import StatsMessage
 
 
 class Test(unittest.TestCase):
+    """The tests for the StatsMessage class."""
+
     def test_single_string(self):
+        """Test the constructor with a single string."""
         to = ["recipient@example.com"]
         strings = ["First string"]
         date = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
@@ -72,6 +77,7 @@ Cybersecurity and Infrastructure Security Agency<br>
                 self.assertEqual(part.get_payload(), html_body)
 
     def test_multiple_strings(self):
+        """Test the constructor with multiple strings."""
         to = ["recipient@example.com"]
         strings = ["First string", "Second string"]
         date = datetime.datetime.utcnow().replace(microsecond=0).isoformat()

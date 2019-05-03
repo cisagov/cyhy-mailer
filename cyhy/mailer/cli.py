@@ -75,13 +75,15 @@ from cyhy.mailer.TmailMessage import TmailMessage
 
 
 class Error(Exception):
-    """A base class for exceptions used in this module"""
+    """A base class for exceptions used in this module."""
 
     pass
 
 
 def get_emails_from_request(request):
-    """Given the request document, return the proper email address or
+    """Return the agency's correspondence email address(es).
+
+    Given the request document, return the proper email address or
     addresses to use for corresponding with the agency.
 
     Parameters
@@ -94,6 +96,7 @@ def get_emails_from_request(request):
     -------
     list of str: A list containing the proper email addresses to use
     for corresponding with the agency
+
     """
     id = request["_id"]
     # Drop any contacts that do not have both a type and a non-empty email
@@ -132,8 +135,7 @@ def get_emails_from_request(request):
 
 
 def get_all_descendants(db, parent):
-    """Return all (non-retired) descendents of the given Cyber Hygiene
-    parent
+    """Return all (non-retired) descendents of the Cyber Hygiene parent.
 
     Parameters
     ----------
@@ -147,6 +149,7 @@ def get_all_descendants(db, parent):
     Returns
     -------
     list of str: The descendents of the Cyber Hygiene parent.
+
     """
     current_request = db.requests.find_one({"_id": parent})
     if not current_request:
@@ -163,8 +166,7 @@ def get_all_descendants(db, parent):
 
 
 def get_cyhy_requests(db, batch_size):
-    """Return a cursor that can be used to iterate over the Cyber Hygiene
-    agencies.
+    """Return a cursor for iterating over the Cyber Hygiene agencies.
 
     Parameters
     ----------
@@ -191,6 +193,7 @@ def get_cyhy_requests(db, batch_size):
     pymongo.errors.InvalidOperation: If the cursor has already been
     used.  The batch size cannot be set on a cursor that has already
     been used.
+
     """
     try:
         requests = db.requests.find(
@@ -215,8 +218,7 @@ def get_cyhy_requests(db, batch_size):
 
 
 def get_federal_cyhy_requests(db):
-    """Return a cursor that can be used to iterate over the Federal Cyber
-    Hygiene agencies.
+    """Return a cursor for iterating over the Federal CyHy agencies.
 
     Parameters
     ----------
@@ -261,8 +263,7 @@ def get_federal_cyhy_requests(db):
 
 
 class UnableToSendError(Exception):
-    """Raised when an error is encountered when attempting to send an
-email message
+    """Raise when an error is encountered when sending an email.
 
     Attributes
     ----------
@@ -272,6 +273,7 @@ email message
     """
 
     def __init__(self, response):
+        """Initialize."""
         self.response = response
 
 
@@ -302,6 +304,7 @@ def send_message(ses_client, message, counter=None):
 
     UnableToSendError: If the response from sending the message is
     anything other than 200.
+
     """
     # "Are you silly?  I'm still gonna send it!"
     #   -- Larry Enticer
@@ -329,8 +332,10 @@ def do_report(
     cybex_scorecard_dir,
     summary_to,
 ):
-    """Given the parameters, send out Cyber Hygiene, Trustworthy
-    Email, HTTPS reports, and a summary email out as appropriate.
+    """Send out emails as appropriate.
+
+    Given the parameters, send out Cyber Hygiene, Trustworthy Email,
+    HTTPS reports, and a summary email out as appropriate.
 
     Parameters
     ----------
@@ -366,6 +371,7 @@ def do_report(
         A comma-separated list of email addresses to which the
         summary statistics should be sent at the end of the run.  If
         None then no summary will be sent.
+
     """
     try:
         requests = get_cyhy_requests(db, batch_size)
@@ -769,8 +775,7 @@ def do_adhoc(
     text_body,
     summary_to,
 ):
-    """Given the parameters, send out an email to the appropriate
-    recipients.
+    """Send out an email to the appropriate recipients.
 
     Parameters
     ----------
@@ -815,6 +820,7 @@ def do_adhoc(
         A comma-separated list of email addresses to which the
         summary statistics should be sent at the end of the run.  If
         None then no summary will be sent.
+
     """
     with open(text_body, "r") as text_file:
         text = text_file.read()
@@ -887,6 +893,7 @@ def do_adhoc(
 
 
 def main():
+    """Send emails."""
     # Parse command line arguments
     args = docopt.docopt(__doc__, version=__version__)
 
