@@ -27,7 +27,7 @@ RUN mkdir ${MAILER_HOME} \
 RUN apk --no-cache del shadow
 
 # Prepare to Run
-WORKDIR MAILER_HOME
+WORKDIR ${MAILER_HOME}
 USER mailer:mailer
 ENTRYPOINT ["cyhy-mailer"]
 CMD ["--help"]
