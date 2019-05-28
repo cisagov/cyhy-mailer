@@ -2,6 +2,7 @@
 dist: xenial
 language: python
 python: 3.7
+# pre-commit hooks can use Docker, so we should go ahead and enable it
 services: docker
 
 env:
@@ -19,6 +20,12 @@ env:
       5pFDw1WqIIYCw7O93mc94AdG69fu9sAh50tLat0NYr16Q8+b+CQUmtTvsBogQZGO\
       TJgfqH32AFXcF2Rb0h/f+QDHrWZPhFqW2vzeMPRAL8JJ+a9mD+1mrCjMCNuC23Wk\
       OI7MWZ4gyMhWMncFUvIwqUk4JFhyOLjKGEcBni+zCred2S3SJip4="
+
+# Cache pip packages and pre-commit plugins to speed up builds
+cache:
+  pip: true
+  directories:
+    - $HOME/.cache/pre-commit
 
 install:
   - pip install --upgrade -r requirements-test.txt
