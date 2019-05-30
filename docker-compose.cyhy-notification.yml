@@ -1,0 +1,14 @@
+---
+version: '3.7'
+
+services:
+  mailer:
+    volumes:
+      - type: bind
+        source: /var/cyhy/notifications/output/archive/latest
+        target: /cyhy_notifications
+    command:
+      - report
+      - --cyhy-notification-dir=/cyhy_notifications/
+      - --db-creds-file=/run/secrets/database_creds.yml
+      - "--summary-to=ncats@hq.dhs.gov,ncats-dev@beta.dhs.gov"

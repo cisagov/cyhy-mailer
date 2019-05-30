@@ -3,53 +3,59 @@
 """cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
 
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
-  -h --help                    Show this message.
-  --cyhy-report-dir=DIRECTORY  The directory where the Cyber Hygiene
-                               PDF reports are located.  If not
-                               specified then no Cyber Hygiene reports
-                               will be sent.
-  --tmail-report-dir=DIRECTORY The directory where the trustymail PDF reports
-                               are located.  If not specified then no trustymail
-                               reports will be sent.
-  --https-report-dir=DIRECTORY The directory where the https-scan PDF reports
-                               are located.  If not specified then no https-scan
-                               reports will be sent.
-  --cybex-scorecard-dir=DIRECTORY The directory where the Cybex PDF
-                               scorecard is located.  If not specified
-                               then no Cybex scorecard will be sent.
-  -c --db-creds-file=FILENAME  A YAML file containing the Cyber
-                               Hygiene database credentials.
-                               [default: /run/secrets/database_creds.yml]
-  --batch-size=SIZE            The batch size to use when retrieving results
-                               from the Mongo database.  If not present then
-                               the default Mongo batch size will be used.
-  --summary-to=EMAILS          A comma-separated list of email addresses to
-                               which the summary statistics should be sent at
-                               the end of the run.  If not specified then no
-                               summary will be sent.
-  -d --debug                   A Boolean value indicating whether the output
-                               should include debugging messages or not.
-  --subject=SUBJECT            The subject line when sending an ad hoc
-                               email message.
-  --html-body=FILENAME         The file containing the HTML body text
-                               when sending an ad hoc email message.
-  --text-body=FILENAME         The file containing the text body text
-                               when sending an ad hoc email message.
-  --to=EMAILS                  A comma-separated list of additional
-                               email addresses to which the ad hoc
-                               message should be sent.
-  --cyhy                       If present, then the ad hoc message
-                               will be sent to all Cyber Hygiene
-                               agencies.
-  --cyhy-federal               If present, then the ad hoc message
-                               will be sent to all Federal Cyber
-                               Hygiene agencys.  (Note that --cyhy
-                               implies --cyhy-federal.)
+  -h --help                         Show this message.
+  --cyhy-report-dir=DIRECTORY       The directory where the Cyber Hygiene
+                                    PDF reports are located.  If not
+                                    specified then no Cyber Hygiene reports
+                                    will be sent.
+  --tmail-report-dir=DIRECTORY      The directory where the trustymail PDF
+                                    reports are located.  If not specified then
+                                    no trustymail reports will be sent.
+  --https-report-dir=DIRECTORY      The directory where the https-scan PDF
+                                    reports are located.  If not specified then
+                                    no https-scan reports will be sent.
+  --cybex-scorecard-dir=DIRECTORY   The directory where the Cybex PDF
+                                    scorecard is located.  If not specified
+                                    then no Cybex scorecard will be sent.
+  --cyhy-notification-dir=DIRECTORY The directory where the Cyber Hygiene
+                                    Notification PDF reports are located.  If
+                                    not specified then no Cyber Hygiene
+                                    notifications will be sent.
+  -c --db-creds-file=FILENAME       A YAML file containing the Cyber
+                                    Hygiene database credentials.
+                                    [default: /run/secrets/database_creds.yml]
+  --batch-size=SIZE                 The batch size to use when retrieving
+                                    results from the Mongo database.  If not
+                                    present then the default Mongo batch size
+                                    will be used.
+  --summary-to=EMAILS               A comma-separated list of email addresses
+                                    to which the summary statistics should be
+                                    sent at the end of the run.  If not
+                                    specified then no summary will be sent.
+  -d --debug                        A Boolean value indicating whether the
+                                    output should include debugging messages
+                                    or not.
+  --subject=SUBJECT                 The subject line when sending an ad hoc
+                                    email message.
+  --html-body=FILENAME              The file containing the HTML body text
+                                    when sending an ad hoc email message.
+  --text-body=FILENAME              The file containing the text body text
+                                    when sending an ad hoc email message.
+  --to=EMAILS                       A comma-separated list of additional
+                                    email addresses to which the ad hoc
+                                    message should be sent.
+  --cyhy                            If present, then the ad hoc message
+                                    will be sent to all Cyber Hygiene
+                                    agencies.
+  --cyhy-federal                    If present, then the ad hoc message
+                                    will be sent to all Federal Cyber
+                                    Hygiene agencys.  (Note that --cyhy
+                                    implies --cyhy-federal.)
 """
 
 import datetime
@@ -67,6 +73,7 @@ import yaml
 from cyhy.mailer import __version__
 from cyhy.mailer.CybexMessage import CybexMessage
 from cyhy.mailer.CyhyMessage import CyhyMessage
+from cyhy.mailer.CyhyNotificationMessage import CyhyNotificationMessage
 from cyhy.mailer.HttpsMessage import HttpsMessage
 from cyhy.mailer.Message import Message
 from cyhy.mailer.ReportMessage import ReportMessage
@@ -330,12 +337,14 @@ def do_report(
     tmail_report_dir,
     https_report_dir,
     cybex_scorecard_dir,
+    cyhy_notification_dir,
     summary_to,
 ):
     """Send out emails as appropriate.
 
     Given the parameters, send out Cyber Hygiene, Trustworthy Email,
-    HTTPS reports, and a summary email out as appropriate.
+    HTTPS reports/scorecards/notifications, and a summary email out
+    as appropriate.
 
     Parameters
     ----------
@@ -367,6 +376,10 @@ def do_report(
         The directory where the Cybex scorecard can be found.  If None
         then no Cybex scorecard will be sent.
 
+    cyhy_notification_dir : str
+        The directory where the Cyber Hygiene notifications can be found.
+        If None then no Cyber Hygiene notifications will be sent.
+
     summary_to : str
         A comma-separated list of email addresses to which the
         summary statistics should be sent at the end of the run.  If
@@ -392,6 +405,7 @@ def do_report(
     agencies_emailed_cyhy_reports = 0
     agencies_emailed_tmail_reports = 0
     agencies_emailed_https_reports = 0
+    agencies_emailed_cyhy_notifications = 0
     cybex_report_emailed = False
     for request in requests:
         id = request["_id"]
@@ -566,6 +580,57 @@ def do_report(
                         stack_info=True,
                     )
 
+        if cyhy_notification_dir:
+            # The '2' is necessary because in some cases we have both XYZ and
+            # XYZ-AB as stakeholders.  Without the '2' the glob would include
+            # both for the ID XYZ.
+            cyhy_notification_glob = (
+                f"{cyhy_notification_dir}/" f"cyhy-notification-{id}-2*.pdf"
+            )
+            cyhy_notification_filenames = sorted(glob.glob(cyhy_notification_glob))
+
+            # No more than one CyHy notification should match
+            # It is fine if there are zero matches; that means there are no
+            # notifications to be sent out for this stakeholder
+            if len(cyhy_notification_filenames) > 1:
+                logging.warn(
+                    f"More than one Cyber Hygiene notification found for agency with ID {id}"
+                )
+
+            if cyhy_notification_filenames:
+                # We take the last filename since, if there happens to be more
+                # than one, it should send the latest one.
+                # (This is because we sorted the glob results.)
+                cyhy_notification_attachment_filename = cyhy_notification_filenames[-1]
+
+                # Extract the date from the notification filename
+                match = re.search(
+                    r"-(?P<date>\d{4}-[01]\d-[0-3]\d)T",
+                    cyhy_notification_attachment_filename,
+                )
+                notification_date = datetime.datetime.strptime(
+                    match.group("date"), "%Y-%m-%d"
+                ).strftime("%B %d, %Y")
+
+                # Construct the CyHy notification message to send
+                message = CyhyNotificationMessage(
+                    to_emails,
+                    cyhy_notification_attachment_filename,
+                    acronym,
+                    notification_date,
+                )
+
+                try:
+                    agencies_emailed_cyhy_notifications = send_message(
+                        ses_client, message, agencies_emailed_cyhy_notifications
+                    )
+                except (UnableToSendError, ClientError):
+                    logging.error(
+                        f"Unable to send Cyber Hygiene notification for agency with ID {id}",
+                        exc_info=True,
+                        stack_info=True,
+                    )
+
     ###
     # Find and mail the Cybex report, if necessary
     #
@@ -720,6 +785,7 @@ def do_report(
     cyhy_stats_string = f"Out of {total_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / total_agencies:.2f}%) were emailed Cyber Hygiene reports."
     tmail_stats_string = f"Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / federal_agencies:.2f}%) were emailed Trustworthy Email reports."
     https_stats_string = f"Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / federal_agencies:.2f}%) were emailed HTTPS reports."
+    cyhy_notification_stats_string = f"Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_cyhy_notifications} ({100.0 * agencies_emailed_cyhy_notifications / federal_agencies:.2f}%) were emailed Cyber Hygiene notifications."
     if cybex_report_emailed:
         cybex_stats_string = "Cyber Exposure scorecard was emailed."
     else:
@@ -732,11 +798,13 @@ def do_report(
     logging.info(tmail_stats_string)
     logging.info(https_stats_string)
     logging.info(cybex_stats_string)
+    logging.info(cyhy_notification_stats_string)
     logging.info(sample_cyhy_stats_string)
     print(cyhy_stats_string)
     print(tmail_stats_string)
     print(https_stats_string)
     print(cybex_stats_string)
+    print(cyhy_notification_stats_string)
     print(sample_cyhy_stats_string)
 
     ###
@@ -750,6 +818,7 @@ def do_report(
                 tmail_stats_string,
                 https_stats_string,
                 cybex_stats_string,
+                cyhy_notification_stats_string,
                 sample_cyhy_stats_string,
             ],
         )
@@ -959,6 +1028,7 @@ def main():
             args["--tmail-report-dir"],
             args["--https-report-dir"],
             args["--cybex-scorecard-dir"],
+            args["--cyhy-notification-dir"],
             args["--summary-to"],
         )
     elif args["adhoc"]:

@@ -29,71 +29,62 @@ pip install git+https://github.com/cisagov/cyhy-mailer.git
 Usage:
   cyhy-mailer report [--cyhy-report-dir=DIRECTORY]
 [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY]
-[--cybex-scorecard-dir=DIRECTORY] [--mail-server=SERVER] [--mail-port=PORT]
-[--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME]
-[--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+[--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY]
+[--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME
-[--to=EMAILS] [--cyhy] [--cyhy-federal] [--mail-server=SERVER] [--mail-port=PORT]
-[--smtp-user=SMTP_USER] [--smtp-password=SMTP_PASS] [--db-creds-file=FILENAME]
-[--smtp-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+[--to=EMAILS] [--cyhy] [--cyhy-federal] [--db-creds-file=FILENAME]
+[--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
-  -h --help                    Show this message.
-  --cyhy-report-dir=DIRECTORY  The directory where the Cyber Hygiene
-                               PDF reports are located.  If not
-                               specified then no Cyber Hygiene reports
-                               will be sent.
-  --tmail-report-dir=DIRECTORY The directory where the trustymail PDF reports
-                               are located.  If not specified then no trustymail
-                               reports will be sent.
-  --https-report-dir=DIRECTORY The directory where the https-scan PDF reports
-                               are located.  If not specified then no https-scan
-                               reports will be sent.
-  --cybex-scorecard-dir=DIRECTORY The directory where the Cybex PDF
-                               scorecard is located.  If not specified
-                               then no Cybex scorecard will be sent.
-  -m --mail-server=SERVER      The hostname or IP address of the mail server
-                               that should send the messages.
-                               [default: email-smtp.us-east-1.amazonaws.com]
-  -p --mail-port=PORT          The port to use when connecting to the mail
-                               server that should send the messages.
-                               [default: 587]
-  -u --smtp-user=SMTP_USER     This is the username that is used to authenticate
-                               into the mail server
-  -x --smtp-password=SMTP_PASS This is the password that is used to authenticate
-                               into the mail server
-  -c --db-creds-file=FILENAME  A YAML file containing the Cyber
-                               Hygiene database credentials.
-                               [default: /run/secrets/database_creds.yml]
-  --smtp-creds-file=FILENAME   A YAML file containing the Cyber Hygiene SMTP
-                               credentials.
-                               [default: /run/secrets/smtp_creds.yml]
-  --batch-size=SIZE            The batch size to use when retrieving results
-                               from the Mongo database.  If not present then
-                               the default Mongo batch size will be used.
-  --summary-to=EMAILS          A comma-separated list of email addresses to
-                               which the summary statistics should be sent at
-                               the end of the run.  If not specified then no
-                               summary will be sent.
-  -d --debug                   A Boolean value indicating whether the output
-                               should include debugging messages or not.
-  --subject=SUBJECT            The subject line when sending an ad hoc
-                               email message.
-  --html-body=FILENAME         The file containing the HTML body text
-                               when sending an ad hoc email message.
-  --text-body=FILENAME         The file containing the text body text
-                               when sending an ad hoc email message.
-  --to=EMAILS                  A comma-separated list of additional
-                               email addresses to which the ad hoc
-                               message should be sent.
-  --cyhy                       If present, then the ad hoc message
-                               will be sent to all Cyber Hygiene
-                               agencies.
-  --cyhy-federal               If present, then the ad hoc message
-                               will be sent to all Federal Cyber
-                               Hygiene agencys.  (Note that --cyhy
-                               implies --cyhy-federal.)
+  -h --help                         Show this message.
+  --cyhy-report-dir=DIRECTORY       The directory where the Cyber Hygiene
+                                    PDF reports are located.  If not
+                                    specified then no Cyber Hygiene reports
+                                    will be sent.
+  --tmail-report-dir=DIRECTORY      The directory where the trustymail PDF
+                                    reports are located.  If not specified then
+                                    no trustymail reports will be sent.
+  --https-report-dir=DIRECTORY      The directory where the https-scan PDF
+                                    reports are located.  If not specified then
+                                    no https-scan reports will be sent.
+  --cybex-scorecard-dir=DIRECTORY   The directory where the Cybex PDF
+                                    scorecard is located.  If not specified
+                                    then no Cybex scorecard will be sent.
+  --cyhy-notification-dir=DIRECTORY The directory where the Cyber Hygiene
+                                    Notification PDF reports are located.  If
+                                    not specified then no Cyber Hygiene
+                                    notifications will be sent.
+  -c --db-creds-file=FILENAME       A YAML file containing the Cyber
+                                    Hygiene database credentials.
+                                    [default: /run/secrets/database_creds.yml]
+  --batch-size=SIZE                 The batch size to use when retrieving
+                                    results from the Mongo database.  If not
+                                    present then the default Mongo batch size
+                                    will be used.
+  --summary-to=EMAILS               A comma-separated list of email addresses
+                                    to which the summary statistics should be
+                                    sent at the end of the run.  If not
+                                    specified then no summary will be sent.
+  -d --debug                        A Boolean value indicating whether the
+                                    output should include debugging messages
+                                    or not.
+  --subject=SUBJECT                 The subject line when sending an ad hoc
+                                    email message.
+  --html-body=FILENAME              The file containing the HTML body text
+                                    when sending an ad hoc email message.
+  --text-body=FILENAME              The file containing the text body text
+                                    when sending an ad hoc email message.
+  --to=EMAILS                       A comma-separated list of additional
+                                    email addresses to which the ad hoc
+                                    message should be sent.
+  --cyhy                            If present, then the ad hoc message
+                                    will be sent to all Cyber Hygiene
+                                    agencies.
+  --cyhy-federal                    If present, then the ad hoc message
+                                    will be sent to all Federal Cyber
+                                    Hygiene agencys.  (Note that --cyhy
+                                    implies --cyhy-federal.)
 ```
 
 ## License ##
