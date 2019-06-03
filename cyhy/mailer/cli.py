@@ -811,25 +811,45 @@ def do_report(
     # Email the summary statistics, if necessary
     ###
     if summary_to:
-        message = StatsMessage(
-            summary_to.split(","),
-            [
+        if agencies_emailed_cyhy_reports == 0:
+            cyhy_stats_string = None
+        if agencies_emailed_tmail_reports == 0:
+            tmail_stats_string = None
+        if agencies_emailed_https_reports == 0:
+            https_stats_string = None
+        if not cybex_report_emailed:
+            cybex_stats_string = None
+        if agencies_emailed_cyhy_notifications == 0:
+            cyhy_notification_stats_string = None
+        if not sample_cyhy_report_emailed:
+            sample_cyhy_stats_string = None
+
+        all_stats_strings = [
+            s
+            for s in (
                 cyhy_stats_string,
                 tmail_stats_string,
                 https_stats_string,
                 cybex_stats_string,
                 cyhy_notification_stats_string,
                 sample_cyhy_stats_string,
-            ],
-        )
-        try:
-            send_message(ses_client, message)
-        except (UnableToSendError, ClientError):
-            logging.error(
-                "Unable to send cyhy-mailer report summary",
-                exc_info=True,
-                stack_info=True,
             )
+            if s is not None
+        ]
+
+        if all_stats_strings:
+            message = StatsMessage(summary_to.split(","), all_stats_strings)
+            try:
+                send_message(ses_client, message)
+            except (UnableToSendError, ClientError):
+                logging.error(
+                    "Unable to send cyhy-mailer report summary",
+                    exc_info=True,
+                    stack_info=True,
+                )
+        else:
+            logging.warn("Nothing was emailed.")
+            print("Nothing was emailed.")
 
 
 def do_adhoc(
