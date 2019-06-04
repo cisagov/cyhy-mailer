@@ -5,7 +5,7 @@ services:
   mailer:
     volumes:
       - type: bind
-        source: /var/cyhy/notifications/output/archive/latest
+        source: /var/cyhy/reports/output/notification_archive/latest
         target: /cyhy_notifications
     command:
       - report
