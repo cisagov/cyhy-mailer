@@ -172,14 +172,14 @@ def get_all_descendants(db, parent):
     return descendants
 
 
-def get_cyhy_requests(db, batch_size):
-    """Return a cursor for iterating over the Cyber Hygiene agencies.
+def get_cyhy_and_bod_requests(db, batch_size):
+    """Return a cursor for iterating over the Cyber Hygiene and BOD agencies.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene agency data can be
-        retrieved.
+        The Mongo database from which Cyber Hygiene and BOD agency
+        data can be retrieved.
 
     batch_size : int
         The batch size to use when retrieving results from the Mongo
@@ -188,7 +188,7 @@ def get_cyhy_requests(db, batch_size):
     Returns
     -------
     pymongo.cursor.Cursor: A cursor that can be used to iterate over
-    the Cyber Hygiene agencies.
+    the Cyber Hygiene and BOD agencies.
 
     Throws
     ------
@@ -204,7 +204,7 @@ def get_cyhy_requests(db, batch_size):
     """
     try:
         requests = db.requests.find(
-            {"retired": {"$ne": True}, "report_types": "CYHY"},
+            {"retired": {"$ne": True}, "report_types": {"$in", ["CYHY", "BOD"]}},
             {
                 "_id": True,
                 "agency.acronym": True,
@@ -224,19 +224,19 @@ def get_cyhy_requests(db, batch_size):
     return requests
 
 
-def get_federal_cyhy_requests(db):
-    """Return a cursor for iterating over the Federal CyHy agencies.
+def get_federal_cyhy_and_bod_requests(db):
+    """Return a cursor for iterating over the Federal CyHy and BOD agencies.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Federal Cyber Hygiene agency
-        data can be retrieved.
+        The Mongo database from which Federal Cyber Hygiene and BOD
+        agency data can be retrieved.
 
     Returns
     -------
     pymongo.cursor.Cursor: A cursor that can be used to iterate over
-    the Federal Cyber Hygiene agencies.
+    the Federal Cyber Hygiene and BOD agencies.
 
     Throws
     ------
@@ -249,7 +249,7 @@ def get_federal_cyhy_requests(db):
         requests = db.requests.find(
             {
                 "retired": {"$ne": True},
-                "report_types": "CYHY",
+                "report_types": {"$in": ["CYHY", "BOD"]},
                 "_id": {"$in": fed_orgs},
             },
             {
@@ -387,8 +387,8 @@ def do_report(
 
     """
     try:
-        requests = get_cyhy_requests(db, batch_size)
-        federal_requests = get_federal_cyhy_requests(db)
+        requests = get_cyhy_and_bod_requests(db, batch_size)
+        federal_requests = get_federal_cyhy_and_bod_requests(db)
     except TypeError:
         return 4
 
@@ -919,7 +919,7 @@ def do_adhoc(
     emails = []
     if cyhy:
         try:
-            requests = get_cyhy_requests(db, batch_size)
+            requests = get_cyhy_and_bod_requests(db, batch_size)
         except TypeError:
             return 4
 
@@ -932,7 +932,7 @@ def do_adhoc(
             emails.extend(to_emails)
     elif cyhy_federal:
         try:
-            requests = get_federal_cyhy_requests(db)
+            requests = get_federal_cyhy_and_bod_requests(db)
         except TypeError:
             return 4
 
