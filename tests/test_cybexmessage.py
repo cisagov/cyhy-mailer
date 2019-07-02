@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
             message["Subject"], "Cyber Exposure Scorecard - December 15, 2001 Results"
         )
         self.assertEqual(message["CC"], None)
-        self.assertEqual(message["To"], "ncats@hq.dhs.gov")
+        self.assertEqual(message["To"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
 
         # Grab the bytes that comprise the attachments
         pdf_bytes = open(pdf, "rb").read()

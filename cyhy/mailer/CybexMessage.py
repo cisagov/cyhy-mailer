@@ -29,7 +29,7 @@ class CybexMessage(ReportMessage):
 
     """
 
-    DefaultTo = ["ncats@hq.dhs.gov"]
+    DefaultTo = ["ncats@hq.dhs.gov", "cyhy_reports@hq.dhs.gov"]
 
     Subject = "Cyber Exposure Scorecard - {{report_date}} Results"
 
