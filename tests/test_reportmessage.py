@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(message["Subject"], subject)
-        self.assertEqual(message["CC"], "ncats@hq.dhs.gov")
+        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment

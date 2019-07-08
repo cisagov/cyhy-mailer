@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
         self.assertEqual(
             message["Subject"], "CLARKE - HTTPS Report - December 15, 2001 Results"
         )
-        self.assertEqual(message["CC"], "ncats@hq.dhs.gov")
+        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -116,7 +116,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br />
         self.assertEqual(
             message["Subject"], "CLARKE - HTTPS Report - December 15, 2001 Results"
         )
-        self.assertEqual(message["CC"], "ncats@hq.dhs.gov")
+        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment

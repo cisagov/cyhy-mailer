@@ -29,7 +29,7 @@ class CybexMessage(ReportMessage):
 
     """
 
-    DefaultTo = ["ncats@hq.dhs.gov", "cyhy_reports@hq.dhs.gov"]
+    DefaultTo = ["ncats@hq.dhs.gov"]
 
     Subject = "Cyber Exposure Scorecard - {{report_date}} Results"
 
@@ -81,7 +81,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         report_date,
         to_addrs=DefaultTo,
         from_addr=Message.DefaultFrom,
-        cc_addrs=None,
+        cc_addrs=Message.DefaultCc,
     ):
         """Construct an instance.
 

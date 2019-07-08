@@ -29,7 +29,7 @@ class Message(MIMEMultipart):
 
     DefaultFrom = "reports@cyber.dhs.gov"
 
-    DefaultCc = ["ncats@hq.dhs.gov"]
+    DefaultCc = ["ncats@hq.dhs.gov", "cyhy_reports@hq.dhs.gov"]
 
     DefaultReplyTo = "ncats@hq.dhs.gov"
 

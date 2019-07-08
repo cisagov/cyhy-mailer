@@ -17,5 +17,4 @@ services:
       - --tmail-report-dir=/trustymail_reports/
       - --https-report-dir=/pshtt_reports/
       - --db-creds-file=/run/secrets/database_creds.yml
-      - "--summary-to=ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov,
-      jeremy.frasier@trio.dhs.gov,ncats-dev@beta.dhs.gov"
+      - "--summary-to=ncats-dev@beta.dhs.gov"
