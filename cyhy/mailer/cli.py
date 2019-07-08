@@ -204,7 +204,7 @@ def get_cyhy_and_bod_requests(db, batch_size):
     """
     try:
         requests = db.requests.find(
-            {"retired": {"$ne": True}, "report_types": {"$in", ["CYHY", "BOD"]}},
+            {"retired": {"$ne": True}, "report_types": {"$in": ["CYHY", "BOD"]}},
             {
                 "_id": True,
                 "agency.acronym": True,
