@@ -11,5 +11,4 @@ services:
       - report
       - --cyhy-notification-dir=/cyhy_notifications/
       - --db-creds-file=/run/secrets/database_creds.yml
-      - "--summary-to=ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov,\
-      ncats-dev@beta.dhs.gov"
+      - "--summary-to=ncats-dev@beta.dhs.gov"

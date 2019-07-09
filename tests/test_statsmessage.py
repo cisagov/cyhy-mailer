@@ -19,6 +19,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(message["Subject"], "cyhy-mailer summary from {}".format(date))
+        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Make sure the correct body and PDF attachments were added
@@ -86,6 +87,7 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(message["Subject"], "cyhy-mailer summary from {}".format(date))
+        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Make sure the correct body and PDF attachments were added

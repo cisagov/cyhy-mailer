@@ -107,4 +107,4 @@ Cybersecurity and Infrastructure Security Agency<br>
         text_body = pystache.render(StatsMessage.TextBody, mustache_data)
         html_body = pystache.render(StatsMessage.HtmlBody, mustache_data)
 
-        Message.__init__(self, to_addrs, subject, text_body, html_body, cc_addrs=[])
+        Message.__init__(self, to_addrs, subject, text_body, html_body)
