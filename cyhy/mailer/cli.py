@@ -141,7 +141,7 @@ def get_all_descendants(db, parent):
 
     Returns
     -------
-    list of str: The descendents of the parent.
+    set(str): The descendents of the parent.
 
     Throws
     ------
@@ -160,7 +160,58 @@ def get_all_descendants(db, parent):
                 descendants.append(child)
                 descendants += get_all_descendants(db, child)
 
-    return descendants
+    return set(descendants)
+
+
+def get_requests_raw(db, query, batch_size=None):
+    """Return a cursor for iterating over agencies' request documents.
+
+    Parameters
+    ----------
+    db : MongoDatabase
+        The Mongo database from which agency data can be retrieved.
+
+    query : dict
+        The query to perform.
+
+    batch_size : int
+        The batch size to use when retrieving results from the Mongo
+        database.  If None then the default will be used.
+
+    Returns
+    -------
+    pymongo.cursor.Cursor: A cursor that can be used to iterate over
+    the request documents.
+
+    Throws
+    ------
+    pymongo.errors.TypeError: If unable to connect to the requested
+    server, or if batch_size is not an int or None.
+
+    pymongo.errors.InvalidOperation: If the cursor has already been
+    used.  The batch size cannot be set on a cursor that has already
+    been used.
+
+    """
+    projection = {
+        "_id": True,
+        "agency.acronym": True,
+        "agency.contacts.email": True,
+        "agency.contacts.type": True,
+    }
+
+    try:
+        requests = db.requests.find(query, projection)
+        if batch_size is not None:
+            requests.batch_size(batch_size)
+    except TypeError:
+        logging.critical(
+            "There was an error with the MongoDB query that retrieves the request documents",
+            exc_info=True,
+        )
+        raise
+
+    return requests
 
 
 def get_requests(db, report_types=None, federal_only=False, batch_size=None):
@@ -212,25 +263,7 @@ def get_requests(db, report_types=None, federal_only=False, batch_size=None):
     if report_types is not None:
         query["report_types"] = {"$in": report_types}
 
-    projection = {
-        "_id": True,
-        "agency.acronym": True,
-        "agency.contacts.email": True,
-        "agency.contacts.type": True,
-    }
-
-    try:
-        requests = db.requests.find(query, projection)
-        if batch_size is not None:
-            requests.batch_size(batch_size)
-    except TypeError:
-        logging.critical(
-            "There was an error with the MongoDB query that retrieves the request documents",
-            exc_info=True,
-        )
-        raise
-
-    return requests
+    return get_requests_raw(db, query, batch_size)
 
 
 class UnableToSendError(Exception):
