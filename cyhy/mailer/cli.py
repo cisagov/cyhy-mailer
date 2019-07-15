@@ -357,7 +357,29 @@ def send_bod_reports(db, batch_size, ses_client, tmail_report_dir, https_report_
 
     """
     try:
-        bod_requests = get_requests(db, report_type=["CYHY", "BOD"], federal_only=True)
+        fed_orgs = get_all_descendants(db, "FEDERAL")
+        # We want all non-retired request docs with either (1) a
+        # report type of BOD or (2) a report type of CYHY and
+        # corresponding to a federal stakeholder.  This is a
+        # complicated query, so we construct it manually.
+        query = {
+            "$and": [
+                {"retired": {"$ne": True}},
+                {
+                    "$or": [
+                        {"report_type": {"$in": ["BOD"]}},
+                        {
+                            "$and": [
+                                {"_id": {"$in": fed_orgs}},
+                                {"report_type": {"$in": ["CYHY"]}},
+                            ]
+                        },
+                    ]
+                },
+            ]
+        }
+        bod_requests = get_requests_raw(db, query, batch_size)
+
     except TypeError:
         return 4
 
