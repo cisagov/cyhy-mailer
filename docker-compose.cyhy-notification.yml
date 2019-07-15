@@ -8,7 +8,7 @@ services:
         source: /var/cyhy/reports/output/notification_archive/latest
         target: /cyhy_notifications
     command:
-      - report
+      - notification
       - --cyhy-notification-dir=/cyhy_notifications/
       - --db-creds-file=/run/secrets/database_creds.yml
       - "--summary-to=ncats-dev@beta.dhs.gov"

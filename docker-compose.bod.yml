@@ -13,7 +13,7 @@ services:
         pshtt_reports"
         target: /pshtt_reports
     command:
-      - report
+      - bod1801
       - --tmail-report-dir=/trustymail_reports/
       - --https-report-dir=/pshtt_reports/
       - --db-creds-file=/run/secrets/database_creds.yml
