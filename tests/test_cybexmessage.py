@@ -20,7 +20,8 @@ class Test(unittest.TestCase):
         self.assertEqual(
             message["Subject"], "Cyber Exposure Scorecard - December 15, 2001 Results"
         )
-        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message.get("CC"), None)
+        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "ncats@hq.dhs.gov")
 
         # Grab the bytes that comprise the attachments
@@ -84,10 +85,20 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         csv = "./tests/data/csv-sample.csv"
         fm = "sender@example.com"
         cc = ["cc@example.com", "cc2@example.com"]
+        bcc = ["bcc@example.com", "bcc2@example.com"]
         report_date = "December 15, 2001"
 
         message = CybexMessage(
-            pdf, csv, csv, csv, csv, report_date, to_addrs=to, from_addr=fm, cc_addrs=cc
+            pdf,
+            csv,
+            csv,
+            csv,
+            csv,
+            report_date,
+            to_addrs=to,
+            from_addr=fm,
+            cc_addrs=cc,
+            bcc_addrs=bcc,
         )
 
         self.assertEqual(message["From"], fm)
@@ -95,6 +106,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             message["Subject"], "Cyber Exposure Scorecard - December 15, 2001 Results"
         )
         self.assertEqual(message["CC"], "cc@example.com,cc2@example.com")
+        self.assertEqual(message["BCC"], "bcc@example.com,bcc2@example.com")
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachments
