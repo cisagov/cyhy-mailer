@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
-"""cyhy-mailer: A tool for mailing out Cyber Hygiene, trustymail, and https-scan reports.
+"""cyhy-mailer: A tool for mailing out reports.
+
+cyhy-mailer can send out Cyber Hygiene and BOD 18-01 reports, as well
+as Cyber Hygiene notifications and the Cyber Exposure scorecard.
 
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME [--to=EMAILS] [--cyhy] [--cyhy-federal] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -40,22 +42,7 @@ Options:
   -d --debug                        A Boolean value indicating whether the
                                     output should include debugging messages
                                     or not.
-  --subject=SUBJECT                 The subject line when sending an ad hoc
-                                    email message.
-  --html-body=FILENAME              The file containing the HTML body text
-                                    when sending an ad hoc email message.
-  --text-body=FILENAME              The file containing the text body text
-                                    when sending an ad hoc email message.
-  --to=EMAILS                       A comma-separated list of additional
-                                    email addresses to which the ad hoc
-                                    message should be sent.
-  --cyhy                            If present, then the ad hoc message
-                                    will be sent to all Cyber Hygiene
-                                    agencies.
-  --cyhy-federal                    If present, then the ad hoc message
-                                    will be sent to all Federal Cyber
-                                    Hygiene agencys.  (Note that --cyhy
-                                    implies --cyhy-federal.)
+
 """
 
 import datetime
@@ -75,7 +62,6 @@ from cyhy.mailer.CybexMessage import CybexMessage
 from cyhy.mailer.CyhyMessage import CyhyMessage
 from cyhy.mailer.CyhyNotificationMessage import CyhyNotificationMessage
 from cyhy.mailer.HttpsMessage import HttpsMessage
-from cyhy.mailer.Message import Message
 from cyhy.mailer.ReportMessage import ReportMessage
 from cyhy.mailer.StatsMessage import StatsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
@@ -142,20 +128,25 @@ def get_emails_from_request(request):
 
 
 def get_all_descendants(db, parent):
-    """Return all (non-retired) descendents of the Cyber Hygiene parent.
+    """Return all (non-retired) descendants of the parent.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene agency data can
-        be retrieved.
+        The Mongo database from which request document data can be
+        retrieved.
 
     parent : str
-        The Cyber Hygiene parent for which all descendents are desired.
+        The parent for which all descendants are desired.
 
     Returns
     -------
-    list of str: The descendents of the Cyber Hygiene parent.
+    set(str): The descendants of the parent.
+
+    Throws
+    ------
+    ValueError: If there is no request document corresponding to the
+    specified parent.
 
     """
     current_request = db.requests.find_one({"_id": parent})
@@ -169,17 +160,19 @@ def get_all_descendants(db, parent):
                 descendants.append(child)
                 descendants += get_all_descendants(db, child)
 
-    return descendants
+    return set(descendants)
 
 
-def get_cyhy_and_bod_requests(db, batch_size):
-    """Return a cursor for iterating over the Cyber Hygiene and BOD agencies.
+def get_requests_raw(db, query, batch_size=None):
+    """Return a cursor for iterating over agencies' request documents.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene and BOD agency
-        data can be retrieved.
+        The Mongo database from which agency data can be retrieved.
+
+    query : dict
+        The query to perform.
 
     batch_size : int
         The batch size to use when retrieving results from the Mongo
@@ -188,35 +181,32 @@ def get_cyhy_and_bod_requests(db, batch_size):
     Returns
     -------
     pymongo.cursor.Cursor: A cursor that can be used to iterate over
-    the Cyber Hygiene and BOD agencies.
+    the request documents.
 
     Throws
     ------
-    TypeError: If unable to connect to the requested server, or if
-    batch_size is not an int or None.
-
-    ValueError: If batch_size is negative.
+    pymongo.errors.TypeError: If unable to connect to the requested
+    server, or if batch_size is not an int or None.
 
     pymongo.errors.InvalidOperation: If the cursor has already been
     used.  The batch size cannot be set on a cursor that has already
     been used.
 
     """
+    projection = {
+        "_id": True,
+        "agency.acronym": True,
+        "agency.contacts.email": True,
+        "agency.contacts.type": True,
+    }
+
     try:
-        requests = db.requests.find(
-            {"retired": {"$ne": True}, "report_types": {"$in": ["CYHY", "BOD"]}},
-            {
-                "_id": True,
-                "agency.acronym": True,
-                "agency.contacts.email": True,
-                "agency.contacts.type": True,
-            },
-        )
+        requests = db.requests.find(query, projection)
         if batch_size is not None:
             requests.batch_size(batch_size)
-    except (TypeError, ValueError, pymongo.errors.InvalidOperation):
+    except TypeError:
         logging.critical(
-            "There was an error with the MongoDB query that retrieves the list of agencies",
+            "There was an error with the MongoDB query that retrieves the request documents",
             exc_info=True,
         )
         raise
@@ -224,49 +214,56 @@ def get_cyhy_and_bod_requests(db, batch_size):
     return requests
 
 
-def get_federal_cyhy_and_bod_requests(db):
-    """Return a cursor for iterating over the Federal CyHy and BOD agencies.
+def get_requests(db, report_types=None, federal_only=False, batch_size=None):
+    """Return a cursor for iterating over agencies' request documents.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Federal Cyber Hygiene and BOD
-        agency data can be retrieved.
+        The Mongo database from which agency data can be retrieved.
+
+    report_types : list(str)
+        A list of report types (e.g. CYHY, CYBEX, BOD).  Only agencies
+        whose request documents specify these report types will be
+        returned.  If None then no such restriction is placed on the
+        query.
+
+    federal_only : bool
+        If True then only federal agencies' request documents will be
+        returned.  If unspecified or False then no such restriction is
+        placed on the query.
+
+    batch_size : int
+        The batch size to use when retrieving results from the Mongo
+        database.  If None then the default will be used.
 
     Returns
     -------
     pymongo.cursor.Cursor: A cursor that can be used to iterate over
-    the Federal Cyber Hygiene and BOD agencies.
+    the request documents.
 
     Throws
     ------
     pymongo.errors.TypeError: If unable to connect to the requested
-    server
+    server, or if batch_size is not an int or None.
+
+    ValueError: If batch_size is negative, or if there is no FEDERAL
+    category in the database but federal_only is True.
+
+    pymongo.errors.InvalidOperation: If the cursor has already been
+    used.  The batch size cannot be set on a cursor that has already
+    been used.
 
     """
-    fed_orgs = get_all_descendants(db, "FEDERAL")
-    try:
-        requests = db.requests.find(
-            {
-                "retired": {"$ne": True},
-                "report_types": {"$in": ["CYHY", "BOD"]},
-                "_id": {"$in": fed_orgs},
-            },
-            {
-                "_id": True,
-                "agency.acronym": True,
-                "agency.contacts.email": True,
-                "agency.contacts.type": True,
-            },
-        )
-    except TypeError:
-        logging.critical(
-            "There was an error with the MongoDB query that retrieves the list of agencies",
-            exc_info=True,
-        )
-        raise
+    query = {"retired": {"$ne": True}}
+    if federal_only:
+        fed_orgs = get_all_descendants(db, "FEDERAL")
+        query["_id"] = {"$in": fed_orgs}
 
-    return requests
+    if report_types is not None:
+        query["report_types"] = {"$in": report_types}
+
+    return get_requests_raw(db, query, batch_size)
 
 
 class UnableToSendError(Exception):
@@ -329,22 +326,8 @@ def send_message(ses_client, message, counter=None):
     return counter
 
 
-def do_report(
-    db,
-    batch_size,
-    ses_client,
-    cyhy_report_dir,
-    tmail_report_dir,
-    https_report_dir,
-    cybex_scorecard_dir,
-    cyhy_notification_dir,
-    summary_to,
-):
-    """Send out emails as appropriate.
-
-    Given the parameters, send out Cyber Hygiene, Trustworthy Email,
-    HTTPS reports/scorecards/notifications, and a summary email out
-    as appropriate.
+def send_bod_reports(db, batch_size, ses_client, tmail_report_dir, https_report_dir):
+    """Send out Trustworthy Email and HTTPS reports.
 
     Parameters
     ----------
@@ -359,10 +342,6 @@ def do_report(
     ses_client : boto3.client
         The boto3 SES client via which the message is to be sent.
 
-    cyhy_report_dir : str
-        The directory where the Cyber Hygiene reports can be found.
-        If None then no Cyber Hygiene reports will be sent.
-
     tmail_report_dir : str
         The directory where the Trustworthy Email reports can be
         found.  If None then no Trustworthy Email reports will be
@@ -372,42 +351,53 @@ def do_report(
         The directory where the HTTPS reports can be found.  If None
         then no HTTPS reports will be sent.
 
-    cybex_scorecard_dir : str
-        The directory where the Cybex scorecard can be found.  If None
-        then no Cybex scorecard will be sent.
-
-    cyhy_notification_dir : str
-        The directory where the Cyber Hygiene notifications can be found.
-        If None then no Cyber Hygiene notifications will be sent.
-
-    summary_to : str
-        A comma-separated list of email addresses to which the
-        summary statistics should be sent at the end of the run.  If
-        None then no summary will be sent.
+    Returns
+    -------
+    tuple(str): A tuple of strings that summarizes what was sent.
 
     """
     try:
-        requests = get_cyhy_and_bod_requests(db, batch_size)
-        federal_requests = get_federal_cyhy_and_bod_requests(db)
+        fed_orgs = get_all_descendants(db, "FEDERAL")
+        # We want all non-retired request docs with either (1) a
+        # report type of BOD or (2) a report type of CYHY and
+        # corresponding to a federal stakeholder.  This is a
+        # complicated query, so we construct it manually.
+        query = {
+            "$and": [
+                {"retired": {"$ne": True}},
+                {
+                    "$or": [
+                        {"report_type": {"$in": ["BOD"]}},
+                        {
+                            "$and": [
+                                {"_id": {"$in": fed_orgs}},
+                                {"report_type": {"$in": ["CYHY"]}},
+                            ]
+                        },
+                    ]
+                },
+            ]
+        }
+        bod_requests = get_requests_raw(db, query, batch_size)
+
     except TypeError:
         return 4
 
     try:
-        total_agencies = requests.count()
-        federal_agencies = federal_requests.count()
-        logging.debug(f"Total agencies = {total_agencies}")
-        logging.debug(f"Federal agencies = {federal_agencies}")
+        bod_agencies = bod_requests.count()
+        logging.debug(f"BOD 18-01 agencies = {bod_agencies}")
     except pymongo.errors.OperationFailure:
         logging.critical(
             "Mongo database error while counting the number of request documents returned",
             exc_info=True,
         )
-    agencies_emailed_cyhy_reports = 0
     agencies_emailed_tmail_reports = 0
     agencies_emailed_https_reports = 0
-    agencies_emailed_cyhy_notifications = 0
-    cybex_report_emailed = False
-    for request in requests:
+
+    ###
+    # Iterate over bod_requests
+    ###
+    for request in bod_requests:
         id = request["_id"]
         acronym = request["agency"]["acronym"]
 
@@ -415,56 +405,6 @@ def do_report(
         # to_emails should contain at least one email
         if not to_emails:
             continue
-
-        ###
-        # Find and mail the CyHy report, if necessary
-        ###
-        if cyhy_report_dir:
-            # The '2' is necessary because in some cases we have both XYZ and
-            # XYZ-AB as stakeholders.  Without the '2' the glob would include
-            # both for the ID XYZ.
-            cyhy_report_glob = f"{cyhy_report_dir}/cyhy-{id}-2*.pdf"
-            cyhy_report_filenames = sorted(glob.glob(cyhy_report_glob))
-
-            # Exactly one CyHy report should match
-            if len(cyhy_report_filenames) > 1:
-                logging.warn(
-                    f"More than one Cyber Hygiene report found for agency with ID {id}"
-                )
-            elif not cyhy_report_filenames:
-                # This is an error since we are starting from the list
-                # of CyHy agencys and they should all have reports
-                logging.error(f"No Cyber Hygiene report found for agency with ID {id}")
-
-            if cyhy_report_filenames:
-                # We take the last filename since, if there happens to be more
-                # than one, it should the latest.  (This is because we sorted
-                # the glob results.)
-                cyhy_attachment_filename = cyhy_report_filenames[-1]
-
-                # Extract the report date from the report filename
-                match = re.search(
-                    r"-(?P<date>\d{4}-[01]\d-[0-3]\d)T", cyhy_attachment_filename
-                )
-                report_date = datetime.datetime.strptime(
-                    match.group("date"), "%Y-%m-%d"
-                ).strftime("%B %d, %Y")
-
-                # Construct the CyHy message to send
-                message = CyhyMessage(
-                    to_emails, cyhy_attachment_filename, acronym, report_date
-                )
-
-                try:
-                    agencies_emailed_cyhy_reports = send_message(
-                        ses_client, message, agencies_emailed_cyhy_reports
-                    )
-                except (UnableToSendError, ClientError):
-                    logging.error(
-                        f"Unable to send Cyber Hygiene report for agency with ID {id}",
-                        exc_info=True,
-                        stack_info=True,
-                    )
 
         ###
         # Find and mail the trustymail report, if necessary
@@ -580,56 +520,43 @@ def do_report(
                         stack_info=True,
                     )
 
-        if cyhy_notification_dir:
-            # The '2' is necessary because in some cases we have both XYZ and
-            # XYZ-AB as stakeholders.  Without the '2' the glob would include
-            # both for the ID XYZ.
-            cyhy_notification_glob = (
-                f"{cyhy_notification_dir}/" f"cyhy-notification-{id}-2*.pdf"
-            )
-            cyhy_notification_filenames = sorted(glob.glob(cyhy_notification_glob))
+    # Print out and log some statistics
+    tmail_stats_string = f"Out of {bod_agencies} Federal BOD 18-01 agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / bod_agencies:.2f}%) were emailed Trustworthy Email reports."
+    https_stats_string = f"Out of {bod_agencies} Federal BOD 18-01 agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / bod_agencies:.2f}%) were emailed HTTPS reports."
+    logging.info(tmail_stats_string)
+    logging.info(https_stats_string)
+    print(tmail_stats_string)
+    print(https_stats_string)
 
-            # No more than one CyHy notification should match
-            # It is fine if there are zero matches; that means there are no
-            # notifications to be sent out for this stakeholder
-            if len(cyhy_notification_filenames) > 1:
-                logging.warn(
-                    f"More than one Cyber Hygiene notification found for agency with ID {id}"
-                )
+    return (tmail_stats_string, https_stats_string)
 
-            if cyhy_notification_filenames:
-                # We take the last filename since, if there happens to be more
-                # than one, it should send the latest one.
-                # (This is because we sorted the glob results.)
-                cyhy_notification_attachment_filename = cyhy_notification_filenames[-1]
 
-                # Extract the date from the notification filename
-                match = re.search(
-                    r"-(?P<date>\d{4}-[01]\d-[0-3]\d)T",
-                    cyhy_notification_attachment_filename,
-                )
-                notification_date = datetime.datetime.strptime(
-                    match.group("date"), "%Y-%m-%d"
-                ).strftime("%B %d, %Y")
+def send_cybex_scorecard(db, batch_size, ses_client, cybex_scorecard_dir):
+    """Send out Cyber Exposure scorecard.
 
-                # Construct the CyHy notification message to send
-                message = CyhyNotificationMessage(
-                    to_emails,
-                    cyhy_notification_attachment_filename,
-                    acronym,
-                    notification_date,
-                )
+    Parameters
+    ----------
+    db : MongoDatabase
+        The Mongo database from which Cyber Hygiene agency data can
+        be retrieved.
 
-                try:
-                    agencies_emailed_cyhy_notifications = send_message(
-                        ses_client, message, agencies_emailed_cyhy_notifications
-                    )
-                except (UnableToSendError, ClientError):
-                    logging.error(
-                        f"Unable to send Cyber Hygiene notification for agency with ID {id}",
-                        exc_info=True,
-                        stack_info=True,
-                    )
+    batch_size : int
+        The batch size to use when retrieving results from the Mongo
+        database.  If None then the default will be used.
+
+    ses_client : boto3.client
+        The boto3 SES client via which the message is to be sent.
+
+    cybex_scorecard_dir : str
+        The directory where the Cybex scorecard can be found.  If None
+        then no Cybex scorecard will be sent.
+
+    Returns
+    -------
+    tuple(str): A tuple of strings that summarizes what was sent.
+
+    """
+    cybex_report_emailed = False
 
     ###
     # Find and mail the Cybex report, if necessary
@@ -730,11 +657,125 @@ def do_report(
                     stack_info=True,
                 )
 
-    ###
-    # Find and mail the CyHy sample report, if it is present
-    ###
+    # Print out and log some statistics
+    if cybex_report_emailed:
+        cybex_stats_string = "Cyber Exposure scorecard was emailed."
+    else:
+        cybex_stats_string = "Cyber Exposure scorecard was not emailed."
+    logging.info(cybex_stats_string)
+    print(cybex_stats_string)
+
+    return cybex_stats_string
+
+
+def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
+    """Send out Cyber Hygiene reports.
+
+    Parameters
+    ----------
+    db : MongoDatabase
+        The Mongo database from which Cyber Hygiene agency data can
+        be retrieved.
+
+    batch_size : int
+        The batch size to use when retrieving results from the Mongo
+        database.  If None then the default will be used.
+
+    ses_client : boto3.client
+        The boto3 SES client via which the message is to be sent.
+
+    cyhy_report_dir : str
+        The directory where the Cyber Hygiene reports can be found.
+        If None then no Cyber Hygiene reports will be sent.
+
+    Returns
+    -------
+    tuple(str): A tuple of strings that summarizes what was sent.
+
+    """
+    try:
+        cyhy_requests = get_requests(db, report_types=["CYHY"], batch_size=batch_size)
+    except TypeError:
+        return 4
+
+    try:
+        cyhy_agencies = cyhy_requests.count()
+        logging.debug(f"Cyber Hygiene agencies = {cyhy_agencies}")
+    except pymongo.errors.OperationFailure:
+        logging.critical(
+            "Mongo database error while counting the number of request documents returned",
+            exc_info=True,
+        )
+    agencies_emailed_cyhy_reports = 0
     sample_cyhy_report_emailed = False
+
+    ###
+    # Iterate over cyhy_requests, if necessary
+    ###
     if cyhy_report_dir:
+        for request in cyhy_requests:
+            id = request["_id"]
+            acronym = request["agency"]["acronym"]
+
+            to_emails = get_emails_from_request(request)
+            # to_emails should contain at least one email
+            if not to_emails:
+                continue
+
+            ###
+            # Find and mail the CyHy report, if necessary
+            ###
+
+            # The '2' is necessary because in some cases we have both XYZ and
+            # XYZ-AB as stakeholders.  Without the '2' the glob would include
+            # both for the ID XYZ.
+            cyhy_report_glob = f"{cyhy_report_dir}/cyhy-{id}-2*.pdf"
+            cyhy_report_filenames = sorted(glob.glob(cyhy_report_glob))
+
+            # Exactly one CyHy report should match
+            if len(cyhy_report_filenames) > 1:
+                logging.warn(
+                    f"More than one Cyber Hygiene report found for agency with ID {id}"
+                )
+            elif not cyhy_report_filenames:
+                # This is an error since we are starting from the list
+                # of CyHy agencys and they should all have reports
+                logging.error(f"No Cyber Hygiene report found for agency with ID {id}")
+
+            if cyhy_report_filenames:
+                # We take the last filename since, if there happens to be more
+                # than one, it should the latest.  (This is because we sorted
+                # the glob results.)
+                cyhy_attachment_filename = cyhy_report_filenames[-1]
+
+                # Extract the report date from the report filename
+                match = re.search(
+                    r"-(?P<date>\d{4}-[01]\d-[0-3]\d)T", cyhy_attachment_filename
+                )
+                report_date = datetime.datetime.strptime(
+                    match.group("date"), "%Y-%m-%d"
+                ).strftime("%B %d, %Y")
+
+                # Construct the CyHy message to send
+                message = CyhyMessage(
+                    to_emails, cyhy_attachment_filename, acronym, report_date
+                )
+
+                try:
+                    agencies_emailed_cyhy_reports = send_message(
+                        ses_client, message, agencies_emailed_cyhy_reports
+                    )
+                except (UnableToSendError, ClientError):
+                    logging.error(
+                        f"Unable to send Cyber Hygiene report for agency with ID {id}",
+                        exc_info=True,
+                        stack_info=True,
+                    )
+
+        ###
+        # Find and mail the CyHy sample report, if it is present
+        ###
+
         # The '2' is necessary because in some cases we have both XYZ and
         # XYZ-AB as stakeholders.  Without the '2' the glob would include both
         # for the ID XYZ.
@@ -782,89 +823,21 @@ def do_report(
                 )
 
     # Print out and log some statistics
-    cyhy_stats_string = f"Out of {total_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / total_agencies:.2f}%) were emailed Cyber Hygiene reports."
-    tmail_stats_string = f"Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / federal_agencies:.2f}%) were emailed Trustworthy Email reports."
-    https_stats_string = f"Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / federal_agencies:.2f}%) were emailed HTTPS reports."
-    cyhy_notification_stats_string = f"Out of {federal_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_cyhy_notifications} ({100.0 * agencies_emailed_cyhy_notifications / federal_agencies:.2f}%) were emailed Cyber Hygiene notifications."
-    if cybex_report_emailed:
-        cybex_stats_string = "Cyber Exposure scorecard was emailed."
-    else:
-        cybex_stats_string = "Cyber Exposure scorecard was not emailed."
+    cyhy_stats_string = f"Out of {cyhy_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / cyhy_agencies:.2f}%) were emailed Cyber Hygiene reports."
     if sample_cyhy_report_emailed:
         sample_cyhy_stats_string = "Sample Cyber Hygiene report was emailed."
     else:
         sample_cyhy_stats_string = "Sample Cyber Hygiene report was not emailed."
     logging.info(cyhy_stats_string)
-    logging.info(tmail_stats_string)
-    logging.info(https_stats_string)
-    logging.info(cybex_stats_string)
-    logging.info(cyhy_notification_stats_string)
     logging.info(sample_cyhy_stats_string)
     print(cyhy_stats_string)
-    print(tmail_stats_string)
-    print(https_stats_string)
-    print(cybex_stats_string)
-    print(cyhy_notification_stats_string)
     print(sample_cyhy_stats_string)
 
-    ###
-    # Email the summary statistics, if necessary
-    ###
-    if summary_to:
-        if agencies_emailed_cyhy_reports == 0:
-            cyhy_stats_string = None
-        if agencies_emailed_tmail_reports == 0:
-            tmail_stats_string = None
-        if agencies_emailed_https_reports == 0:
-            https_stats_string = None
-        if not cybex_report_emailed:
-            cybex_stats_string = None
-        if agencies_emailed_cyhy_notifications == 0:
-            cyhy_notification_stats_string = None
-        if not sample_cyhy_report_emailed:
-            sample_cyhy_stats_string = None
-
-        all_stats_strings = [
-            s
-            for s in (
-                cyhy_stats_string,
-                tmail_stats_string,
-                https_stats_string,
-                cybex_stats_string,
-                cyhy_notification_stats_string,
-                sample_cyhy_stats_string,
-            )
-            if s is not None
-        ]
-
-        if all_stats_strings:
-            message = StatsMessage(summary_to.split(","), all_stats_strings)
-            try:
-                send_message(ses_client, message)
-            except (UnableToSendError, ClientError):
-                logging.error(
-                    "Unable to send cyhy-mailer report summary",
-                    exc_info=True,
-                    stack_info=True,
-                )
-        else:
-            logging.warn("Nothing was emailed.")
-            print("Nothing was emailed.")
+    return (cyhy_stats_string, sample_cyhy_stats_string)
 
 
-def do_adhoc(
-    db,
-    batch_size,
-    ses_client,
-    to,
-    cyhy,
-    cyhy_federal,
-    subject,
-    html_body,
-    text_body,
-    summary_to,
-):
-    """Send out an email to the appropriate recipients.
+def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
+    """Send out Cyber Hygiene reports notifications.
 
     Parameters
     ----------
@@ -879,106 +852,105 @@ def do_adhoc(
     ses_client : boto3.client
         The boto3 SES client via which the message is to be sent.
 
-    to : str
-        A comma-separated list of additional email addresses to which
-        the ad hoc email message should be sent.  If None then the ad
-        hoc email message will not be sent to any additional
-        addresses.
+    cyhy_notification_dir : str
+        The directory where the Cyber Hygiene notifications can be found.
+        If None then no Cyber Hygiene notifications will be sent.
 
-    cyhy : bool
-        If True then the ad hoc email message will be sent to all
-        Cyber Hygiene agencys.
-
-    cyhy_federal : bool
-        If True then the ad hoc email message will be sent to all
-        Federal Cyber Hygiene agencys.  Note that cyhy implies
-        cyhy_federal.
-
-    subject : str
-        The subject for the ad hoc email.
-
-    html_body : str
-        The filename where the HTML that comprises the body of the ad
-        hoc email message can be found.
-
-    text_body : str
-        The filename where the plain text that comprises the body of
-        the ad hoc email message can be found.
-
-    summary_to : str
-        A comma-separated list of email addresses to which the
-        summary statistics should be sent at the end of the run.  If
-        None then no summary will be sent.
+    Returns
+    -------
+    tuple(str): A tuple of strings that summarizes what was sent.
 
     """
-    with open(text_body, "r") as text_file:
-        text = text_file.read()
-    with open(html_body, "r") as html_file:
-        html = html_file.read()
+    try:
+        # Only Federal Cyber Hygiene agencies get CyHy notifications
+        federal_cyhy_requests = get_requests(
+            db, report_types=["CYHY"], federal_only=True, batch_size=batch_size
+        )
+    except TypeError:
+        return 4
 
-    emails = []
-    if cyhy:
-        try:
-            requests = get_cyhy_and_bod_requests(db, batch_size)
-        except TypeError:
-            return 4
+    try:
+        federal_cyhy_agencies = federal_cyhy_requests.count()
+        logging.debug(f"Cyber Hygiene notification agencies = {federal_cyhy_agencies}")
+    except pymongo.errors.OperationFailure:
+        logging.critical(
+            "Mongo database error while counting the number of request documents returned",
+            exc_info=True,
+        )
+    agencies_emailed_cyhy_notifications = 0
 
-        for request in requests:
-            to_emails = get_emails_from_request(request)
-            # to_emails should contain at least one email
-            if not to_emails:
-                continue
+    ###
+    # Iterate over cyhy_notification_requests
+    ###
+    for request in federal_cyhy_requests:
+        id = request["_id"]
+        acronym = request["agency"]["acronym"]
 
-            emails.extend(to_emails)
-    elif cyhy_federal:
-        try:
-            requests = get_federal_cyhy_and_bod_requests(db)
-        except TypeError:
-            return 4
+        to_emails = get_emails_from_request(request)
+        # to_emails should contain at least one email
+        if not to_emails:
+            continue
 
-        for request in requests:
-            to_emails = get_emails_from_request(request)
-            # to_emails should contain at least one email
-            if not to_emails:
-                continue
-
-            emails.extend(to_emails)
-
-    if to:
-        emails.extend(to.split(","))
-
-    ad_hoc_emails_to_send = len(emails)
-    ad_hoc_emails_sent = 0
-    for email in emails:
-        message = Message([email], subject, text, html)
-
-        try:
-            ad_hoc_emails_sent = send_message(ses_client, message, ad_hoc_emails_sent)
-        except (UnableToSendError, ClientError):
-            logging.error(
-                f"Unable to send ad hoc email to {email} ",
-                exc_info=True,
-                stack_info=True,
+        ###
+        # Find and mail the CyHy notifications, if necessary
+        ###
+        if cyhy_notification_dir:
+            # The '2' is necessary because in some cases we have both XYZ and
+            # XYZ-AB as stakeholders.  Without the '2' the glob would include
+            # both for the ID XYZ.
+            cyhy_notification_glob = (
+                f"{cyhy_notification_dir}/" f"cyhy-notification-{id}-2*.pdf"
             )
+            cyhy_notification_filenames = sorted(glob.glob(cyhy_notification_glob))
+
+            # No more than one CyHy notification should match
+            # It is fine if there are zero matches; that means there are no
+            # notifications to be sent out for this stakeholder
+            if len(cyhy_notification_filenames) > 1:
+                logging.warn(
+                    f"More than one Cyber Hygiene notification found for agency with ID {id}"
+                )
+
+            if cyhy_notification_filenames:
+                # We take the last filename since, if there happens to be more
+                # than one, it should send the latest one.
+                # (This is because we sorted the glob results.)
+                cyhy_notification_attachment_filename = cyhy_notification_filenames[-1]
+
+                # Extract the date from the notification filename
+                match = re.search(
+                    r"-(?P<date>\d{4}-[01]\d-[0-3]\d)T",
+                    cyhy_notification_attachment_filename,
+                )
+                notification_date = datetime.datetime.strptime(
+                    match.group("date"), "%Y-%m-%d"
+                ).strftime("%B %d, %Y")
+
+                # Construct the CyHy notification message to send
+                message = CyhyNotificationMessage(
+                    to_emails,
+                    cyhy_notification_attachment_filename,
+                    acronym,
+                    notification_date,
+                )
+
+                try:
+                    agencies_emailed_cyhy_notifications = send_message(
+                        ses_client, message, agencies_emailed_cyhy_notifications
+                    )
+                except (UnableToSendError, ClientError):
+                    logging.error(
+                        f"Unable to send Cyber Hygiene notification for agency with ID {id}",
+                        exc_info=True,
+                        stack_info=True,
+                    )
 
     # Print out and log some statistics
-    stats_string = f"Out of {ad_hoc_emails_to_send} ad hoc emails to be sent, {ad_hoc_emails_sent} ({100.0 * ad_hoc_emails_sent / ad_hoc_emails_to_send:.2f}%) were sent."
-    logging.info(stats_string)
-    print(stats_string)
+    cyhy_notification_stats_string = f"Out of {federal_cyhy_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_cyhy_notifications} ({100.0 * agencies_emailed_cyhy_notifications / federal_cyhy_agencies:.2f}%) were emailed Cyber Hygiene notifications."
+    logging.info(cyhy_notification_stats_string)
+    print(cyhy_notification_stats_string)
 
-    ###
-    # Email the summary statistics, if necessary
-    ###
-    if summary_to:
-        message = StatsMessage(summary_to.split(","), [stats_string])
-        try:
-            send_message(ses_client, message)
-        except (UnableToSendError, ClientError):
-            logging.error(
-                "Unable to send cyhy-mailer ad hoc summary",
-                exc_info=True,
-                stack_info=True,
-            )
+    return cyhy_notification_stats_string
 
 
 def main():
@@ -1039,31 +1011,54 @@ def main():
             )
             return 4
 
-    if args["report"]:
-        do_report(
+    ###
+    # Send reports and gather summary statistics
+    ###
+    all_stats_strings = []
+
+    if args["bod1801"]:
+        stats = send_bod_reports(
             db,
             batch_size,
             ses_client,
-            args["--cyhy-report-dir"],
             args["--tmail-report-dir"],
             args["--https-report-dir"],
-            args["--cybex-scorecard-dir"],
-            args["--cyhy-notification-dir"],
-            args["--summary-to"],
         )
-    elif args["adhoc"]:
-        do_adhoc(
-            db,
-            batch_size,
-            ses_client,
-            args["--to"],
-            args["--cyhy"],
-            args["--cyhy-federal"],
-            args["--subject"],
-            args["--html-body"],
-            args["--text-body"],
-            args["--summary-to"],
+        all_stats_strings.extend(stats)
+
+    if args["cybex"]:
+        stats = send_cybex_scorecard(
+            db, batch_size, ses_client, args["--cybex-scorecard-dir"]
         )
+        all_stats_strings.extend(stats)
+
+    if args["cyhy"]:
+        stats = send_cyhy_reports(db, batch_size, ses_client, args["--cyhy-report-dir"])
+        all_stats_strings.extend(stats)
+
+    if args["notification"]:
+        stats = send_cyhy_notifications(
+            db, batch_size, ses_client, args["--cyhy-notification-dir"]
+        )
+        all_stats_strings.extend(stats)
+
+    ###
+    # Email the summary statistics, if necessary
+    ###
+    summary_to = args["--summary-to"]
+    if summary_to and all_stats_strings:
+        message = StatsMessage(summary_to.split(","), all_stats_strings)
+        try:
+            send_message(ses_client, message)
+        except (UnableToSendError, ClientError):
+            logging.error(
+                "Unable to send cyhy-mailer report summary",
+                exc_info=True,
+                stack_info=True,
+            )
+    else:
+        logging.warn("Nothing was emailed.")
+        print("Nothing was emailed.")
 
     # Stop logging and clean up
     logging.shutdown()
