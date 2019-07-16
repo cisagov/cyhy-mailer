@@ -128,7 +128,7 @@ def get_emails_from_request(request):
 
 
 def get_all_descendants(db, parent):
-    """Return all (non-retired) descendents of the parent.
+    """Return all (non-retired) descendants of the parent.
 
     Parameters
     ----------
@@ -137,11 +137,11 @@ def get_all_descendants(db, parent):
         retrieved.
 
     parent : str
-        The parent for which all descendents are desired.
+        The parent for which all descendants are desired.
 
     Returns
     -------
-    set(str): The descendents of the parent.
+    set(str): The descendants of the parent.
 
     Throws
     ------
