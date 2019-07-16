@@ -15,6 +15,7 @@ class ReportMessage(Message):
         pdf_filename,
         from_addr=Message.DefaultFrom,
         cc_addrs=Message.DefaultCc,
+        bcc_addrs=Message.DefaultBcc,
     ):
         """Construct an instance.
 
@@ -44,9 +45,20 @@ class ReportMessage(Message):
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
 
+        bcc_addrs : array of str
+            An array of string objects, each of which is a BCC email
+            address to which this message should be sent.
+
         """
         Message.__init__(
-            self, to_addrs, subject, text_body, html_body, from_addr, cc_addrs
+            self,
+            to_addrs,
+            subject,
+            text_body,
+            html_body,
+            from_addr,
+            cc_addrs,
+            bcc_addrs,
         )
 
         self.attach_pdf(pdf_filename)

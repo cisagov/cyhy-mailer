@@ -21,6 +21,10 @@ class Message(MIMEMultipart):
         The default value for the CC addresses to which the message
         should be sent.
 
+    DefaultBcc : list of str
+        The default value for the BCC addresses to which the message
+        should be sent.
+
     DefaultReplyTo : str
         The default value for the address to which replies should be
         directed.
@@ -29,7 +33,9 @@ class Message(MIMEMultipart):
 
     DefaultFrom = "reports@cyber.dhs.gov"
 
-    DefaultCc = ["ncats@hq.dhs.gov", "cyhy_reports@hq.dhs.gov"]
+    DefaultCc = None
+
+    DefaultBcc = ["cyhy_reports@hq.dhs.gov"]
 
     DefaultReplyTo = "ncats@hq.dhs.gov"
 
@@ -41,6 +47,7 @@ class Message(MIMEMultipart):
         html_body=None,
         from_addr=DefaultFrom,
         cc_addrs=DefaultCc,
+        bcc_addrs=DefaultBcc,
         reply_to_addr=DefaultReplyTo,
     ):
         """Construct an instance.
@@ -67,6 +74,10 @@ class Message(MIMEMultipart):
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
 
+        bcc_addrs : array of str
+            An array of string objects, each of which is a BCC email
+            address to which this message should be sent.
+
         reply_to_addr : str
             The email address to which replies should be sent.
 
@@ -82,6 +93,10 @@ class Message(MIMEMultipart):
         if cc_addrs:
             self["CC"] = ",".join(cc_addrs)
             logging.debug("Message to be sent as CC to: %s", self["CC"])
+
+        if bcc_addrs:
+            self["BCC"] = ",".join(bcc_addrs)
+            logging.debug("Message to be sent as BCC to: %s", self["BCC"])
 
         if reply_to_addr:
             self["Reply-To"] = reply_to_addr

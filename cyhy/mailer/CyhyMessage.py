@@ -72,6 +72,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         report_date,
         from_addr=Message.DefaultFrom,
         cc_addrs=Message.DefaultCc,
+        bcc_addrs=Message.DefaultBcc,
     ):
         """Construct an instance.
 
@@ -100,6 +101,10 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             An array of string objects, each of which is a CC email
             address to which this message should be sent.
 
+        bcc_addrs : array of str
+            An array of string objects, each of which is a BCC email
+            address to which this message should be sent.
+
         """
         # This is the data mustache will use to render the templates
         mustache_data = {"acronym": agency_acronym, "report_date": report_date}
@@ -118,4 +123,5 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             pdf_filename,
             from_addr,
             cc_addrs,
+            bcc_addrs,
         )

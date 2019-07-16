@@ -22,7 +22,8 @@ class Test(unittest.TestCase):
             message["Subject"],
             "CLARKE - Cyber Hygiene Report - December 15, 2001 Results",
         )
-        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message.get("CC"), None)
+        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -88,7 +89,8 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             message["Subject"],
             "CLARKE - Cyber Hygiene Report - December 15, 2001 Results",
         )
-        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message.get("CC"), None)
+        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -146,11 +148,18 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         pdf = "./tests/data/pdf-sample.pdf"
         fm = "sender@example.com"
         cc = ["cc@example.com"]
+        bcc = ["bcc@example.com"]
         agency_acronym = "CLARKE"
         report_date = "December 15, 2001"
 
         message = CyhyMessage(
-            to, pdf, agency_acronym, report_date, from_addr=fm, cc_addrs=cc
+            to,
+            pdf,
+            agency_acronym,
+            report_date,
+            from_addr=fm,
+            cc_addrs=cc,
+            bcc_addrs=bcc,
         )
 
         self.assertEqual(message["From"], fm)
@@ -159,6 +168,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             "CLARKE - Cyber Hygiene Report - December 15, 2001 Results",
         )
         self.assertEqual(message["CC"], "cc@example.com")
+        self.assertEqual(message["BCC"], "bcc@example.com")
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -216,11 +226,18 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         pdf = "./tests/data/pdf-sample.pdf"
         fm = "sender@example.com"
         cc = ["cc@example.com", "cc2@example.com"]
+        bcc = ["bcc@example.com", "bcc2@example.com"]
         agency_acronym = "CLARKE"
         report_date = "December 15, 2001"
 
         message = CyhyMessage(
-            to, pdf, agency_acronym, report_date, from_addr=fm, cc_addrs=cc
+            to,
+            pdf,
+            agency_acronym,
+            report_date,
+            from_addr=fm,
+            cc_addrs=cc,
+            bcc_addrs=bcc,
         )
 
         self.assertEqual(message["From"], fm)
@@ -229,6 +246,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             "CLARKE - Cyber Hygiene Report - December 15, 2001 Results",
         )
         self.assertEqual(message["CC"], "cc@example.com,cc2@example.com")
+        self.assertEqual(message["BCC"], "bcc@example.com,bcc2@example.com")
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment

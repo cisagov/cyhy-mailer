@@ -20,7 +20,8 @@ class Test(unittest.TestCase):
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(message["Subject"], subject)
-        self.assertEqual(message["CC"], "ncats@hq.dhs.gov,cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message.get("CC"), None)
+        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -46,12 +47,14 @@ class Test(unittest.TestCase):
         html_body = "<p>The HTML body</p>"
         fm = "sender@example.com"
         cc = ["cc@example.com"]
+        bcc = ["bcc@example.com"]
 
-        message = ReportMessage(to, subject, text_body, html_body, pdf, fm, cc)
+        message = ReportMessage(to, subject, text_body, html_body, pdf, fm, cc, bcc)
 
         self.assertEqual(message["From"], "sender@example.com")
         self.assertEqual(message["Subject"], subject)
         self.assertEqual(message["CC"], "cc@example.com")
+        self.assertEqual(message["BCC"], "bcc@example.com")
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
