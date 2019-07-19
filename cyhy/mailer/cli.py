@@ -141,7 +141,7 @@ def get_all_descendants(db, parent):
 
     Returns
     -------
-    set(str): The descendants of the parent.
+    list(str): The descendants of the parent.
 
     Throws
     ------
@@ -160,7 +160,8 @@ def get_all_descendants(db, parent):
                 descendants.append(child)
                 descendants += get_all_descendants(db, child)
 
-    return set(descendants)
+    # Remove duplicates
+    return list(set(descendants))
 
 
 def get_requests_raw(db, query, batch_size=None):
