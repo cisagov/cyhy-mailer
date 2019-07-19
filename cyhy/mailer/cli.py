@@ -666,7 +666,7 @@ def send_cybex_scorecard(db, batch_size, ses_client, cybex_scorecard_dir):
     logging.info(cybex_stats_string)
     print(cybex_stats_string)
 
-    return cybex_stats_string
+    return (cybex_stats_string,)
 
 
 def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
@@ -951,7 +951,7 @@ def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
     logging.info(cyhy_notification_stats_string)
     print(cyhy_notification_stats_string)
 
-    return cyhy_notification_stats_string
+    return (cyhy_notification_stats_string,)
 
 
 def main():
