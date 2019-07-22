@@ -368,11 +368,11 @@ def send_bod_reports(db, batch_size, ses_client, tmail_report_dir, https_report_
                 {"retired": {"$ne": True}},
                 {
                     "$or": [
-                        {"report_type": {"$in": ["BOD"]}},
+                        {"report_types": {"$in": ["BOD"]}},
                         {
                             "$and": [
                                 {"_id": {"$in": fed_orgs}},
-                                {"report_type": {"$in": ["CYHY"]}},
+                                {"report_types": {"$in": ["CYHY"]}},
                             ]
                         },
                     ]
