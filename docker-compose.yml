@@ -9,7 +9,7 @@ secrets:
 
 services:
   mailer:
-    image: 'dhsncats/cyhy-mailer:1.3.3'
+    image: 'dhsncats/cyhy-mailer:1.3.4'
     secrets:
       - source: database_creds
         target: database_creds.yml
