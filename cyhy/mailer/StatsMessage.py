@@ -63,7 +63,7 @@ Here is the cyhy-mailer summary from {{date}}:
 <p> Please direct feedback and questions to <a
 href="mailto:ncats-dev@beta.dhs.gov">the NCATS Development Team</a>
 and/or the <a
-href="https://github.com/dhs-ncats/cyhy-mailer">cyhy-mailer GitHub
+href="https://github.com/cisagov/cyhy-mailer">cyhy-mailer GitHub
 project</a>.</p>
 
 <p>
