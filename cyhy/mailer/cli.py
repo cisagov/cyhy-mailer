@@ -717,6 +717,11 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
         for request in cyhy_requests:
             id = request["_id"]
             acronym = request["agency"]["acronym"]
+            technical_pocs = [
+                contact
+                for contact in request["agency"]["contacts"]
+                if contact["type"] == "TECHNICAL"
+            ]
 
             to_emails = get_emails_from_request(request)
             # to_emails should contain at least one email
@@ -759,7 +764,11 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
 
                 # Construct the CyHy message to send
                 message = CyhyMessage(
-                    to_emails, cyhy_attachment_filename, acronym, report_date
+                    to_emails,
+                    cyhy_attachment_filename,
+                    acronym,
+                    report_date,
+                    technical_pocs,
                 )
 
                 try:
