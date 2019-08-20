@@ -29,8 +29,19 @@ class CyhyMessage(ReportMessage):
 
     TextBody = """Greetings {{acronym}},
 
-The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)
+The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)
 
+{{#has_tech_pocs}}
+Note: CISA Assessments has the following information listed as the Technical Points of Contact for {{acronym}}:
+
+{{#tech_pocs}}
+Name:  {{name}}
+Email:  {{email}}
+
+{{/tech_pocs}}
+Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with {{acronym}}, please contact NCATS@hq.dhs.gov with updated information.
+
+{{/has_tech_pocs}}
 If you have any questions, please contact our office.
 
 Cheers,
@@ -48,8 +59,21 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 <body>
 <p>Greetings {{acronym}},</p>
 
-<p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know!)</p>
+<p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
+{{#has_tech_pocs}}
+<p>Note: CISA Assessments has the following information listed as the Technical Points of Contact for {{acronym}}:</p>
+
+{{#tech_pocs}}
+<p>
+Name:  {{name}}<br>
+Email:  {{email}}<br>
+</p>
+{{/tech_pocs}}
+
+<p>Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with {{acronym}}, please contact <a href="mailto:NCATS@hq.dhs.gov">NCATS@hq.dhs.gov</a> with updated information.</p>
+
+{{/has_tech_pocs}}
 <p>If you have any questions, please contact our office.</p>
 
 <p>Cheers,<br>
@@ -70,6 +94,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         pdf_filename,
         agency_acronym,
         report_date,
+        tech_pocs,
         from_addr=Message.DefaultFrom,
         cc_addrs=Message.DefaultCc,
         bcc_addrs=Message.DefaultBcc,
@@ -78,8 +103,8 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         Parameters
         ----------
-        to_addrs : array of str
-            An array of string objects, each of which is an email
+        to_addrs : list of str
+            A list of string objects, each of which is an email
             address to which this message should be sent.
 
         pdf_filename : str
@@ -94,20 +119,33 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             The date corresponding to the CYHY report attachment.  We
             have been using dates of the form December 12, 2017.
 
+        tech_pocs : list of dict
+            A list of dicts, each containing a "name" and an "email"
+            key.  The corresponding values correspond to the name and
+            email of a technical POC for the agency corresponding to
+            the CYHY report attachment.  If there are no technical
+            POCs for the agency then this parameter should be an empty
+            list.
+
         from_addr : str
             The email address from which this message is to be sent.
 
-        cc_addrs : array of str
-            An array of string objects, each of which is a CC email
+        cc_addrs : list of str
+            A list of string objects, each of which is a CC email
             address to which this message should be sent.
 
-        bcc_addrs : array of str
-            An array of string objects, each of which is a BCC email
+        bcc_addrs : list of str
+            A list of string objects, each of which is a BCC email
             address to which this message should be sent.
 
         """
         # This is the data mustache will use to render the templates
-        mustache_data = {"acronym": agency_acronym, "report_date": report_date}
+        mustache_data = {
+            "acronym": agency_acronym,
+            "report_date": report_date,
+            "has_tech_pocs": len(tech_pocs) != 0,
+            "tech_pocs": tech_pocs,
+        }
 
         # Render the templates
         subject = pystache.render(CyhyMessage.Subject, mustache_data)
