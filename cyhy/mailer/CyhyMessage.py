@@ -32,7 +32,7 @@ class CyhyMessage(ReportMessage):
 The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)
 
 {{#has_tech_pocs}}
-Note: CISA Assessments has the following information listed as the Technical Points of Contact for {{acronym}}:
+Note: NCATS has the following information listed as the Technical Points of Contact for {{acronym}}:
 
 {{#tech_pocs}}
 Name:  {{name}}
@@ -62,7 +62,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 <p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
 {{#has_tech_pocs}}
-<p>Note: CISA Assessments has the following information listed as the Technical Points of Contact for {{acronym}}:</p>
+<p>Note: NCATS has the following information listed as the Technical Points of Contact for {{acronym}}:</p>
 
 {{#tech_pocs}}
 <p>
