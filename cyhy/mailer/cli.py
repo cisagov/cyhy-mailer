@@ -872,16 +872,16 @@ def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
 
     """
     try:
-        # Only Federal Cyber Hygiene agencies get CyHy notifications
-        federal_cyhy_requests = get_requests(
-            db, report_types=["CYHY"], federal_only=True, batch_size=batch_size
+        # Get request docs for all orgs that receive CyHy reports
+        cyhy_requests = get_requests(
+            db, report_types=["CYHY"], federal_only=False, batch_size=batch_size
         )
     except TypeError:
         return 4
 
     try:
-        federal_cyhy_agencies = federal_cyhy_requests.count()
-        logging.debug(f"Cyber Hygiene notification agencies = {federal_cyhy_agencies}")
+        cyhy_agencies = cyhy_requests.count()
+        logging.debug(f"Cyber Hygiene notification agencies = {cyhy_agencies}")
     except pymongo.errors.OperationFailure:
         logging.critical(
             "Mongo database error while counting the number of request documents returned",
@@ -889,12 +889,15 @@ def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
         )
     agencies_emailed_cyhy_notifications = 0
 
+    fed_orgs = get_all_descendants(db, "FEDERAL")
+
     ###
     # Iterate over cyhy_notification_requests
     ###
-    for request in federal_cyhy_requests:
+    for request in cyhy_requests:
         id = request["_id"]
         acronym = request["agency"]["acronym"]
+        is_federal = id in fed_orgs
 
         to_emails = get_emails_from_request(request)
         # to_emails should contain at least one email
@@ -941,6 +944,7 @@ def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
                     to_emails,
                     cyhy_notification_attachment_filename,
                     acronym,
+                    is_federal,
                     notification_date,
                 )
 
@@ -956,7 +960,7 @@ def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
                     )
 
     # Print out and log some statistics
-    cyhy_notification_stats_string = f"Out of {federal_cyhy_agencies} Federal Cyber Hygiene agencies, {agencies_emailed_cyhy_notifications} ({100.0 * agencies_emailed_cyhy_notifications / federal_cyhy_agencies:.2f}%) were emailed Cyber Hygiene notifications."
+    cyhy_notification_stats_string = f"Out of {cyhy_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_notifications} ({100.0 * agencies_emailed_cyhy_notifications / cyhy_agencies:.2f}%) were emailed Cyber Hygiene notifications."
     logging.info(cyhy_notification_stats_string)
     print(cyhy_notification_stats_string)
 
