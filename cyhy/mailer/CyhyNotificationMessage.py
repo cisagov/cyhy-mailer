@@ -29,7 +29,7 @@ class CyhyNotificationMessage(ReportMessage):
 
     TextBody = """Greetings {{acronym}},
 
-Cyber Hygiene scans conducted in the past day indicate potential new critical and/or high vulnerabilities. As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days. Details are attached. Same password as before.
+Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. {{#is_federal}}As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.{{/is_federal}}{{^is_federal}}CISA recommends remediating critical findings within 15 days and high findings within 30 days.{{/is_federal}} The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -40,7 +40,7 @@ National Cybersecurity Assessments and Technical Services (NCATS)
 Cybersecurity and Infrastructure Security Agency (CISA)
 ncats@hq.dhs.gov
 
-WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.
+WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid "need-to-know" without prior approval of an authorized DHS official.
 """
 
     HtmlBody = """<html>
@@ -48,7 +48,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 <body>
 <p>Greetings {{acronym}},</p>
 
-<p>Cyber Hygiene scans conducted in the past day indicate potential new critical and/or high vulnerabilities. As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days. Details are attached. Same password as before.</p>
+<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. {{#is_federal}}As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.{{/is_federal}}{{^is_federal}}CISA recommends remediating critical findings within 15 days and high findings within 30 days.{{/is_federal}} The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -59,7 +59,7 @@ The NCATS team</p>
 Cybersecurity and Infrastructure Security Agency (CISA)<br>
 <a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
 
-<p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.</p>
+<p>WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with DHS policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid &ldquo;need-to-know&rdquo; without prior approval of an authorized DHS official.</p>
 </body>
 </html>
 """
@@ -69,6 +69,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         to_addrs,
         pdf_filename,
         agency_acronym,
+        is_federal,
         report_date,
         from_addr=Message.DefaultFrom,
         cc_addrs=Message.DefaultCc,
@@ -90,6 +91,9 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             The acronym used by the agency corresponding to the CYHY
             notification attachment.
 
+        is_federal : bool
+            True if the agency is Federal, otherwise False.
+
         report_date : str
             The date corresponding to the CYHY notification attachment.  We
             have been using dates of the form December 12, 2017.
@@ -107,7 +111,11 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         """
         # This is the data mustache will use to render the templates
-        mustache_data = {"acronym": agency_acronym, "report_date": report_date}
+        mustache_data = {
+            "acronym": agency_acronym,
+            "is_federal": is_federal,
+            "report_date": report_date,
+        }
 
         # Render the templates
         subject = pystache.render(CyhyNotificationMessage.Subject, mustache_data)
