@@ -73,7 +73,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         report_date,
         from_addr=Message.DefaultFrom,
         cc_addrs=Message.DefaultCc,
-        bcc_addrs=Message.DefaultBcc,
+        bcc_addrs=None,
     ):
         """Construct an instance.
 

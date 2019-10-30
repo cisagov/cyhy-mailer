@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
             "FEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
-        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message["BCC"], None)
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -96,7 +96,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             "FEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
-        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message["BCC"], None)
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -326,7 +326,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             "NONFEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
-        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message["BCC"], None)
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -396,7 +396,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             "NONFEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
-        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message["BCC"], None)
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment

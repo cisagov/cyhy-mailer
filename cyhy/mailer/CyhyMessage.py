@@ -97,7 +97,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
         tech_pocs,
         from_addr=Message.DefaultFrom,
         cc_addrs=Message.DefaultCc,
-        bcc_addrs=Message.DefaultBcc,
+        bcc_addrs=None,
     ):
         """Construct an instance.
 
