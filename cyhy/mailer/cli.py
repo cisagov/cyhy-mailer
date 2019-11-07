@@ -695,7 +695,9 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
 
     """
     try:
-        cyhy_requests = get_requests(db, report_types=["CYHY"], batch_size=batch_size)
+        cyhy_requests = get_requests(
+            db, report_types=["CYHY", "CYHY_THIRD_PARTY"], batch_size=batch_size
+        )
     except TypeError:
         return 4
 
@@ -745,7 +747,12 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
                 )
             elif not cyhy_report_filenames:
                 # This is an error since we are starting from the list
-                # of CyHy agencys and they should all have reports
+                # of CyHy agencies and they should all have reports.
+                #
+                # It is possible to get this error if a CyHy request
+                # doc has "CYHY_THIRD_PARTY" in its report_types, but
+                # it does not have any children (the reporting code
+                # skips these request docs).
                 logging.error(f"No Cyber Hygiene report found for agency with ID {id}")
 
             if cyhy_report_filenames:
