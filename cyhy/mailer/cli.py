@@ -695,7 +695,9 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
 
     """
     try:
-        cyhy_requests = get_requests(db, report_types=["CYHY"], batch_size=batch_size)
+        cyhy_requests = get_requests(
+            db, report_types=["CYHY", "CYHY_THIRD_PARTY"], batch_size=batch_size
+        )
     except TypeError:
         return 4
 
