@@ -197,6 +197,7 @@ def get_requests_raw(db, query, batch_size=None):
     projection = {
         "_id": True,
         "agency.acronym": True,
+        "agency.contacts.name": True,
         "agency.contacts.email": True,
         "agency.contacts.type": True,
     }
