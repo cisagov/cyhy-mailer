@@ -25,11 +25,19 @@ class CyhyNotificationMessage(ReportMessage):
 
     """
 
-    Subject = "{{acronym}} - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - {{report_date}}"
+    Subject = "{{acronym}} - Cyber Hygiene Alert - {{report_date}}"
 
     TextBody = """Greetings {{acronym}},
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. {{#is_federal}}As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.{{/is_federal}}{{^is_federal}}CISA recommends remediating critical findings within 15 days and high findings within 30 days.{{/is_federal}} The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+{{#is_federal}}As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.{{/is_federal}}{{^is_federal}}CISA recommends remediating critical findings within 15 days and high findings within 30 days.{{/is_federal}}
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -48,7 +56,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings {{acronym}},</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. {{#is_federal}}As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.{{/is_federal}}{{^is_federal}}CISA recommends remediating critical findings within 15 days and high findings within 30 days.{{/is_federal}} The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>{{#is_federal}}As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.{{/is_federal}}{{^is_federal}}CISA recommends remediating critical findings within 15 days and high findings within 30 days.{{/is_federal}}</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
