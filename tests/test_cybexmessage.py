@@ -45,10 +45,8 @@ The Cyber Exposure scorecard from December 15, 2001 is attached for your review.
 If you have any questions, please contact our office.
 
 Cheers,
-The NCATS team
-
-National Cybersecurity Assessments and Technical Services (NCATS)
-Cybersecurity and Infrastructure Security Agency (CISA)
+CISA Cyber Assessments - Cyber Hygiene
+Cybersecurity and Infrastructure Security Agency
 vulnerability@cisa.dhs.gov
 
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.
@@ -66,10 +64,8 @@ review.</p>
 <p>If you have any questions, please contact our office.</p>
 
 <p>Cheers,<br>
-The NCATS team</p>
-
-<p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
-Cybersecurity and Infrastructure Security Agency (CISA)<br>
+CISA Cyber Assessments - Cyber Hygiene<br>
+Cybersecurity and Infrastructure Security Agency<br>
 <a href="mailto:vulnerability@cisa.dhs.gov">vulnerability@cisa.dhs.gov</a></p>
 
 <p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.</p>
@@ -130,10 +126,8 @@ The Cyber Exposure scorecard from December 15, 2001 is attached for your review.
 If you have any questions, please contact our office.
 
 Cheers,
-The NCATS team
-
-National Cybersecurity Assessments and Technical Services (NCATS)
-Cybersecurity and Infrastructure Security Agency (CISA)
+CISA Cyber Assessments - Cyber Hygiene
+Cybersecurity and Infrastructure Security Agency
 vulnerability@cisa.dhs.gov
 
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.
@@ -151,10 +145,8 @@ review.</p>
 <p>If you have any questions, please contact our office.</p>
 
 <p>Cheers,<br>
-The NCATS team</p>
-
-<p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
-Cybersecurity and Infrastructure Security Agency (CISA)<br>
+CISA Cyber Assessments - Cyber Hygiene<br>
+Cybersecurity and Infrastructure Security Agency<br>
 <a href="mailto:vulnerability@cisa.dhs.gov">vulnerability@cisa.dhs.gov</a></p>
 
 <p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.</p>

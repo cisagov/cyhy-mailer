@@ -9,7 +9,7 @@ import os.path
 
 
 class Message(MIMEMultipart):
-    """An email message sent from the NCATS inbox.
+    """An email message sent from the CISA Cyber Assessments inbox.
 
     Static attributes
     -----------------
