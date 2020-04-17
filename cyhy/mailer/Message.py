@@ -37,7 +37,7 @@ class Message(MIMEMultipart):
 
     DefaultBcc = ["cyhy_reports@hq.dhs.gov"]
 
-    DefaultReplyTo = "ncats@hq.dhs.gov"
+    DefaultReplyTo = "vulnerability@cisa.dhs.gov"
 
     def __init__(
         self,
