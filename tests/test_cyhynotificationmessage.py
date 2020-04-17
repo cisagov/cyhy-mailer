@@ -22,8 +22,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
-            message["Subject"],
-            "FEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
+            message["Subject"], "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
         self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
@@ -41,7 +40,15 @@ class Test(unittest.TestCase):
             elif part.get_content_type() == "text/plain":
                 text_body = """Greetings FEDTEST,
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -61,7 +68,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings FEDTEST,</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -92,8 +110,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
-            message["Subject"],
-            "FEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
+            message["Subject"], "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
         self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
@@ -111,7 +128,15 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             elif part.get_content_type() == "text/plain":
                 body = """Greetings FEDTEST,
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -131,7 +156,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings FEDTEST,</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -172,8 +208,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         self.assertEqual(message["From"], fm)
         self.assertEqual(
-            message["Subject"],
-            "FEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
+            message["Subject"], "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message["CC"], "cc@example.com")
         self.assertEqual(message["BCC"], "bcc@example.com")
@@ -191,7 +226,15 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             elif part.get_content_type() == "text/plain":
                 body = """Greetings FEDTEST,
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -211,7 +254,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings FEDTEST,</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -252,8 +306,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         self.assertEqual(message["From"], fm)
         self.assertEqual(
-            message["Subject"],
-            "FEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
+            message["Subject"], "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message["CC"], "cc@example.com,cc2@example.com")
         self.assertEqual(message["BCC"], "bcc@example.com,bcc2@example.com")
@@ -271,7 +324,15 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             elif part.get_content_type() == "text/plain":
                 body = """Greetings FEDTEST,
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -291,7 +352,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings FEDTEST,</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>As part of <a href="https://cyber.dhs.gov/bod/19-02/">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -322,8 +394,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
-            message["Subject"],
-            "NONFEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
+            message["Subject"], "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
         self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
@@ -341,7 +412,15 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             elif part.get_content_type() == "text/plain":
                 text_body = """Greetings NONFEDTEST,
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. CISA recommends remediating critical findings within 15 days and high findings within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+CISA recommends remediating critical findings within 15 days and high findings within 30 days.
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -361,7 +440,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings NONFEDTEST,</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. CISA recommends remediating critical findings within 15 days and high findings within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>CISA recommends remediating critical findings within 15 days and high findings within 30 days.</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -392,8 +482,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
-            message["Subject"],
-            "NONFEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
+            message["Subject"], "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
         self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
@@ -411,7 +500,15 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             elif part.get_content_type() == "text/plain":
                 body = """Greetings NONFEDTEST,
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. CISA recommends remediating critical findings within 15 days and high findings within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+CISA recommends remediating critical findings within 15 days and high findings within 30 days.
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -431,7 +528,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings NONFEDTEST,</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. CISA recommends remediating critical findings within 15 days and high findings within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>CISA recommends remediating critical findings within 15 days and high findings within 30 days.</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -472,8 +580,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         self.assertEqual(message["From"], fm)
         self.assertEqual(
-            message["Subject"],
-            "NONFEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
+            message["Subject"], "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message["CC"], "cc@example.com")
         self.assertEqual(message["BCC"], "bcc@example.com")
@@ -491,7 +598,15 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             elif part.get_content_type() == "text/plain":
                 body = """Greetings NONFEDTEST,
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. CISA recommends remediating critical findings within 15 days and high findings within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+CISA recommends remediating critical findings within 15 days and high findings within 30 days.
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -511,7 +626,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings NONFEDTEST,</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. CISA recommends remediating critical findings within 15 days and high findings within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>CISA recommends remediating critical findings within 15 days and high findings within 30 days.</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -552,8 +678,7 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
 
         self.assertEqual(message["From"], fm)
         self.assertEqual(
-            message["Subject"],
-            "NONFEDTEST - Cyber Hygiene Alert - New Critical/High Vulnerabilities Detected - December 15, 2001",
+            message["Subject"], "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message["CC"], "cc@example.com,cc2@example.com")
         self.assertEqual(message["BCC"], "bcc@example.com,bcc2@example.com")
@@ -571,7 +696,15 @@ Cybersecurity and Infrastructure Security Agency (CISA)<br>
             elif part.get_content_type() == "text/plain":
                 body = """Greetings NONFEDTEST,
 
-Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. CISA recommends remediating critical findings within 15 days and high findings within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+* New critical and/or high vulnerabilities
+* New potentially risky services
+
+CISA recommends remediating critical findings within 15 days and high findings within 30 days.
+
+CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
+
+The details are in the attached PDF, which has the same password as your Cyber Hygiene report.
 
 If you have any questions, please contact our office.
 
@@ -591,7 +724,18 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings NONFEDTEST,</p>
 
-<p>Cyber Hygiene scans conducted in the past day have detected potential new critical and/or high vulnerabilities on one or more of your hosts. CISA recommends remediating critical findings within 15 days and high findings within 30 days. The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<ul>
+  <li>New critical and/or high vulnerabilities</li>
+  <li>New potentially risky services</li>
+</ul>
+</p>
+
+<p>CISA recommends remediating critical findings within 15 days and high findings within 30 days.</p>
+
+<p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.) to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
+
+<p>The details are in the attached PDF, which has the same password as your Cyber Hygiene report.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
