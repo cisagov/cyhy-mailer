@@ -32,24 +32,22 @@ class CyhyMessage(ReportMessage):
 The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)
 
 {{#has_tech_pocs}}
-Note: NCATS has the following information listed as the Technical Points of Contact for {{acronym}}:
+Note: CISA has the following information listed as the Technical Points of Contact for {{acronym}}:
 
 {{#tech_pocs}}
 Name:  {{name}}
 Email:  {{email}}
 
 {{/tech_pocs}}
-Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with {{acronym}}, please contact NCATS@hq.dhs.gov with updated information.
+Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with {{acronym}}, please contact vulnerability@cisa.dhs.gov with updated information.
 
 {{/has_tech_pocs}}
 If you have any questions, please contact our office.
 
 Cheers,
-The NCATS team
-
-National Cybersecurity Assessments and Technical Services (NCATS)
-Cybersecurity and Infrastructure Security Agency (CISA)
-ncats@hq.dhs.gov
+CISA Cyber Assessments - Cyber Hygiene
+Cybersecurity and Infrastructure Security Agency
+vulnerability@cisa.dhs.gov
 
 WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.
 """
@@ -62,7 +60,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 <p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
 {{#has_tech_pocs}}
-<p>Note: NCATS has the following information listed as the Technical Points of Contact for {{acronym}}:</p>
+<p>Note: CISA has the following information listed as the Technical Points of Contact for {{acronym}}:</p>
 
 {{#tech_pocs}}
 <p>
@@ -71,17 +69,15 @@ Email:  {{email}}<br>
 </p>
 {{/tech_pocs}}
 
-<p>Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with {{acronym}}, please contact <a href="mailto:NCATS@hq.dhs.gov">NCATS@hq.dhs.gov</a> with updated information.</p>
+<p>Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with {{acronym}}, please contact <a href="mailto:vulnerability@cisa.dhs.gov">vulnerability@cisa.dhs.gov</a> with updated information.</p>
 
 {{/has_tech_pocs}}
 <p>If you have any questions, please contact our office.</p>
 
 <p>Cheers,<br>
-The NCATS team</p>
-
-<p>National Cybersecurity Assessments and Technical Services (NCATS)<br>
-Cybersecurity and Infrastructure Security Agency (CISA)<br>
-<a href="mailto:ncats@hq.dhs.gov">ncats@hq.dhs.gov</a></p>
+CISA Cyber Assessments - Cyber Hygiene<br>
+Cybersecurity and Infrastructure Security Agency<br>
+<a href="mailto:vulnerability@cisa.dhs.gov">vulnerability@cisa.dhs.gov</a></p>
 
 <p>WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information that may be exempt from public release under the Freedom of Information Act (5 U.S.G. 552). It is to be controlled, stored, handled, transmitted, distributed, and disposed of in accordance with CISA policy relating to FOUO information and is not to be released to the public or other personnel who do not have a valid 'need-to-know' without prior approval of an authorized CISA official.</p>
 </body>

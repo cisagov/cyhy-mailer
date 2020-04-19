@@ -9,7 +9,7 @@ import os.path
 
 
 class Message(MIMEMultipart):
-    """An email message sent from the NCATS inbox.
+    """An email message sent from the CISA Cyber Assessments inbox.
 
     Static attributes
     -----------------
@@ -37,7 +37,7 @@ class Message(MIMEMultipart):
 
     DefaultBcc = ["cyhy_reports@hq.dhs.gov"]
 
-    DefaultReplyTo = "ncats@hq.dhs.gov"
+    DefaultReplyTo = "vulnerability@cisa.dhs.gov"
 
     def __init__(
         self,

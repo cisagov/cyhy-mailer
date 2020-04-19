@@ -38,10 +38,8 @@ Here is the cyhy-mailer summary from the run ending at {{date}}:
 Please direct feedback and questions to ncats-dev@beta.dhs.gov and/or the cyhy-mailer GitHub project.
 
 Regards,
-The NCATS Development Team
-
-National Cybersecurity Assessments and Technical Services (NCATS)
-Cybersecurity and Infrastructure Security Agency
+The VM Development Team
+Cybersecurity and Infrastructure Security Agency (CISA)
 ncats-dev@beta.dhs.gov
 """
 
@@ -61,15 +59,14 @@ Here is the cyhy-mailer summary from {{date}}:
 </p>
 
 <p> Please direct feedback and questions to <a
-href="mailto:ncats-dev@beta.dhs.gov">the NCATS Development Team</a>
+href="mailto:ncats-dev@beta.dhs.gov">the VM Development Team</a>
 and/or the <a
 href="https://github.com/cisagov/cyhy-mailer">cyhy-mailer GitHub
 project</a>.</p>
 
 <p>
 Regards,<br>
-The NCATS Development Team<br><br>
-National Cybersecurity Assessments and Technical Services (NCATS)<br>
+The VM Development Team<br><br>
 Cybersecurity and Infrastructure Security Agency<br>
 <a href="mailto:ncats-dev@beta.dhs.gov">ncats-dev@beta.dhs.gov</a>
 </div>

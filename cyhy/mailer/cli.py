@@ -823,7 +823,7 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
             # Construct the report message to send
             subject = f"Sample Cyber Hygiene Report - {report_date}"
             message = ReportMessage(
-                ["ncats@hq.dhs.gov"],
+                ["vulnerability@cisa.dhs.gov"],
                 subject,
                 None,
                 None,
