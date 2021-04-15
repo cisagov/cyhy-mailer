@@ -79,8 +79,8 @@ Cybersecurity and Infrastructure Security Agency<br>
         agency_acronym = "CLARKE"
         report_date = "December 15, 2001"
         tech_pocs = [
-            {"name": "Cixin Liu", "email": "cixin@liu.com"},
-            {"name": "Alastair Reynolds", "email": "alastair@reynolds.com"},
+            {"name": "Cixin Liu", "email": "cixinliu@example.com"},
+            {"name": "Alastair Reynolds", "email": "alastairreynolds@example.com"},
         ]
 
         message = CyhyMessage(to, pdf, agency_acronym, report_date, tech_pocs)
@@ -111,10 +111,10 @@ The Cyber Hygiene scan results are attached for your review. Same password as be
 Note: CISA has the following information listed as the Technical Points of Contact for CLARKE:
 
 Name:  Cixin Liu
-Email:  cixin@liu.com
+Email:  cixinliu@example.com
 
 Name:  Alastair Reynolds
-Email:  alastair@reynolds.com
+Email:  alastairreynolds@example.com
 
 Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with CLARKE, please contact vulnerability@cisa.dhs.gov with updated information.
 
@@ -140,11 +140,11 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>
 Name:  Cixin Liu<br>
-Email:  cixin@liu.com<br>
+Email:  cixinliu@example.com<br>
 </p>
 <p>
 Name:  Alastair Reynolds<br>
-Email:  alastair@reynolds.com<br>
+Email:  alastairreynolds@example.com<br>
 </p>
 
 <p>Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with CLARKE, please contact <a href="mailto:vulnerability@cisa.dhs.gov">vulnerability@cisa.dhs.gov</a> with updated information.</p>
@@ -168,7 +168,7 @@ Cybersecurity and Infrastructure Security Agency<br>
         pdf = "./tests/data/pdf-sample.pdf"
         agency_acronym = "CLARKE"
         report_date = "December 15, 2001"
-        tech_pocs = [{"name": "Cixin Liu", "email": "cixin@liu.com"}]
+        tech_pocs = [{"name": "Cixin Liu", "email": "cixinliu@example.com"}]
 
         message = CyhyMessage(to, pdf, agency_acronym, report_date, tech_pocs)
 
@@ -198,7 +198,7 @@ The Cyber Hygiene scan results are attached for your review. Same password as be
 Note: CISA has the following information listed as the Technical Points of Contact for CLARKE:
 
 Name:  Cixin Liu
-Email:  cixin@liu.com
+Email:  cixinliu@example.com
 
 Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with CLARKE, please contact vulnerability@cisa.dhs.gov with updated information.
 
@@ -224,7 +224,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>
 Name:  Cixin Liu<br>
-Email:  cixin@liu.com<br>
+Email:  cixinliu@example.com<br>
 </p>
 
 <p>Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with CLARKE, please contact <a href="mailto:vulnerability@cisa.dhs.gov">vulnerability@cisa.dhs.gov</a> with updated information.</p>
@@ -251,7 +251,7 @@ Cybersecurity and Infrastructure Security Agency<br>
         bcc = ["bcc@example.com"]
         agency_acronym = "CLARKE"
         report_date = "December 15, 2001"
-        tech_pocs = [{"name": "Cixin Liu", "email": "cixin@liu.com"}]
+        tech_pocs = [{"name": "Cixin Liu", "email": "cixinliu@example.com"}]
 
         message = CyhyMessage(
             to,
@@ -290,7 +290,7 @@ The Cyber Hygiene scan results are attached for your review. Same password as be
 Note: CISA has the following information listed as the Technical Points of Contact for CLARKE:
 
 Name:  Cixin Liu
-Email:  cixin@liu.com
+Email:  cixinliu@example.com
 
 Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with CLARKE, please contact vulnerability@cisa.dhs.gov with updated information.
 
@@ -316,7 +316,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>
 Name:  Cixin Liu<br>
-Email:  cixin@liu.com<br>
+Email:  cixinliu@example.com<br>
 </p>
 
 <p>Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with CLARKE, please contact <a href="mailto:vulnerability@cisa.dhs.gov">vulnerability@cisa.dhs.gov</a> with updated information.</p>
@@ -343,7 +343,7 @@ Cybersecurity and Infrastructure Security Agency<br>
         bcc = ["bcc@example.com", "bcc2@example.com"]
         agency_acronym = "CLARKE"
         report_date = "December 15, 2001"
-        tech_pocs = [{"name": "Cixin Liu", "email": "cixin@liu.com"}]
+        tech_pocs = [{"name": "Cixin Liu", "email": "cixinliu@example.com"}]
 
         message = CyhyMessage(
             to,
@@ -382,7 +382,7 @@ The Cyber Hygiene scan results are attached for your review. Same password as be
 Note: CISA has the following information listed as the Technical Points of Contact for CLARKE:
 
 Name:  Cixin Liu
-Email:  cixin@liu.com
+Email:  cixinliu@example.com
 
 Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with CLARKE, please contact vulnerability@cisa.dhs.gov with updated information.
 
@@ -408,7 +408,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>
 Name:  Cixin Liu<br>
-Email:  cixin@liu.com<br>
+Email:  cixinliu@example.com<br>
 </p>
 
 <p>Please request the report password from a Technical Point of Contact and route all other requests through a Technical POC. Should a Technical Point of Contact listed above no longer be with CLARKE, please contact <a href="mailto:vulnerability@cisa.dhs.gov">vulnerability@cisa.dhs.gov</a> with updated information.</p>
