@@ -30,9 +30,9 @@ class CybexMessage(ReportMessage):
     """
 
     DefaultTo = [
-        "vulnerability@cisa.dhs.gov",
-        "CyberDirectives@hq.dhs.gov",
-        "CyberLiason@hq.dhs.gov",
+        "CyHy_Reports@hq.dhs.gov",
+        "CyberDirectives@cisa.dhs.gov",
+        "CyberLiaison@cisa.dhs.gov",
     ]
 
     Subject = "Cyber Exposure Scorecard - {{report_date}} Results"
