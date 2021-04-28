@@ -1,8 +1,9 @@
 ---
-# The version for the main docker-compose configuration needs to be the lowest
-# version that supports the features used by all docker-compose configurations in
-# this project. This is to support the use of a 'docker-compose.override.yml' file
-# derived from one of the other configurations as documented here:
+# The version for the main docker-compose configuration needs to be
+# the lowest version that supports the features used by all
+# docker-compose configurations in this project. This is to support
+# the use of a 'docker-compose.override.yml' file derived from one of
+# the other configurations as documented here:
 # https://docs.docker.com/compose/extends/#multiple-compose-files
 version: '3.2'
 
