@@ -1,7 +1,10 @@
 ---
-dist: xenial
+dist: focal
 language: python
-python: 3.7
+python:
+  - "3.7"
+  - "3.8"
+  - "3.9"
 # pre-commit hooks can use Docker, so we should go ahead and enable it
 services: docker
 
@@ -43,4 +46,4 @@ deploy:
     script: bash travis_scripts/deploy_to_docker_hub.sh
     on:
       tags: true
-      python: '3.7'
+      python: '3.9'

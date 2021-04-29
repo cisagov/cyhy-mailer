@@ -22,7 +22,8 @@ class Test(unittest.TestCase):
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
-            message["Subject"], "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
+            message["Subject"],
+            "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
         self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
@@ -106,7 +107,8 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
-            message["Subject"], "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
+            message["Subject"],
+            "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
         self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
@@ -200,7 +202,8 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         self.assertEqual(message["From"], fm)
         self.assertEqual(
-            message["Subject"], "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
+            message["Subject"],
+            "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message["CC"], "cc@example.com")
         self.assertEqual(message["BCC"], "bcc@example.com")
@@ -294,7 +297,8 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         self.assertEqual(message["From"], fm)
         self.assertEqual(
-            message["Subject"], "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
+            message["Subject"],
+            "FEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message["CC"], "cc@example.com,cc2@example.com")
         self.assertEqual(message["BCC"], "bcc@example.com,bcc2@example.com")
@@ -378,7 +382,8 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
-            message["Subject"], "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
+            message["Subject"],
+            "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
         self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
@@ -462,7 +467,8 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
-            message["Subject"], "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
+            message["Subject"],
+            "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message.get("CC"), None)
         self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
@@ -556,7 +562,8 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         self.assertEqual(message["From"], fm)
         self.assertEqual(
-            message["Subject"], "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
+            message["Subject"],
+            "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message["CC"], "cc@example.com")
         self.assertEqual(message["BCC"], "bcc@example.com")
@@ -650,7 +657,8 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         self.assertEqual(message["From"], fm)
         self.assertEqual(
-            message["Subject"], "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
+            message["Subject"],
+            "NONFEDTEST - Cyber Hygiene Alert - December 15, 2001",
         )
         self.assertEqual(message["CC"], "cc@example.com,cc2@example.com")
         self.assertEqual(message["BCC"], "bcc@example.com,bcc2@example.com")
