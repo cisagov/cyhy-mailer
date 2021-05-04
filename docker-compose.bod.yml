@@ -3,7 +3,6 @@ version: '3.2'
 
 services:
   mailer:
-    image: 'dhsncats/cyhy-mailer:1.3.12'
     volumes:
       - type: bind
         source: "/var/cyhy/orchestrator/output/archive/latest/reporting/\
