@@ -33,6 +33,7 @@ class CybexMessage(ReportMessage):
         "CyHy_Reports@hq.dhs.gov",
         "CyberDirectives@cisa.dhs.gov",
         "CyberLiaison@cisa.dhs.gov",
+        "cyberscopehelp@cisa.dhs.gov",
     ]
 
     Subject = "Cyber Exposure Scorecard - {{report_date}} Results"
