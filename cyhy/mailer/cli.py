@@ -327,6 +327,8 @@ def send_message(ses_client, message, counter=None, dry_run=False):
                 f"Unable to send message.  Response from boto3 is: {response}"
             )
             raise UnableToSendError(response)
+    else:
+        logging.debug("NOT sending message")
 
     if counter is not None:
         counter += 1
