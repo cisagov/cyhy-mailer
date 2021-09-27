@@ -6,7 +6,7 @@ cyhy-mailer can send out Cyber Hygiene and BOD 18-01 reports, as well
 as Cyber Hygiene notifications and the Cyber Exposure scorecard.
 
 Usage:
-  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug] [--dry-run]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -39,9 +39,9 @@ Options:
                                     to which the summary statistics should be
                                     sent at the end of the run.  If not
                                     specified then no summary will be sent.
-  -d --debug                        A Boolean value indicating whether the
-                                    output should include debugging messages
-                                    or not.
+  -d --debug                        Include debugging messages in the output.
+  --dry-run                         Do everything except actually send out
+                                    emails.
 
 """
 
@@ -283,7 +283,7 @@ class UnableToSendError(Exception):
         self.response = response
 
 
-def send_message(ses_client, message, counter=None):
+def send_message(ses_client, message, counter=None, dry_run=False):
     """Send a message.
 
     Parameters
@@ -296,6 +296,9 @@ def send_message(ses_client, message, counter=None):
 
     counter : int
         A counter.
+
+    dry_run : bool
+        If True then do not actually send email.
 
     Returns
     -------
@@ -312,15 +315,18 @@ def send_message(ses_client, message, counter=None):
     anything other than 200.
 
     """
-    # "Are you silly?  I'm still gonna send it!"
-    #   -- Larry Enticer
-    response = ses_client.send_raw_email(RawMessage={"Data": message.as_string()})
+    if not dry_run:
+        # "Are you silly?  I'm still gonna send it!"
+        #   -- Larry Enticer
+        response = ses_client.send_raw_email(RawMessage={"Data": message.as_string()})
 
-    # Check for errors
-    status_code = response["ResponseMetadata"]["HTTPStatusCode"]
-    if status_code != 200:
-        logging.error(f"Unable to send message.  Response from boto3 is: {response}")
-        raise UnableToSendError(response)
+        # Check for errors
+        status_code = response["ResponseMetadata"]["HTTPStatusCode"]
+        if status_code != 200:
+            logging.error(
+                f"Unable to send message.  Response from boto3 is: {response}"
+            )
+            raise UnableToSendError(response)
 
     if counter is not None:
         counter += 1
@@ -328,7 +334,9 @@ def send_message(ses_client, message, counter=None):
     return counter
 
 
-def send_bod_reports(db, batch_size, ses_client, tmail_report_dir, https_report_dir):
+def send_bod_reports(
+    db, batch_size, ses_client, tmail_report_dir, https_report_dir, dry_run=False
+):
     """Send out Trustworthy Email and HTTPS reports.
 
     Parameters
@@ -352,6 +360,9 @@ def send_bod_reports(db, batch_size, ses_client, tmail_report_dir, https_report_
     https_report_dir : str
         The directory where the HTTPS reports can be found.  If None
         then no HTTPS reports will be sent.
+
+    dry_run : bool
+        If True then do not actually send email.
 
     Returns
     -------
@@ -457,7 +468,7 @@ def send_bod_reports(db, batch_size, ses_client, tmail_report_dir, https_report_
 
                 try:
                     agencies_emailed_tmail_reports = send_message(
-                        ses_client, message, agencies_emailed_tmail_reports
+                        ses_client, message, agencies_emailed_tmail_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
@@ -513,7 +524,7 @@ def send_bod_reports(db, batch_size, ses_client, tmail_report_dir, https_report_
 
                 try:
                     agencies_emailed_https_reports = send_message(
-                        ses_client, message, agencies_emailed_https_reports
+                        ses_client, message, agencies_emailed_https_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
@@ -533,7 +544,9 @@ def send_bod_reports(db, batch_size, ses_client, tmail_report_dir, https_report_
     return (tmail_stats_string, https_stats_string)
 
 
-def send_cybex_scorecard(db, batch_size, ses_client, cybex_scorecard_dir):
+def send_cybex_scorecard(
+    db, batch_size, ses_client, cybex_scorecard_dir, dry_run=False
+):
     """Send out Cyber Exposure scorecard.
 
     Parameters
@@ -552,6 +565,9 @@ def send_cybex_scorecard(db, batch_size, ses_client, cybex_scorecard_dir):
     cybex_scorecard_dir : str
         The directory where the Cybex scorecard can be found.  If None
         then no Cybex scorecard will be sent.
+
+    dry_run : bool
+        If True then do not actually send email.
 
     Returns
     -------
@@ -651,7 +667,9 @@ def send_cybex_scorecard(db, batch_size, ses_client, cybex_scorecard_dir):
             )
 
             try:
-                cybex_report_emailed = bool(send_message(ses_client, message, 0))
+                cybex_report_emailed = bool(
+                    send_message(ses_client, message, 0, dry_run)
+                )
             except (UnableToSendError, ClientError):
                 logging.error(
                     "Unable to send Cyber Exposure Scorecard",
@@ -670,7 +688,7 @@ def send_cybex_scorecard(db, batch_size, ses_client, cybex_scorecard_dir):
     return (cybex_stats_string,)
 
 
-def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
+def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False):
     """Send out Cyber Hygiene reports.
 
     Parameters
@@ -689,6 +707,9 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
     cyhy_report_dir : str
         The directory where the Cyber Hygiene reports can be found.
         If None then no Cyber Hygiene reports will be sent.
+
+    dry_run : bool
+        If True then do not actually send email.
 
     Returns
     -------
@@ -781,7 +802,7 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
 
                 try:
                     agencies_emailed_cyhy_reports = send_message(
-                        ses_client, message, agencies_emailed_cyhy_reports
+                        ses_client, message, agencies_emailed_cyhy_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
@@ -832,7 +853,9 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
             )
 
             try:
-                sample_cyhy_report_emailed = bool(send_message(ses_client, message, 0))
+                sample_cyhy_report_emailed = bool(
+                    send_message(ses_client, message, 0, dry_run)
+                )
             except (UnableToSendError, ClientError):
                 logging.error(
                     "Unable to send sample Cyber Hygiene report",
@@ -854,7 +877,9 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir):
     return (cyhy_stats_string, sample_cyhy_stats_string)
 
 
-def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
+def send_cyhy_notifications(
+    db, batch_size, ses_client, cyhy_notification_dir, dry_run=False
+):
     """Send out Cyber Hygiene reports notifications.
 
     Parameters
@@ -873,6 +898,9 @@ def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
     cyhy_notification_dir : str
         The directory where the Cyber Hygiene notifications can be found.
         If None then no Cyber Hygiene notifications will be sent.
+
+    dry_run : bool
+        If True then do not actually send email.
 
     Returns
     -------
@@ -958,7 +986,10 @@ def send_cyhy_notifications(db, batch_size, ses_client, cyhy_notification_dir):
 
                 try:
                     agencies_emailed_cyhy_notifications = send_message(
-                        ses_client, message, agencies_emailed_cyhy_notifications
+                        ses_client,
+                        message,
+                        agencies_emailed_cyhy_notifications,
+                        dry_run,
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
@@ -1045,22 +1076,29 @@ def main():
             ses_client,
             args["--tmail-report-dir"],
             args["--https-report-dir"],
+            args["--dry-run"],
         )
         all_stats_strings.extend(stats)
 
     if args["cybex"]:
         stats = send_cybex_scorecard(
-            db, batch_size, ses_client, args["--cybex-scorecard-dir"]
+            db, batch_size, ses_client, args["--cybex-scorecard-dir"], args["--dry-run"]
         )
         all_stats_strings.extend(stats)
 
     if args["cyhy"]:
-        stats = send_cyhy_reports(db, batch_size, ses_client, args["--cyhy-report-dir"])
+        stats = send_cyhy_reports(
+            db, batch_size, ses_client, args["--cyhy-report-dir"], args["--dry-run"]
+        )
         all_stats_strings.extend(stats)
 
     if args["notification"]:
         stats = send_cyhy_notifications(
-            db, batch_size, ses_client, args["--cyhy-notification-dir"]
+            db,
+            batch_size,
+            ses_client,
+            args["--cyhy-notification-dir"],
+            args["--dry-run"],
         )
         all_stats_strings.extend(stats)
 
@@ -1071,7 +1109,7 @@ def main():
     if summary_to and all_stats_strings:
         message = StatsMessage(summary_to.split(","), all_stats_strings)
         try:
-            send_message(ses_client, message)
+            send_message(ses_client, message, args["--dry-run"])
         except (UnableToSendError, ClientError):
             logging.error(
                 "Unable to send cyhy-mailer report summary",
