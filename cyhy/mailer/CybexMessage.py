@@ -1,6 +1,6 @@
 """This module contains the CybexMessage class."""
 
-import pystache
+import chevron
 
 from cyhy.mailer.Message import Message
 from cyhy.mailer.ReportMessage import ReportMessage
@@ -133,9 +133,9 @@ Cybersecurity and Infrastructure Security Agency<br>
         mustache_data = {"report_date": report_date}
 
         # Render the templates
-        subject = pystache.render(CybexMessage.Subject, mustache_data)
-        text_body = pystache.render(CybexMessage.TextBody, mustache_data)
-        html_body = pystache.render(CybexMessage.HtmlBody, mustache_data)
+        subject = chevron.render(CybexMessage.Subject, mustache_data)
+        text_body = chevron.render(CybexMessage.TextBody, mustache_data)
+        html_body = chevron.render(CybexMessage.HtmlBody, mustache_data)
 
         ReportMessage.__init__(
             self,

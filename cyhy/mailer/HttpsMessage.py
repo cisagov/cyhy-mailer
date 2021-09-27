@@ -1,6 +1,6 @@
 """This module contains the HttpsMessage class."""
 
-import pystache
+import chevron
 
 from cyhy.mailer.Message import Message
 from cyhy.mailer.ReportMessage import ReportMessage
@@ -138,9 +138,9 @@ Cybersecurity and Infrastructure Security Agency<br />
         mustache_data = {"acronym": agency_acronym, "report_date": report_date}
 
         # Render the templates
-        subject = pystache.render(HttpsMessage.Subject, mustache_data)
-        text_body = pystache.render(HttpsMessage.TextBody, mustache_data)
-        html_body = pystache.render(HttpsMessage.HtmlBody, mustache_data)
+        subject = chevron.render(HttpsMessage.Subject, mustache_data)
+        text_body = chevron.render(HttpsMessage.TextBody, mustache_data)
+        html_body = chevron.render(HttpsMessage.HtmlBody, mustache_data)
 
         ReportMessage.__init__(
             self,
