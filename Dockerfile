@@ -8,8 +8,8 @@ MAINTAINER Shane Frasier <jeremy.frasier@trio.dhs.gov>
 # seem to know how to HTTPS.
 RUN apk --no-cache add openssl shadow wget
 
-# Update pip and setuptools
-RUN pip3 install --upgrade pip setuptools
+# Update pip, setuptools, and wheel
+RUN pip3 install --upgrade pip setuptools wheel
 
 # Install cyhy-mailer
 RUN mkdir cyhy-mailer
