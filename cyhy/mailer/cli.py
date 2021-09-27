@@ -1111,7 +1111,7 @@ def main():
     if summary_to and all_stats_strings:
         message = StatsMessage(summary_to.split(","), all_stats_strings)
         try:
-            send_message(ses_client, message, args["--dry-run"])
+            send_message(ses_client, message, dry_run=args["--dry-run"])
         except (UnableToSendError, ClientError):
             logging.error(
                 "Unable to send cyhy-mailer report summary",
