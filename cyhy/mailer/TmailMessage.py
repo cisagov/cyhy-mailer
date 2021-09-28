@@ -1,6 +1,6 @@
 """This module contains the TmailMessage class."""
 
-import pystache
+import chevron
 
 from cyhy.mailer.Message import Message
 from cyhy.mailer.ReportMessage import ReportMessage
@@ -136,9 +136,9 @@ Cybersecurity and Infrastructure Security Agency<br />
         mustache_data = {"acronym": agency_acronym, "report_date": report_date}
 
         # Render the templates
-        subject = pystache.render(TmailMessage.Subject, mustache_data)
-        text_body = pystache.render(TmailMessage.TextBody, mustache_data)
-        html_body = pystache.render(TmailMessage.HtmlBody, mustache_data)
+        subject = chevron.render(TmailMessage.Subject, mustache_data)
+        text_body = chevron.render(TmailMessage.TextBody, mustache_data)
+        html_body = chevron.render(TmailMessage.HtmlBody, mustache_data)
 
         ReportMessage.__init__(
             self,

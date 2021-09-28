@@ -27,13 +27,11 @@ pip install git+https://github.com/cisagov/cyhy-mailer.git
 
 ```bash
 Usage:
-  cyhy-mailer report [--cyhy-report-dir=DIRECTORY]
+  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY]
 [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY]
 [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY]
 [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
-  cyhy-mailer adhoc --subject=SUBJECT --html-body=FILENAME --text-body=FILENAME
-[--to=EMAILS] [--cyhy] [--cyhy-federal] [--db-creds-file=FILENAME]
-[--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
+[--dry-run]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -66,25 +64,9 @@ Options:
                                     to which the summary statistics should be
                                     sent at the end of the run.  If not
                                     specified then no summary will be sent.
-  -d --debug                        A Boolean value indicating whether the
-                                    output should include debugging messages
-                                    or not.
-  --subject=SUBJECT                 The subject line when sending an ad hoc
-                                    email message.
-  --html-body=FILENAME              The file containing the HTML body text
-                                    when sending an ad hoc email message.
-  --text-body=FILENAME              The file containing the text body text
-                                    when sending an ad hoc email message.
-  --to=EMAILS                       A comma-separated list of additional
-                                    email addresses to which the ad hoc
-                                    message should be sent.
-  --cyhy                            If present, then the ad hoc message
-                                    will be sent to all Cyber Hygiene
-                                    agencies.
-  --cyhy-federal                    If present, then the ad hoc message
-                                    will be sent to all Federal Cyber
-                                    Hygiene agencys.  (Note that --cyhy
-                                    implies --cyhy-federal.)
+  -d --debug                        Include debugging messages in the output.
+  --dry-run                         Do everything except actually send out
+                                    emails.
 ```
 
 ## License ##

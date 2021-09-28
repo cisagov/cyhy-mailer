@@ -52,9 +52,9 @@ setup(
     packages=["cyhy.mailer"],
     install_requires=[
         "boto3",
+        "chevron",
         "docopt",
         "mongo-db-from-config @ http://github.com/cisagov/mongo-db-from-config/tarball/develop#egg=mongo-db-from-config",
-        "pystache",
     ],
     extras_require={
         "test": ["coveralls", "pre-commit", "pytest", "pytest-cov", "semver"]
