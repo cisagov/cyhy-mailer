@@ -328,7 +328,7 @@ def send_message(ses_client, message, counter=None, dry_run=False):
             )
             raise UnableToSendError(response)
     else:
-        logging.debug("NOT sending message")
+        logging.debug("NOT sending message (dry run)")
 
     if counter is not None:
         counter += 1
