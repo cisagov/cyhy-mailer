@@ -75,10 +75,8 @@ Cybersecurity and Infrastructure Security Agency<br>
     def __init__(
         self,
         pdf_filename,
-        critical_open_csv_filename,
-        critical_closed_csv_filename,
-        high_open_csv_filename,
-        high_closed_csv_filename,
+        urgent_open_csv_filename,
+        urgent_closed_csv_filename,
         report_date,
         to_addrs=DefaultTo,
         from_addr=Message.DefaultFrom,
@@ -93,21 +91,13 @@ Cybersecurity and Infrastructure Security Agency<br>
             The filename of the PDF file that is the Cybex report
             corresponding to this message.
 
-        critical_open_csv_filename : str
+        urgent_open_csv_filename : str
             The filename of the CSV file that contains the Cybex
-            report data for open critical vulnerabilities.
+            report data for open urgent vulnerabilities.
 
-        critical_closed_csv_filename : str
+        urgent_closed_csv_filename : str
             The filename of the CSV file that contains the Cybex
-            report data for closed critical vulnerabilities.
-
-        high_open_csv_filename : str
-            The filename of the CSV file that contains the Cybex
-            report data for open high vulnerabilities.
-
-        high_closed_csv_filename : str
-            The filename of the CSV file that contains the Cybex
-            report data for closed high vulnerabilities.
+            report data for closed urgent vulnerabilities.
 
         report_date : str
             The date corresponding to the Cybex report attachment.  We
@@ -149,7 +139,5 @@ Cybersecurity and Infrastructure Security Agency<br>
             bcc_addrs,
         )
 
-        self.attach_csv(critical_open_csv_filename)
-        self.attach_csv(critical_closed_csv_filename)
-        self.attach_csv(high_open_csv_filename)
-        self.attach_csv(high_closed_csv_filename)
+        self.attach_csv(urgent_open_csv_filename)
+        self.attach_csv(urgent_closed_csv_filename)
