@@ -46,16 +46,16 @@ Options:
 """
 
 import datetime
-import docopt
 import glob
 import logging
 import re
 
 import boto3
-from botocore.exceptions import ClientError
-from mongo_db_from_config import db_from_config
+import docopt
 import pymongo.errors
 import yaml
+from botocore.exceptions import ClientError
+from mongo_db_from_config import db_from_config
 
 from cyhy.mailer import __version__
 from cyhy.mailer.CybexMessage import CybexMessage

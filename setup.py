@@ -7,6 +7,7 @@ Based on:
 """
 
 from setuptools import setup
+
 from cyhy.mailer import __version__
 
 
