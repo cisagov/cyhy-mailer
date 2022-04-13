@@ -1,11 +1,12 @@
 """This module contains the Message class."""
 
-import logging
-import os.path
+# Standard Python Libraries
 from email import encoders
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import logging
+import os.path
 
 
 class Message(MIMEMultipart):

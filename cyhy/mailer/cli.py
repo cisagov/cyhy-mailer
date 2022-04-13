@@ -45,18 +45,20 @@ Options:
 
 """
 
+# Standard Python Libraries
 import datetime
 import glob
 import logging
 import re
 
+# Third-Party Libraries
 import boto3
+from botocore.exceptions import ClientError
 import docopt
 import pymongo.errors
 import yaml
-from botocore.exceptions import ClientError
-from mongo_db_from_config import db_from_config
 
+# cisagov Libraries
 from cyhy.mailer import __version__
 from cyhy.mailer.CybexMessage import CybexMessage
 from cyhy.mailer.CyhyMessage import CyhyMessage
@@ -65,6 +67,7 @@ from cyhy.mailer.HttpsMessage import HttpsMessage
 from cyhy.mailer.ReportMessage import ReportMessage
 from cyhy.mailer.StatsMessage import StatsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
+from mongo_db_from_config import db_from_config
 
 
 class Error(Exception):

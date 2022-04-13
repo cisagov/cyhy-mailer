@@ -1,8 +1,10 @@
 """This module contains the tests for the StatsMessage class."""
 
+# Standard Python Libraries
 import datetime
 import unittest
 
+# cisagov Libraries
 from cyhy.mailer.StatsMessage import StatsMessage
 
 
