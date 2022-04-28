@@ -1,7 +1,9 @@
 """This module contains the tests for the CybexMessage class."""
 
+# Standard Python Libraries
 import unittest
 
+# cisagov Libraries
 from cyhy.mailer.CybexMessage import CybexMessage
 
 
@@ -14,7 +16,7 @@ class Test(unittest.TestCase):
         csv = "./tests/data/csv-sample.csv"
         report_date = "December 15, 2001"
 
-        message = CybexMessage(pdf, csv, csv, csv, csv, report_date)
+        message = CybexMessage(pdf, csv, csv, report_date)
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
@@ -89,8 +91,6 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         message = CybexMessage(
             pdf,
-            csv,
-            csv,
             csv,
             csv,
             report_date,

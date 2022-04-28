@@ -2,7 +2,7 @@
 cyhy
 .git
 .gitignore
-LICENSE.md
+LICENSE
 mailer.egg-info
 README.md
 requirements.txt

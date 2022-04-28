@@ -6,7 +6,10 @@ Based on:
 - https://github.com/pypa/sampleproject/blob/master/setup.py
 """
 
+# Third-Party Libraries
 from setuptools import setup
+
+# cisagov Libraries
 from cyhy.mailer import __version__
 
 

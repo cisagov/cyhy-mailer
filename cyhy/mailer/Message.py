@@ -1,5 +1,6 @@
 """This module contains the Message class."""
 
+# Standard Python Libraries
 from email import encoders
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
