@@ -58,6 +58,7 @@ setup(
         "chevron",
         "docopt",
         "mongo-db-from-config @ http://github.com/cisagov/mongo-db-from-config/tarball/develop#egg=mongo-db-from-config",
+        "pymongo<4.0",
     ],
     extras_require={
         "test": ["coveralls", "pre-commit", "pytest", "pytest-cov", "semver"]
