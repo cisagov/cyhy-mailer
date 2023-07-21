@@ -77,6 +77,8 @@ Cybersecurity and Infrastructure Security Agency<br>
     def __init__(
         self,
         pdf_filename,
+        risky_services_open_csv_filename,
+        risky_services_closed_csv_filename,
         urgent_open_csv_filename,
         urgent_closed_csv_filename,
         report_date,
@@ -92,6 +94,14 @@ Cybersecurity and Infrastructure Security Agency<br>
         pdf_filename : str
             The filename of the PDF file that is the Cybex report
             corresponding to this message.
+
+        risky_services_open_csv_filename : str
+            The filename of the CSV file that contains the Cybex
+            report data for open risky service vulnerabilities.
+
+        risky_services_closed_csv_filename : str
+            The filename of the CSV file that contains the Cybex
+            report data for closed risky service vulnerabilities.
 
         urgent_open_csv_filename : str
             The filename of the CSV file that contains the Cybex
@@ -141,5 +151,7 @@ Cybersecurity and Infrastructure Security Agency<br>
             bcc_addrs,
         )
 
+        self.attach_csv(risky_services_open_csv_filename)
+        self.attach_csv(risky_services_closed_csv_filename)
         self.attach_csv(urgent_open_csv_filename)
         self.attach_csv(urgent_closed_csv_filename)
