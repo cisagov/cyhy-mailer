@@ -644,7 +644,7 @@ def send_cybex_scorecard(
             and cybex_urgent_closed_csv_filenames
         ):
             # We take the last filename since, if there happens to be more than
-            # one, it should the latest.  (This is because we sorted the glob
+            # one, it should be the latest.  (This is because we sorted the glob
             # results.)
             cybex_report_filename = cybex_report_filenames[-1]
             cybex_risky_services_open_csv_filename = (
