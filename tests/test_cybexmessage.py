@@ -79,8 +79,8 @@ Cybersecurity and Infrastructure Security Agency<br>
                 self.assertEqual(part.get_payload(), csv_text)
                 self.assertEqual(part.get_filename(), "csv-sample.csv")
 
-    def test_nine_params(self):
-        """Test the 9-parameter version of the constructor."""
+    def test_ten_params(self):
+        """Test the 10-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         csv = "./tests/data/csv-sample.csv"
