@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
         csv = "./tests/data/csv-sample.csv"
         report_date = "December 15, 2001"
 
-        message = CybexMessage(pdf, csv, csv, report_date)
+        message = CybexMessage(pdf, csv, csv, csv, csv, report_date)
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
@@ -79,8 +79,8 @@ Cybersecurity and Infrastructure Security Agency<br>
                 self.assertEqual(part.get_payload(), csv_text)
                 self.assertEqual(part.get_filename(), "csv-sample.csv")
 
-    def test_nine_params(self):
-        """Test the 9-parameter version of the constructor."""
+    def test_ten_params(self):
+        """Test the 10-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
         csv = "./tests/data/csv-sample.csv"
@@ -91,6 +91,8 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         message = CybexMessage(
             pdf,
+            csv,
+            csv,
             csv,
             csv,
             report_date,

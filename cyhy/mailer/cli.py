@@ -593,6 +593,16 @@ def send_cybex_scorecard(
             f"{cybex_scorecard_dir}/Federal_Cyber_Exposure_Scorecard-*.pdf"
         )
         cybex_report_filenames = sorted(glob.glob(cybex_report_glob))
+        cybex_risky_services_open_csv_glob = (
+            f"{cybex_scorecard_dir}/cybex_open_tickets_potentially_risky_services_*.csv"
+        )
+        cybex_risky_services_open_csv_filenames = sorted(
+            glob.glob(cybex_risky_services_open_csv_glob)
+        )
+        cybex_risky_services_closed_csv_glob = f"{cybex_scorecard_dir}/cybex_closed_tickets_potentially_risky_services_*.csv"
+        cybex_risky_services_closed_csv_filenames = sorted(
+            glob.glob(cybex_risky_services_closed_csv_glob)
+        )
         cybex_urgent_open_csv_glob = (
             f"{cybex_scorecard_dir}/cybex_open_tickets_urgent_*.csv"
         )
@@ -609,6 +619,14 @@ def send_cybex_scorecard(
             logging.warn("More than one CybEx scorecard found")
         elif not cybex_report_filenames:
             logging.error("No CybEx scorecard found")
+        if len(cybex_risky_services_open_csv_filenames) > 1:
+            logging.warn("More than one CybEx risky services open CSV found")
+        elif not cybex_risky_services_open_csv_filenames:
+            logging.error("No CybEx risky services open CSV found")
+        if len(cybex_risky_services_closed_csv_filenames) > 1:
+            logging.warn("More than one CybEx risky services closed CSV found")
+        elif not cybex_risky_services_closed_csv_filenames:
+            logging.error("No CybEx risky services closed CSV found")
         if len(cybex_urgent_open_csv_filenames) > 1:
             logging.warn("More than one CybEx urgent open CSV found")
         elif not cybex_urgent_open_csv_filenames:
@@ -620,13 +638,21 @@ def send_cybex_scorecard(
 
         if (
             cybex_report_filenames
+            and cybex_risky_services_open_csv_filenames
+            and cybex_risky_services_closed_csv_filenames
             and cybex_urgent_open_csv_filenames
             and cybex_urgent_closed_csv_filenames
         ):
             # We take the last filename since, if there happens to be more than
-            # one, it should the latest.  (This is because we sorted the glob
+            # one, it should be the latest.  (This is because we sorted the glob
             # results.)
             cybex_report_filename = cybex_report_filenames[-1]
+            cybex_risky_services_open_csv_filename = (
+                cybex_risky_services_open_csv_filenames[-1]
+            )
+            cybex_risky_services_closed_csv_filename = (
+                cybex_risky_services_closed_csv_filenames[-1]
+            )
             cybex_urgent_open_csv_filename = cybex_urgent_open_csv_filenames[-1]
             cybex_urgent_closed_csv_filename = cybex_urgent_closed_csv_filenames[-1]
 
@@ -642,6 +668,8 @@ def send_cybex_scorecard(
             # Construct the Cybex message to send
             message = CybexMessage(
                 cybex_report_filename,
+                cybex_risky_services_open_csv_filename,
+                cybex_risky_services_closed_csv_filename,
                 cybex_urgent_open_csv_filename,
                 cybex_urgent_closed_csv_filename,
                 report_date,
