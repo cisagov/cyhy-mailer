@@ -37,7 +37,7 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 
 {{#is_federal}}As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.{{/is_federal}}{{^is_federal}}CISA recommends remediating critical findings within 15 days and high findings within 30 days.{{/is_federal}}
 
-{{#is_federal}}As part of BOD 22-01, any “known exploited” findings, regardless of severity, need to be remediated within two weeks.{{/is_federal}}{{^is_federal}}CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.{{/is_federal}}
+{{#is_federal}}As part of BOD 22-01, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.{{/is_federal}}{{^is_federal}}CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.{{/is_federal}}
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.
 
@@ -69,7 +69,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 
 <p>{{#is_federal}}As part of <a href="https://www.cisa.gov/news-events/directives/bod-19-02-vulnerability-remediation-requirements-internet-accessible-systems">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.{{/is_federal}}{{^is_federal}}CISA recommends remediating critical findings within 15 days and high findings within 30 days.{{/is_federal}}</p>
 
-<p>{{#is_federal}}As part of <a href="https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities">BOD 22-01</a>, any “known exploited” findings, regardless of severity, need to be remediated within two weeks.{{/is_federal}}{{^is_federal}}CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.{{/is_federal}}</p>
+<p>{{#is_federal}}As part of <a href="https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities">BOD 22-01</a>, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.{{/is_federal}}{{^is_federal}}CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.{{/is_federal}}</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date on the latest version, correctly configured, and uses strong authentication.</p>
 
