@@ -31,7 +31,7 @@ class CyhyNotificationMessage(ReportMessage):
 
     TextBody = """Greetings {{acronym}},
 
-Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+Cyber Hygiene scans of your host(s) conducted in the past day have detected one or more of the following:
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
@@ -60,7 +60,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 <body>
 <p>Greetings {{acronym}},</p>
 
-<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or both of the following:
+<p>Cyber Hygiene scans of your host(s) conducted in the past day have detected one or more of the following:
 <ul>
   <li>New critical, high, and/or known exploited vulnerabilities</li>
   <li>New potentially risky services</li>
