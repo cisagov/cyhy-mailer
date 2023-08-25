@@ -16,4 +16,4 @@ services:
       - --cyhy-report-dir=/cyhy_reports/
       - --cybex-scorecard-dir=/cybex_scorecard/
       - --db-creds-file=/run/secrets/database_creds.yml
-      - "--summary-to=ncats-dev@beta.dhs.gov"
+      - "--summary-to=cisa-cyhy-mailer@gwe.cisa.dhs.gov"
