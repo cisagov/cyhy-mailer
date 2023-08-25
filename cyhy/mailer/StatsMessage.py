@@ -38,12 +38,12 @@ Here is the cyhy-mailer summary from the run ending at {{date}}:
 * {{string}}
 {{/strings}}
 
-Please direct feedback and questions to ncats-dev@beta.dhs.gov and/or the cyhy-mailer GitHub project.
+Please direct feedback and questions to vm-dev@gwe.cisa.dhs.gov and/or the cyhy-mailer GitHub project.
 
 Regards,
 The VM Development Team
 Cybersecurity and Infrastructure Security Agency (CISA)
-ncats-dev@beta.dhs.gov
+vm-dev@gwe.cisa.dhs.gov
 """
 
     HtmlBody = """<html>
@@ -62,7 +62,7 @@ Here is the cyhy-mailer summary from {{date}}:
 </p>
 
 <p> Please direct feedback and questions to <a
-href="mailto:ncats-dev@beta.dhs.gov">the VM Development Team</a>
+href="mailto:vm-dev@gwe.cisa.dhs.gov">the VM Development Team</a>
 and/or the <a
 href="https://github.com/cisagov/cyhy-mailer">cyhy-mailer GitHub
 project</a>.</p>
@@ -71,7 +71,7 @@ project</a>.</p>
 Regards,<br>
 The VM Development Team<br><br>
 Cybersecurity and Infrastructure Security Agency<br>
-<a href="mailto:ncats-dev@beta.dhs.gov">ncats-dev@beta.dhs.gov</a>
+<a href="mailto:vm-dev@gwe.cisa.dhs.gov">vm-dev@gwe.cisa.dhs.gov</a>
 </div>
 </body>
 </html>

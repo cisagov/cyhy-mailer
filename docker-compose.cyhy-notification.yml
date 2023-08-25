@@ -11,4 +11,4 @@ services:
       - notification
       - --cyhy-notification-dir=/cyhy_notifications/
       - --db-creds-file=/run/secrets/database_creds.yml
-      - "--summary-to=ncats-dev@beta.dhs.gov"
+      - "--summary-to=cisa-cyhy-mailer@gwe.cisa.dhs.gov"
