@@ -203,6 +203,7 @@ def get_requests_raw(db, query, batch_size=None):
         "agency.contacts.name": True,
         "agency.contacts.email": True,
         "agency.contacts.type": True,
+        "agency.location.state": True,
     }
 
     try:
