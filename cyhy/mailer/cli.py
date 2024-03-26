@@ -797,10 +797,16 @@ def send_cyhy_reports(
                     f"State or territory information unavailable for agency with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
                 )
             else:
-                csa_email_address = csa_emails[state]
-                logging.debug(
-                    f"BCCing report for agency with ID {id} to {csa_email_address} as the agency is associated with the state or territory {state}."
-                )
+                try:
+                    csa_email_address = csa_emails[state]
+                except KeyError:
+                    logging.warn(
+                        f"State or territory {state} associated with agency with ID {id} does not correspond to a CSA region.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                    )
+                else:
+                    logging.debug(
+                        f"BCCing report for agency with ID {id} to {csa_email_address} because the agency is associated with the state or territory {state}."
+                    )
 
             ###
             # Find and mail the CyHy report, if necessary
@@ -1011,10 +1017,16 @@ def send_cyhy_notifications(
                 f"State or territory information unavailable for agency with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
             )
         else:
-            csa_email_address = csa_emails[state]
-            logging.debug(
-                f"BCCing report for agency with ID {id} to {csa_email_address} as the agency is associated with the state or territory {state}."
-            )
+            try:
+                csa_email_address = csa_emails[state]
+            except KeyError:
+                logging.warn(
+                    f"State or territory {state} associated with agency with ID {id} does not correspond to a CSA region.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                )
+            else:
+                logging.debug(
+                    f"BCCing report for agency with ID {id} to {csa_email_address} because the agency is associated with the state or territory {state}."
+                )
 
         ###
         # Find and mail the CyHy notifications, if necessary
