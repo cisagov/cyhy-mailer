@@ -789,7 +789,18 @@ def send_cyhy_reports(
                 continue
 
             # Grab the email address of the appropriate CSA.
-            csa_email_address = csa_emails[request["agency"]["location"]["state"]]
+            csa_email_address = None
+            try:
+                state = request["agency"]["location"]["state"]
+            except KeyError:
+                logging.warn(
+                    f"State or territory information unavailable for agency with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                )
+            else:
+                csa_email_address = csa_emails[state]
+                logging.debug(
+                    f"BCCing report for agency with ID {id} to {csa_email_address} as the agency is associated with the state or territory {state}."
+                )
 
             ###
             # Find and mail the CyHy report, if necessary
@@ -831,13 +842,18 @@ def send_cyhy_reports(
                 ).strftime("%B %d, %Y")
 
                 # Construct the CyHy message to send
+                if csa_email_address:
+                    bcc_addrs = Message.DefaultBcc + [csa_email_address]
+                else:
+                    bcc_addrs = Message.DefaultBcc
+
                 message = CyhyMessage(
                     to_emails,
                     cyhy_attachment_filename,
                     acronym,
                     report_date,
                     technical_pocs,
-                    bcc_addrs=Message.DefaultBcc + [csa_email_address],
+                    bcc_addrs=bcc_addrs,
                 )
 
                 try:
@@ -987,7 +1003,18 @@ def send_cyhy_notifications(
             continue
 
         # Grab the email address of the appropriate CSA.
-        csa_email_address = csa_emails[request["agency"]["location"]["state"]]
+        csa_email_address = None
+        try:
+            state = request["agency"]["location"]["state"]
+        except KeyError:
+            logging.warn(
+                f"State or territory information unavailable for agency with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
+            )
+        else:
+            csa_email_address = csa_emails[state]
+            logging.debug(
+                f"BCCing report for agency with ID {id} to {csa_email_address} as the agency is associated with the state or territory {state}."
+            )
 
         ###
         # Find and mail the CyHy notifications, if necessary
@@ -1025,13 +1052,18 @@ def send_cyhy_notifications(
                 ).strftime("%B %d, %Y")
 
                 # Construct the CyHy notification message to send
+                if csa_email_address:
+                    bcc_addrs = Message.DefaultBcc + [csa_email_address]
+                else:
+                    bcc_addrs = Message.DefaultBcc
+
                 message = CyhyNotificationMessage(
                     to_emails,
                     cyhy_notification_attachment_filename,
                     acronym,
                     is_federal,
                     notification_date,
-                    bcc_addrs=Message.DefaultBcc + [csa_email_address],
+                    bcc_addrs=bcc_addrs,
                 )
 
                 try:
