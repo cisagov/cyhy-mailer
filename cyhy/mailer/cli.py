@@ -6,7 +6,7 @@ cyhy-mailer can send out Cyber Hygiene and BOD 18-01 reports, as well
 as Cyber Hygiene notifications and the Cyber Exposure scorecard.
 
 Usage:
-  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug] [--dry-run]
+  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--csa-email-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug] [--dry-run]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -31,6 +31,23 @@ Options:
   -c --db-creds-file=FILENAME       A YAML file containing the Cyber
                                     Hygiene database credentials.
                                     [default: /run/secrets/database_creds.yml]
+  -e --csa-email-file=FILENAME      A YAML file associating each state or
+                                    territory with the email address of the
+                                    corresponding CISA Cyber Security Advisor
+                                    (CSA).  The YAML file should be a
+                                    list of dictionaries, each
+                                    corresponding to a CSA region.
+                                    Each dictionary must contain an
+                                    "email" field containing the email
+                                    address corresponding to the CSA
+                                    for that region, as well as a
+                                    "states_and_territories" field
+                                    containing a list of two-letter
+                                    state and territory abbreviations.
+                                    Each abbreviation corresponds to a
+                                    state or territory that belongs to
+                                    the region.
+                                    [default: /run/secrets/csa_emails.yml]
   --batch-size=SIZE                 The batch size to use when retrieving
                                     results from the Mongo database.  If not
                                     present then the default Mongo batch size
@@ -64,6 +81,7 @@ from cyhy.mailer.CybexMessage import CybexMessage
 from cyhy.mailer.CyhyMessage import CyhyMessage
 from cyhy.mailer.CyhyNotificationMessage import CyhyNotificationMessage
 from cyhy.mailer.HttpsMessage import HttpsMessage
+from cyhy.mailer.Message import Message
 from cyhy.mailer.ReportMessage import ReportMessage
 from cyhy.mailer.StatsMessage import StatsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
@@ -698,7 +716,9 @@ def send_cybex_scorecard(
     return (cybex_stats_string,)
 
 
-def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False):
+def send_cyhy_reports(
+    db, batch_size, ses_client, cyhy_report_dir, csa_emails, dry_run=False
+):
     """Send out Cyber Hygiene reports.
 
     Parameters
@@ -717,6 +737,12 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
     cyhy_report_dir : str
         The directory where the Cyber Hygiene reports can be found.
         If None then no Cyber Hygiene reports will be sent.
+
+    csa_emails : dict
+        A dict with keys belonging to the set of two-letter
+        abbreviations for states and territories and values equal to
+        the email of the corresponding CSA for the region to which the
+        state or territory belongs.
 
     dry_run : bool
         If True then do not actually send email.
@@ -761,6 +787,9 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
             # to_emails should contain at least one email
             if not to_emails:
                 continue
+
+            # Grab the email address of the appropriate CSA.
+            csa_email_address = csa_emails[request["agency"]["location"]["state"]]
 
             ###
             # Find and mail the CyHy report, if necessary
@@ -808,6 +837,7 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
                     acronym,
                     report_date,
                     technical_pocs,
+                    bcc_addrs=Message.DefaultBcc + [csa_email_address],
                 )
 
                 try:
@@ -888,7 +918,7 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
 
 
 def send_cyhy_notifications(
-    db, batch_size, ses_client, cyhy_notification_dir, dry_run=False
+    db, batch_size, ses_client, cyhy_notification_dir, csa_emails, dry_run=False
 ):
     """Send out Cyber Hygiene reports notifications.
 
@@ -908,6 +938,12 @@ def send_cyhy_notifications(
     cyhy_notification_dir : str
         The directory where the Cyber Hygiene notifications can be found.
         If None then no Cyber Hygiene notifications will be sent.
+
+    csa_emails : dict
+        A dict with keys belonging to the set of two-letter
+        abbreviations for states and territories and values equal to
+        the email of the corresponding CSA for the region to which the
+        state or territory belongs.
 
     dry_run : bool
         If True then do not actually send email.
@@ -949,6 +985,9 @@ def send_cyhy_notifications(
         # to_emails should contain at least one email
         if not to_emails:
             continue
+
+        # Grab the email address of the appropriate CSA.
+        csa_email_address = csa_emails[request["agency"]["location"]["state"]]
 
         ###
         # Find and mail the CyHy notifications, if necessary
@@ -992,6 +1031,7 @@ def send_cyhy_notifications(
                     acronym,
                     is_federal,
                     notification_date,
+                    bcc_addrs=Message.DefaultBcc + [csa_email_address],
                 )
 
                 try:
@@ -1061,6 +1101,32 @@ def main():
         )
         return 1
 
+    # Parse out the CSA email mapping, if present.
+    csa_email_file = args["--csa-email-file"]
+    if csa_email_file is not None:
+        try:
+            with open(csa_email_file) as stream:
+                csa_email_mapping = yaml.load(stream, Loader=yaml.SafeLoader)
+        except OSError:
+            logging.critical(
+                f"CSA email file {csa_email_file} does not exist", exc_info=True
+            )
+            return 1
+        except yaml.YAMLError:
+            logging.critical(
+                f"CSA email file {csa_email_file} does not contain valid YAML",
+                exc_info=True,
+            )
+            return 1
+
+    # Rearrange the CSA email mapping data into a more convenient
+    # form.
+    csa_emails = {}
+    for region in csa_email_mapping:
+        region_email = region["email"]
+        for state_or_territory in region["states_and_territories"]:
+            csa_emails[state_or_territory] = region_email
+
     ses_client = boto3.client("ses")
 
     batch_size = args["--batch-size"]
@@ -1098,7 +1164,12 @@ def main():
 
     if args["cyhy"]:
         stats = send_cyhy_reports(
-            db, batch_size, ses_client, args["--cyhy-report-dir"], args["--dry-run"]
+            db,
+            batch_size,
+            ses_client,
+            args["--cyhy-report-dir"],
+            csa_emails,
+            args["--dry-run"],
         )
         all_stats_strings.extend(stats)
 
@@ -1108,6 +1179,7 @@ def main():
             batch_size,
             ses_client,
             args["--cyhy-notification-dir"],
+            csa_emails,
             args["--dry-run"],
         )
         all_stats_strings.extend(stats)
