@@ -1,8 +1,15 @@
 ---
 version: '3.2'
 
+secrets:
+  csa_emails:
+    file: ./secrets/csa_emails.yml
+
 services:
   mailer:
+    secrets:
+      - source: csa_emails
+        target: csa_emails.yml
     volumes:
       - type: bind
         source: /var/cyhy/reports/output/notification_archive/latest
@@ -11,4 +18,5 @@ services:
       - notification
       - --cyhy-notification-dir=/cyhy_notifications/
       - --db-creds-file=/run/secrets/database_creds.yml
+      - --csa-email-file=/run/secrets/csa_emails.yml
       - "--summary-to=cisa-cyhy-mailer@gwe.cisa.dhs.gov"
