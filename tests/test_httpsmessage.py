@@ -14,10 +14,10 @@ class Test(unittest.TestCase):
         """Test the 4-parameter version of the constructor."""
         to = ["recipient@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
 
-        message = HttpsMessage(to, pdf, agency_acronym, report_date)
+        message = HttpsMessage(to, pdf, entity_acronym, report_date)
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
@@ -107,10 +107,10 @@ Cybersecurity and Infrastructure Security Agency<br />
         """Test the 4-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
 
-        message = HttpsMessage(to, pdf, agency_acronym, report_date)
+        message = HttpsMessage(to, pdf, entity_acronym, report_date)
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
@@ -203,13 +203,13 @@ Cybersecurity and Infrastructure Security Agency<br />
         fm = "sender@example.com"
         cc = ["cc@example.com"]
         bcc = ["bcc@example.com"]
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
 
         message = HttpsMessage(
             to,
             pdf,
-            agency_acronym,
+            entity_acronym,
             report_date,
             from_addr=fm,
             cc_addrs=cc,
@@ -307,13 +307,13 @@ Cybersecurity and Infrastructure Security Agency<br />
         fm = "sender@example.com"
         cc = ["cc@example.com", "cc2@example.com"]
         bcc = ["bcc@example.com", "bcc2@example.com"]
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
 
         message = HttpsMessage(
             to,
             pdf,
-            agency_acronym,
+            entity_acronym,
             report_date,
             from_addr=fm,
             cc_addrs=cc,

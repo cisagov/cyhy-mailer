@@ -14,11 +14,11 @@ class Test(unittest.TestCase):
         """Test the 4-parameter version of the constructor."""
         to = ["recipient@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
         tech_pocs = []
 
-        message = CyhyMessage(to, pdf, agency_acronym, report_date, tech_pocs)
+        message = CyhyMessage(to, pdf, entity_acronym, report_date, tech_pocs)
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
@@ -78,14 +78,14 @@ Cybersecurity and Infrastructure Security Agency<br>
         """Test the 4-parameter version of the constructor."""
         to = ["recipient@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
         tech_pocs = [
             {"name": "Cixin Liu", "email": "cixin@liu.com"},
             {"name": "Alastair Reynolds", "email": "alastair@reynolds.com"},
         ]
 
-        message = CyhyMessage(to, pdf, agency_acronym, report_date, tech_pocs)
+        message = CyhyMessage(to, pdf, entity_acronym, report_date, tech_pocs)
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
@@ -168,11 +168,11 @@ Cybersecurity and Infrastructure Security Agency<br>
         """Test the 4-parameter version of the constructor."""
         to = ["recipient@example.com", "recipient2@example.com"]
         pdf = "./tests/data/pdf-sample.pdf"
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
         tech_pocs = [{"name": "Cixin Liu", "email": "cixin@liu.com"}]
 
-        message = CyhyMessage(to, pdf, agency_acronym, report_date, tech_pocs)
+        message = CyhyMessage(to, pdf, entity_acronym, report_date, tech_pocs)
 
         self.assertEqual(message["From"], "reports@cyber.dhs.gov")
         self.assertEqual(
@@ -251,14 +251,14 @@ Cybersecurity and Infrastructure Security Agency<br>
         fm = "sender@example.com"
         cc = ["cc@example.com"]
         bcc = ["bcc@example.com"]
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
         tech_pocs = [{"name": "Cixin Liu", "email": "cixin@liu.com"}]
 
         message = CyhyMessage(
             to,
             pdf,
-            agency_acronym,
+            entity_acronym,
             report_date,
             tech_pocs,
             from_addr=fm,
@@ -343,14 +343,14 @@ Cybersecurity and Infrastructure Security Agency<br>
         fm = "sender@example.com"
         cc = ["cc@example.com", "cc2@example.com"]
         bcc = ["bcc@example.com", "bcc2@example.com"]
-        agency_acronym = "CLARKE"
+        entity_acronym = "CLARKE"
         report_date = "December 15, 2001"
         tech_pocs = [{"name": "Cixin Liu", "email": "cixin@liu.com"}]
 
         message = CyhyMessage(
             to,
             pdf,
-            agency_acronym,
+            entity_acronym,
             report_date,
             tech_pocs,
             from_addr=fm,

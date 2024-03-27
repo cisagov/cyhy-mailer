@@ -425,15 +425,15 @@ def send_bod_reports(
         return 4
 
     try:
-        bod_agencies = bod_requests.count()
-        logging.debug(f"BOD 18-01 entities = {bod_agencies}")
+        bod_entities = bod_requests.count()
+        logging.debug(f"BOD 18-01 entities = {bod_entities}")
     except pymongo.errors.OperationFailure:
         logging.critical(
             "Mongo database error while counting the number of request documents returned",
             exc_info=True,
         )
-    agencies_emailed_tmail_reports = 0
-    agencies_emailed_https_reports = 0
+    entities_emailed_tmail_reports = 0
+    entities_emailed_https_reports = 0
 
     ###
     # Iterate over bod_requests
@@ -495,8 +495,8 @@ def send_bod_reports(
                 )
 
                 try:
-                    agencies_emailed_tmail_reports = send_message(
-                        ses_client, message, agencies_emailed_tmail_reports, dry_run
+                    entities_emailed_tmail_reports = send_message(
+                        ses_client, message, entities_emailed_tmail_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
@@ -551,8 +551,8 @@ def send_bod_reports(
                 )
 
                 try:
-                    agencies_emailed_https_reports = send_message(
-                        ses_client, message, agencies_emailed_https_reports, dry_run
+                    entities_emailed_https_reports = send_message(
+                        ses_client, message, entities_emailed_https_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
@@ -562,8 +562,8 @@ def send_bod_reports(
                     )
 
     # Print out and log some statistics
-    tmail_stats_string = f"Out of {bod_agencies} Federal BOD 18-01 entities, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / bod_agencies:.2f}%) were emailed Trustworthy Email reports."
-    https_stats_string = f"Out of {bod_agencies} Federal BOD 18-01 entities, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / bod_agencies:.2f}%) were emailed HTTPS reports."
+    tmail_stats_string = f"Out of {bod_entities} Federal BOD 18-01 entities, {entities_emailed_tmail_reports} ({100.0 * entities_emailed_tmail_reports / bod_entities:.2f}%) were emailed Trustworthy Email reports."
+    https_stats_string = f"Out of {bod_entities} Federal BOD 18-01 entities, {entities_emailed_https_reports} ({100.0 * entities_emailed_https_reports / bod_entities:.2f}%) were emailed HTTPS reports."
     logging.info(tmail_stats_string)
     logging.info(https_stats_string)
     print(tmail_stats_string)
@@ -765,14 +765,14 @@ def send_cyhy_reports(
         return 4
 
     try:
-        cyhy_agencies = cyhy_requests.count()
-        logging.debug(f"Cyber Hygiene entities = {cyhy_agencies}")
+        cyhy_entities = cyhy_requests.count()
+        logging.debug(f"Cyber Hygiene entities = {cyhy_entities}")
     except pymongo.errors.OperationFailure:
         logging.critical(
             "Mongo database error while counting the number of request documents returned",
             exc_info=True,
         )
-    agencies_emailed_cyhy_reports = 0
+    entities_emailed_cyhy_reports = 0
     sample_cyhy_report_emailed = False
 
     ###
@@ -869,8 +869,8 @@ def send_cyhy_reports(
                 )
 
                 try:
-                    agencies_emailed_cyhy_reports = send_message(
-                        ses_client, message, agencies_emailed_cyhy_reports, dry_run
+                    entities_emailed_cyhy_reports = send_message(
+                        ses_client, message, entities_emailed_cyhy_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
@@ -932,7 +932,7 @@ def send_cyhy_reports(
                 )
 
     # Print out and log some statistics
-    cyhy_stats_string = f"Out of {cyhy_agencies} Cyber Hygiene entities, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / cyhy_agencies:.2f}%) were emailed Cyber Hygiene reports."
+    cyhy_stats_string = f"Out of {cyhy_entities} Cyber Hygiene entities, {entities_emailed_cyhy_reports} ({100.0 * entities_emailed_cyhy_reports / cyhy_entities:.2f}%) were emailed Cyber Hygiene reports."
     if sample_cyhy_report_emailed:
         sample_cyhy_stats_string = "Sample Cyber Hygiene report was emailed."
     else:
@@ -991,14 +991,14 @@ def send_cyhy_notifications(
         return 4
 
     try:
-        cyhy_agencies = cyhy_requests.count()
-        logging.debug(f"Cyber Hygiene notification entities = {cyhy_agencies}")
+        cyhy_entities = cyhy_requests.count()
+        logging.debug(f"Cyber Hygiene notification entities = {cyhy_entities}")
     except pymongo.errors.OperationFailure:
         logging.critical(
             "Mongo database error while counting the number of request documents returned",
             exc_info=True,
         )
-    agencies_emailed_cyhy_notifications = 0
+    entities_emailed_cyhy_notifications = 0
 
     fed_orgs = get_all_descendants(db, "FEDERAL")
 
@@ -1087,10 +1087,10 @@ def send_cyhy_notifications(
                 )
 
                 try:
-                    agencies_emailed_cyhy_notifications = send_message(
+                    entities_emailed_cyhy_notifications = send_message(
                         ses_client,
                         message,
-                        agencies_emailed_cyhy_notifications,
+                        entities_emailed_cyhy_notifications,
                         dry_run,
                     )
                 except (UnableToSendError, ClientError):
@@ -1101,7 +1101,7 @@ def send_cyhy_notifications(
                     )
 
     # Print out and log some statistics
-    cyhy_notification_stats_string = f"Out of {cyhy_agencies} Cyber Hygiene entities, {agencies_emailed_cyhy_notifications} ({100.0 * agencies_emailed_cyhy_notifications / cyhy_agencies:.2f}%) were emailed Cyber Hygiene notifications."
+    cyhy_notification_stats_string = f"Out of {cyhy_entities} Cyber Hygiene entities, {entities_emailed_cyhy_notifications} ({100.0 * entities_emailed_cyhy_notifications / cyhy_entities:.2f}%) were emailed Cyber Hygiene notifications."
     logging.info(cyhy_notification_stats_string)
     print(cyhy_notification_stats_string)
 
