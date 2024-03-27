@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
         """Test the constructor with a single string."""
         to = ["recipient@example.com"]
         strings = ["First string"]
-        date = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
+        date = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
 
         message = StatsMessage(to, strings)
 
@@ -81,7 +81,7 @@ Cybersecurity and Infrastructure Security Agency<br>
         """Test the constructor with multiple strings."""
         to = ["recipient@example.com"]
         strings = ["First string", "Second string"]
-        date = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
+        date = datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat()
 
         message = StatsMessage(to, strings)
 

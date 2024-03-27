@@ -93,7 +93,7 @@ Cybersecurity and Infrastructure Security Agency<br>
         self,
         to_addrs,
         pdf_filename,
-        agency_acronym,
+        entity_acronym,
         is_federal,
         report_date,
         from_addr=Message.DefaultFrom,
@@ -112,12 +112,12 @@ Cybersecurity and Infrastructure Security Agency<br>
             The filename of the PDF file that is the CYHY notification
             corresponding to this message.
 
-        agency_acronym : str
-            The acronym used by the agency corresponding to the CYHY
+        entity_acronym : str
+            The acronym used by the entity corresponding to the CYHY
             notification attachment.
 
         is_federal : bool
-            True if the agency is Federal, otherwise False.
+            True if the entity is Federal, otherwise False.
 
         report_date : str
             The date corresponding to the CYHY notification attachment.  We
@@ -137,7 +137,7 @@ Cybersecurity and Infrastructure Security Agency<br>
         """
         # This is the data mustache will use to render the templates
         mustache_data = {
-            "acronym": agency_acronym,
+            "acronym": entity_acronym,
             "is_federal": is_federal,
             "report_date": report_date,
         }

@@ -95,7 +95,7 @@ Cybersecurity and Infrastructure Security Agency<br />
         self,
         to_addrs,
         pdf_filename,
-        agency_acronym,
+        entity_acronym,
         report_date,
         from_addr=Message.DefaultFrom,
         cc_addrs=Message.DefaultCc,
@@ -113,8 +113,8 @@ Cybersecurity and Infrastructure Security Agency<br />
             The filename of the PDF file that is the Trustworthy Email
             report corresponding to this message.
 
-        agency_acronym : str
-            The acronym used by the agency corresponding to the
+        entity_acronym : str
+            The acronym used by the entity corresponding to the
             Trustworthy Email report attachment.
 
         report_date : str
@@ -135,7 +135,7 @@ Cybersecurity and Infrastructure Security Agency<br />
 
         """
         # This is the data mustache will use to render the templates
-        mustache_data = {"acronym": agency_acronym, "report_date": report_date}
+        mustache_data = {"acronym": entity_acronym, "report_date": report_date}
 
         # Render the templates
         subject = chevron.render(TmailMessage.Subject, mustache_data)

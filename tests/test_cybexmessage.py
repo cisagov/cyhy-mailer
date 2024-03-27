@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
 
         # Grab the bytes that comprise the attachments
         pdf_bytes = open(pdf, "rb").read()
-        csv_text = open(csv, "r").read()
+        csv_text = open(csv).read()
 
         # Make sure the correct body, PDF, and CSV attachments were added
         for part in message.walk():
@@ -112,7 +112,7 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         # Grab the bytes that comprise the attachments
         pdf_bytes = open(pdf, "rb").read()
-        csv_text = open(csv, "r").read()
+        csv_text = open(csv).read()
 
         # Make sure the correct body, PDF, and CSV attachments were added
         for part in message.walk():

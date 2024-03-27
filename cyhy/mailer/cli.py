@@ -6,7 +6,7 @@ cyhy-mailer can send out Cyber Hygiene and BOD 18-01 reports, as well
 as Cyber Hygiene notifications and the Cyber Exposure scorecard.
 
 Usage:
-  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug] [--dry-run]
+  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY] [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY] [--db-creds-file=FILENAME] [--csa-email-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug] [--dry-run]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -31,6 +31,27 @@ Options:
   -c --db-creds-file=FILENAME       A YAML file containing the Cyber
                                     Hygiene database credentials.
                                     [default: /run/secrets/database_creds.yml]
+  -e --csa-email-file=FILENAME      A YAML file associating each state
+                                    or territory with the email
+                                    address of the corresponding CISA
+                                    Cyber Security Advisor (CSA).  The
+                                    YAML file should be a list of
+                                    dictionaries, each corresponding
+                                    to a CSA region.  Each dictionary
+                                    must contain an "email" field
+                                    containing the email address
+                                    corresponding to the CSA for that
+                                    region, as well as a
+                                    "states_and_territories" field
+                                    containing a list of two-letter
+                                    state and territory abbreviations.
+                                    Each abbreviation corresponds to a
+                                    state or territory that belongs to
+                                    the region.  If this option is
+                                    present then the appropriate CSA
+                                    will be BCCd any CyHy reports or
+                                    notifications related to a
+                                    stakeholder within their region.
   --batch-size=SIZE                 The batch size to use when retrieving
                                     results from the Mongo database.  If not
                                     present then the default Mongo batch size
@@ -64,6 +85,7 @@ from cyhy.mailer.CybexMessage import CybexMessage
 from cyhy.mailer.CyhyMessage import CyhyMessage
 from cyhy.mailer.CyhyNotificationMessage import CyhyNotificationMessage
 from cyhy.mailer.HttpsMessage import HttpsMessage
+from cyhy.mailer.Message import Message
 from cyhy.mailer.ReportMessage import ReportMessage
 from cyhy.mailer.StatsMessage import StatsMessage
 from cyhy.mailer.TmailMessage import TmailMessage
@@ -77,21 +99,21 @@ class Error(Exception):
 
 
 def get_emails_from_request(request):
-    """Return the agency's correspondence email address(es).
+    """Return the entity's correspondence email address(es).
 
     Given the request document, return the proper email address or
-    addresses to use for corresponding with the agency.
+    addresses to use for corresponding with the entity.
 
     Parameters
     ----------
     request : dict
-        The request documents for which the corresponding email
-        address is desired.
+        The request document for which the corresponding email
+        addresses are desired.
 
     Returns
     -------
     list of str: A list containing the proper email addresses to use
-    for corresponding with the agency
+    for corresponding with the entity.
 
     """
     id = request["_id"]
@@ -106,7 +128,7 @@ def get_emails_from_request(request):
     for c in request["agency"]["contacts"]:
         if "type" not in c or "email" not in c or not c["email"].split():
             logging.warn(
-                f"Agency with ID {id} has a contact that is missing an email and/or type attribute!"
+                f"Entity with ID {id} has a contact that is missing an email and/or type attribute!"
             )
 
     distro_emails = [c["email"] for c in contacts if c["type"] == "DISTRO"]
@@ -115,7 +137,7 @@ def get_emails_from_request(request):
     # There should be zero or one distro email, so log a warning if
     # there are multiple.
     if len(distro_emails) > 1:
-        logging.warn(f"More than one DISTRO email address for agency with ID {id}")
+        logging.warn(f"More than one DISTRO email address for entity with ID {id}")
 
     # Send to the distro email, if it exists.  Otherwise, send to the
     # technical emails.
@@ -168,12 +190,12 @@ def get_all_descendants(db, parent):
 
 
 def get_requests_raw(db, query, batch_size=None):
-    """Return a cursor for iterating over agencies' request documents.
+    """Return a cursor for iterating over entities' request documents.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which agency data can be retrieved.
+        The Mongo database from which entity data can be retrieved.
 
     query : dict
         The query to perform.
@@ -203,6 +225,7 @@ def get_requests_raw(db, query, batch_size=None):
         "agency.contacts.name": True,
         "agency.contacts.email": True,
         "agency.contacts.type": True,
+        "agency.location.state": True,
     }
 
     try:
@@ -220,21 +243,21 @@ def get_requests_raw(db, query, batch_size=None):
 
 
 def get_requests(db, report_types=None, federal_only=False, batch_size=None):
-    """Return a cursor for iterating over agencies' request documents.
+    """Return a cursor for iterating over entities' request documents.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which agency data can be retrieved.
+        The Mongo database from which entity data can be retrieved.
 
     report_types : list(str)
-        A list of report types (e.g. CYHY, CYBEX, BOD).  Only agencies
+        A list of report types (e.g. CYHY, CYBEX, BOD).  Only entities
         whose request documents specify these report types will be
         returned.  If None then no such restriction is placed on the
         query.
 
     federal_only : bool
-        If True then only federal agencies' request documents will be
+        If True then only federal entities' request documents will be
         returned.  If unspecified or False then no such restriction is
         placed on the query.
 
@@ -347,7 +370,7 @@ def send_bod_reports(
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene agency data can
+        The Mongo database from which Cyber Hygiene entity data can
         be retrieved.
 
     batch_size : int
@@ -402,15 +425,15 @@ def send_bod_reports(
         return 4
 
     try:
-        bod_agencies = bod_requests.count()
-        logging.debug(f"BOD 18-01 agencies = {bod_agencies}")
+        bod_entities = bod_requests.count()
+        logging.debug(f"BOD 18-01 entities = {bod_entities}")
     except pymongo.errors.OperationFailure:
         logging.critical(
             "Mongo database error while counting the number of request documents returned",
             exc_info=True,
         )
-    agencies_emailed_tmail_reports = 0
-    agencies_emailed_https_reports = 0
+    entities_emailed_tmail_reports = 0
+    entities_emailed_https_reports = 0
 
     ###
     # Iterate over bod_requests
@@ -441,14 +464,14 @@ def send_bod_reports(
             # At most one Tmail report should match
             if len(tmail_report_filenames) > 1:
                 logging.warn(
-                    f"More than one Trustworthy Email report found for agency with ID {id}"
+                    f"More than one Trustworthy Email report found for entity with ID {id}"
                 )
             elif not tmail_report_filenames:
                 # This is only at info since we are starting from the
-                # list of CyHy agencys.  Many of them will not have
+                # list of CyHy entities.  Many of them will not have
                 # Tmail reports.
                 logging.info(
-                    f"No Trustworthy Email report found for agency with ID {id}"
+                    f"No Trustworthy Email report found for entity with ID {id}"
                 )
 
             if tmail_report_filenames:
@@ -472,12 +495,12 @@ def send_bod_reports(
                 )
 
                 try:
-                    agencies_emailed_tmail_reports = send_message(
-                        ses_client, message, agencies_emailed_tmail_reports, dry_run
+                    entities_emailed_tmail_reports = send_message(
+                        ses_client, message, entities_emailed_tmail_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
-                        f"Unable to send Trustworthy Email report for agency with ID {id}",
+                        f"Unable to send Trustworthy Email report for entity with ID {id}",
                         exc_info=True,
                         stack_info=True,
                     )
@@ -499,13 +522,13 @@ def send_bod_reports(
             # At most one HTTPS report should match
             if len(https_report_filenames) > 1:
                 logging.warn(
-                    f"More than one HTTPS report found for agency with ID {id}"
+                    f"More than one HTTPS report found for entity with ID {id}"
                 )
             elif not https_report_filenames:
                 # This is only at info since we are starting from the
-                # list of CyHy agencys.  Many of them will not have
+                # list of CyHy entities.  Many of them will not have
                 # HTTPS reports.
-                logging.info(f"No HTTPS report found for agency with ID {id}")
+                logging.info(f"No HTTPS report found for entity with ID {id}")
 
             if https_report_filenames:
                 # We take the last filename since, if there happens to be more
@@ -528,19 +551,19 @@ def send_bod_reports(
                 )
 
                 try:
-                    agencies_emailed_https_reports = send_message(
-                        ses_client, message, agencies_emailed_https_reports, dry_run
+                    entities_emailed_https_reports = send_message(
+                        ses_client, message, entities_emailed_https_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
-                        f"Unable to send HTTPS report for agency with ID {id}",
+                        f"Unable to send HTTPS report for entity with ID {id}",
                         exc_info=True,
                         stack_info=True,
                     )
 
     # Print out and log some statistics
-    tmail_stats_string = f"Out of {bod_agencies} Federal BOD 18-01 agencies, {agencies_emailed_tmail_reports} ({100.0 * agencies_emailed_tmail_reports / bod_agencies:.2f}%) were emailed Trustworthy Email reports."
-    https_stats_string = f"Out of {bod_agencies} Federal BOD 18-01 agencies, {agencies_emailed_https_reports} ({100.0 * agencies_emailed_https_reports / bod_agencies:.2f}%) were emailed HTTPS reports."
+    tmail_stats_string = f"Out of {bod_entities} Federal BOD 18-01 entities, {entities_emailed_tmail_reports} ({100.0 * entities_emailed_tmail_reports / bod_entities:.2f}%) were emailed Trustworthy Email reports."
+    https_stats_string = f"Out of {bod_entities} Federal BOD 18-01 entities, {entities_emailed_https_reports} ({100.0 * entities_emailed_https_reports / bod_entities:.2f}%) were emailed HTTPS reports."
     logging.info(tmail_stats_string)
     logging.info(https_stats_string)
     print(tmail_stats_string)
@@ -557,7 +580,7 @@ def send_cybex_scorecard(
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene agency data can
+        The Mongo database from which Cyber Hygiene entity data can
         be retrieved.
 
     batch_size : int
@@ -697,13 +720,15 @@ def send_cybex_scorecard(
     return (cybex_stats_string,)
 
 
-def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False):
+def send_cyhy_reports(
+    db, batch_size, ses_client, cyhy_report_dir, csa_emails, dry_run=False
+):
     """Send out Cyber Hygiene reports.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene agency data can
+        The Mongo database from which Cyber Hygiene entity data can
         be retrieved.
 
     batch_size : int
@@ -716,6 +741,13 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
     cyhy_report_dir : str
         The directory where the Cyber Hygiene reports can be found.
         If None then no Cyber Hygiene reports will be sent.
+
+    csa_emails : dict or None
+        Either None or a dict with keys belonging to the set of
+        two-letter abbreviations for states and territories and values
+        equal to the email of the corresponding CSA for the region to
+        which the state or territory belongs.  If None then the CSAs
+        will not be BCCd.
 
     dry_run : bool
         If True then do not actually send email.
@@ -733,14 +765,14 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
         return 4
 
     try:
-        cyhy_agencies = cyhy_requests.count()
-        logging.debug(f"Cyber Hygiene agencies = {cyhy_agencies}")
+        cyhy_entities = cyhy_requests.count()
+        logging.debug(f"Cyber Hygiene entities = {cyhy_entities}")
     except pymongo.errors.OperationFailure:
         logging.critical(
             "Mongo database error while counting the number of request documents returned",
             exc_info=True,
         )
-    agencies_emailed_cyhy_reports = 0
+    entities_emailed_cyhy_reports = 0
     sample_cyhy_report_emailed = False
 
     ###
@@ -761,6 +793,27 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
             if not to_emails:
                 continue
 
+            # Grab the email address of the appropriate CSA.
+            csa_email_address = None
+            if csa_emails is not None:
+                try:
+                    state = request["agency"]["location"]["state"]
+                except KeyError:
+                    logging.warn(
+                        f"State or territory information unavailable for entity with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                    )
+                else:
+                    try:
+                        csa_email_address = csa_emails[state]
+                    except KeyError:
+                        logging.warn(
+                            f"State or territory {state} associated with entity with ID {id} does not correspond to a CSA region.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                        )
+                    else:
+                        logging.debug(
+                            f"BCCing report for entity with ID {id} to {csa_email_address} because the entity is associated with the state or territory {state}."
+                        )
+
             ###
             # Find and mail the CyHy report, if necessary
             ###
@@ -774,17 +827,17 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
             # Exactly one CyHy report should match
             if len(cyhy_report_filenames) > 1:
                 logging.warn(
-                    f"More than one Cyber Hygiene report found for agency with ID {id}"
+                    f"More than one Cyber Hygiene report found for entity with ID {id}"
                 )
             elif not cyhy_report_filenames:
                 # This is an error since we are starting from the list
-                # of CyHy agencies and they should all have reports.
+                # of CyHy entities and they should all have reports.
                 #
                 # It is possible to get this error if a CyHy request
                 # doc has "CYHY_THIRD_PARTY" in its report_types, but
                 # it does not have any children (the reporting code
                 # skips these request docs).
-                logging.error(f"No Cyber Hygiene report found for agency with ID {id}")
+                logging.error(f"No Cyber Hygiene report found for entity with ID {id}")
 
             if cyhy_report_filenames:
                 # We take the last filename since, if there happens to be more
@@ -801,21 +854,27 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
                 ).strftime("%B %d, %Y")
 
                 # Construct the CyHy message to send
+                if csa_email_address is not None:
+                    bcc_addrs = Message.DefaultBcc + [csa_email_address]
+                else:
+                    bcc_addrs = Message.DefaultBcc
+
                 message = CyhyMessage(
                     to_emails,
                     cyhy_attachment_filename,
                     acronym,
                     report_date,
                     technical_pocs,
+                    bcc_addrs=bcc_addrs,
                 )
 
                 try:
-                    agencies_emailed_cyhy_reports = send_message(
-                        ses_client, message, agencies_emailed_cyhy_reports, dry_run
+                    entities_emailed_cyhy_reports = send_message(
+                        ses_client, message, entities_emailed_cyhy_reports, dry_run
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
-                        f"Unable to send Cyber Hygiene report for agency with ID {id}",
+                        f"Unable to send Cyber Hygiene report for entity with ID {id}",
                         exc_info=True,
                         stack_info=True,
                     )
@@ -873,7 +932,7 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
                 )
 
     # Print out and log some statistics
-    cyhy_stats_string = f"Out of {cyhy_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_reports} ({100.0 * agencies_emailed_cyhy_reports / cyhy_agencies:.2f}%) were emailed Cyber Hygiene reports."
+    cyhy_stats_string = f"Out of {cyhy_entities} Cyber Hygiene entities, {entities_emailed_cyhy_reports} ({100.0 * entities_emailed_cyhy_reports / cyhy_entities:.2f}%) were emailed Cyber Hygiene reports."
     if sample_cyhy_report_emailed:
         sample_cyhy_stats_string = "Sample Cyber Hygiene report was emailed."
     else:
@@ -887,14 +946,14 @@ def send_cyhy_reports(db, batch_size, ses_client, cyhy_report_dir, dry_run=False
 
 
 def send_cyhy_notifications(
-    db, batch_size, ses_client, cyhy_notification_dir, dry_run=False
+    db, batch_size, ses_client, cyhy_notification_dir, csa_emails, dry_run=False
 ):
     """Send out Cyber Hygiene reports notifications.
 
     Parameters
     ----------
     db : MongoDatabase
-        The Mongo database from which Cyber Hygiene agency data can
+        The Mongo database from which Cyber Hygiene entity data can
         be retrieved.
 
     batch_size : int
@@ -907,6 +966,13 @@ def send_cyhy_notifications(
     cyhy_notification_dir : str
         The directory where the Cyber Hygiene notifications can be found.
         If None then no Cyber Hygiene notifications will be sent.
+
+    csa_emails : dict or None
+        Either None or a dict with keys belonging to the set of
+        two-letter abbreviations for states and territories and values
+        equal to the email of the corresponding CSA for the region to
+        which the state or territory belongs.  If None then the CSAs
+        will not be BCCd.
 
     dry_run : bool
         If True then do not actually send email.
@@ -925,14 +991,14 @@ def send_cyhy_notifications(
         return 4
 
     try:
-        cyhy_agencies = cyhy_requests.count()
-        logging.debug(f"Cyber Hygiene notification agencies = {cyhy_agencies}")
+        cyhy_entities = cyhy_requests.count()
+        logging.debug(f"Cyber Hygiene notification entities = {cyhy_entities}")
     except pymongo.errors.OperationFailure:
         logging.critical(
             "Mongo database error while counting the number of request documents returned",
             exc_info=True,
         )
-    agencies_emailed_cyhy_notifications = 0
+    entities_emailed_cyhy_notifications = 0
 
     fed_orgs = get_all_descendants(db, "FEDERAL")
 
@@ -948,6 +1014,27 @@ def send_cyhy_notifications(
         # to_emails should contain at least one email
         if not to_emails:
             continue
+
+        # Grab the email address of the appropriate CSA.
+        csa_email_address = None
+        if csa_emails is not None:
+            try:
+                state = request["agency"]["location"]["state"]
+            except KeyError:
+                logging.warn(
+                    f"State or territory information unavailable for entity with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                )
+            else:
+                try:
+                    csa_email_address = csa_emails[state]
+                except KeyError:
+                    logging.warn(
+                        f"State or territory {state} associated with entity with ID {id} does not correspond to a CSA region.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                    )
+                else:
+                    logging.debug(
+                        f"BCCing report for entity with ID {id} to {csa_email_address} because the entity is associated with the state or territory {state}."
+                    )
 
         ###
         # Find and mail the CyHy notifications, if necessary
@@ -966,7 +1053,7 @@ def send_cyhy_notifications(
             # notifications to be sent out for this stakeholder
             if len(cyhy_notification_filenames) > 1:
                 logging.warn(
-                    f"More than one Cyber Hygiene notification found for agency with ID {id}"
+                    f"More than one Cyber Hygiene notification found for entity with ID {id}"
                 )
 
             if cyhy_notification_filenames:
@@ -985,30 +1072,36 @@ def send_cyhy_notifications(
                 ).strftime("%B %d, %Y")
 
                 # Construct the CyHy notification message to send
+                if csa_email_address is not None:
+                    bcc_addrs = Message.DefaultBcc + [csa_email_address]
+                else:
+                    bcc_addrs = Message.DefaultBcc
+
                 message = CyhyNotificationMessage(
                     to_emails,
                     cyhy_notification_attachment_filename,
                     acronym,
                     is_federal,
                     notification_date,
+                    bcc_addrs=bcc_addrs,
                 )
 
                 try:
-                    agencies_emailed_cyhy_notifications = send_message(
+                    entities_emailed_cyhy_notifications = send_message(
                         ses_client,
                         message,
-                        agencies_emailed_cyhy_notifications,
+                        entities_emailed_cyhy_notifications,
                         dry_run,
                     )
                 except (UnableToSendError, ClientError):
                     logging.error(
-                        f"Unable to send Cyber Hygiene notification for agency with ID {id}",
+                        f"Unable to send Cyber Hygiene notification for entity with ID {id}",
                         exc_info=True,
                         stack_info=True,
                     )
 
     # Print out and log some statistics
-    cyhy_notification_stats_string = f"Out of {cyhy_agencies} Cyber Hygiene agencies, {agencies_emailed_cyhy_notifications} ({100.0 * agencies_emailed_cyhy_notifications / cyhy_agencies:.2f}%) were emailed Cyber Hygiene notifications."
+    cyhy_notification_stats_string = f"Out of {cyhy_entities} Cyber Hygiene entities, {entities_emailed_cyhy_notifications} ({100.0 * entities_emailed_cyhy_notifications / cyhy_entities:.2f}%) were emailed Cyber Hygiene notifications."
     logging.info(cyhy_notification_stats_string)
     print(cyhy_notification_stats_string)
 
@@ -1060,6 +1153,35 @@ def main():
         )
         return 1
 
+    # Parse out the CSA email mapping, if present.
+    csa_email_file = args["--csa-email-file"]
+    if csa_email_file is not None:
+        try:
+            with open(csa_email_file) as stream:
+                csa_email_mapping = yaml.load(stream, Loader=yaml.SafeLoader)
+        except OSError:
+            logging.critical(
+                f"CSA email file {csa_email_file} does not exist", exc_info=True
+            )
+            return 1
+        except yaml.YAMLError:
+            logging.critical(
+                f"CSA email file {csa_email_file} does not contain valid YAML",
+                exc_info=True,
+            )
+            return 1
+        else:
+            # Rearrange the CSA email mapping data into a more
+            # convenient form.
+            csa_emails = {}
+            for region in csa_email_mapping:
+                region_email = region["email"]
+                for state_or_territory in region["states_and_territories"]:
+                    csa_emails[state_or_territory] = region_email
+    else:
+        # The user doesn't want to BCC the CSAs.
+        csa_emails = None
+
     ses_client = boto3.client("ses")
 
     batch_size = args["--batch-size"]
@@ -1097,7 +1219,12 @@ def main():
 
     if args["cyhy"]:
         stats = send_cyhy_reports(
-            db, batch_size, ses_client, args["--cyhy-report-dir"], args["--dry-run"]
+            db,
+            batch_size,
+            ses_client,
+            args["--cyhy-report-dir"],
+            csa_emails,
+            args["--dry-run"],
         )
         all_stats_strings.extend(stats)
 
@@ -1107,6 +1234,7 @@ def main():
             batch_size,
             ses_client,
             args["--cyhy-notification-dir"],
+            csa_emails,
             args["--dry-run"],
         )
         all_stats_strings.extend(stats)
