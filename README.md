@@ -27,11 +27,10 @@ pip install git+https://github.com/cisagov/cyhy-mailer.git
 
 ```bash
 Usage:
-  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY]
-[--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY]
+  cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY]
 [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY]
-[--db-creds-file=FILENAME] [--batch-size=SIZE] [--summary-to=EMAILS] [--debug]
-[--dry-run]
+[--db-creds-file=FILENAME] [--csa-email-file=FILENAME] [--batch-size=SIZE]
+[--summary-to=EMAILS] [--debug] [--dry-run]
   cyhy-mailer (-h | --help)
 
 Options:
@@ -56,6 +55,23 @@ Options:
   -c --db-creds-file=FILENAME       A YAML file containing the Cyber
                                     Hygiene database credentials.
                                     [default: /run/secrets/database_creds.yml]
+  -e --csa-email-file=FILENAME      A YAML file associating each state or
+                                    territory with the email address of the
+                                    corresponding CISA Cyber Security Advisor
+                                    (CSA).  The YAML file should be a
+                                    list of dictionaries, each
+                                    corresponding to a CSA region.
+                                    Each dictionary must contain an
+                                    "email" field containing the email
+                                    address corresponding to the CSA
+                                    for that region, as well as a
+                                    "states_and_territories" field
+                                    containing a list of two-letter
+                                    state and territory abbreviations.
+                                    Each abbreviation corresponds to a
+                                    state or territory that belongs to
+                                    the region.
+                                    [default: /run/secrets/csa_emails.yml]
   --batch-size=SIZE                 The batch size to use when retrieving
                                     results from the Mongo database.  If not
                                     present then the default Mongo batch size
