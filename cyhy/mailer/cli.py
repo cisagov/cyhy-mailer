@@ -47,11 +47,11 @@ Options:
                                     state and territory abbreviations.
                                     Each abbreviation corresponds to a
                                     state or territory that belongs to
-                                    the region.  Note that this
-                                    argument is required
-                                    if --cyhy-report-dir
-                                    or --cyhy-notification-dir is
-                                    present.
+                                    the region.  If this option is
+                                    present then the appropriate CSA
+                                    will be BCCd any CyHy reports or
+                                    notifications related to a
+                                    stakeholder within their region.
   --batch-size=SIZE                 The batch size to use when retrieving
                                     results from the Mongo database.  If not
                                     present then the default Mongo batch size
@@ -742,11 +742,12 @@ def send_cyhy_reports(
         The directory where the Cyber Hygiene reports can be found.
         If None then no Cyber Hygiene reports will be sent.
 
-    csa_emails : dict
-        A dict with keys belonging to the set of two-letter
-        abbreviations for states and territories and values equal to
-        the email of the corresponding CSA for the region to which the
-        state or territory belongs.
+    csa_emails : dict or None
+        Either None or a dict with keys belonging to the set of
+        two-letter abbreviations for states and territories and values
+        equal to the email of the corresponding CSA for the region to
+        which the state or territory belongs.  If None then the CSAs
+        will not be BCCd.
 
     dry_run : bool
         If True then do not actually send email.
@@ -794,23 +795,24 @@ def send_cyhy_reports(
 
             # Grab the email address of the appropriate CSA.
             csa_email_address = None
-            try:
-                state = request["agency"]["location"]["state"]
-            except KeyError:
-                logging.warn(
-                    f"State or territory information unavailable for agency with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
-                )
-            else:
+            if csa_emails is not None:
                 try:
-                    csa_email_address = csa_emails[state]
+                    state = request["agency"]["location"]["state"]
                 except KeyError:
                     logging.warn(
-                        f"State or territory {state} associated with agency with ID {id} does not correspond to a CSA region.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                        f"State or territory information unavailable for agency with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
                     )
                 else:
-                    logging.debug(
-                        f"BCCing report for agency with ID {id} to {csa_email_address} because the agency is associated with the state or territory {state}."
-                    )
+                    try:
+                        csa_email_address = csa_emails[state]
+                    except KeyError:
+                        logging.warn(
+                            f"State or territory {state} associated with agency with ID {id} does not correspond to a CSA region.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                        )
+                    else:
+                        logging.debug(
+                            f"BCCing report for agency with ID {id} to {csa_email_address} because the agency is associated with the state or territory {state}."
+                        )
 
             ###
             # Find and mail the CyHy report, if necessary
@@ -852,7 +854,7 @@ def send_cyhy_reports(
                 ).strftime("%B %d, %Y")
 
                 # Construct the CyHy message to send
-                if csa_email_address:
+                if csa_email_address is not None:
                     bcc_addrs = Message.DefaultBcc + [csa_email_address]
                 else:
                     bcc_addrs = Message.DefaultBcc
@@ -965,11 +967,12 @@ def send_cyhy_notifications(
         The directory where the Cyber Hygiene notifications can be found.
         If None then no Cyber Hygiene notifications will be sent.
 
-    csa_emails : dict
-        A dict with keys belonging to the set of two-letter
-        abbreviations for states and territories and values equal to
-        the email of the corresponding CSA for the region to which the
-        state or territory belongs.
+    csa_emails : dict or None
+        Either None or a dict with keys belonging to the set of
+        two-letter abbreviations for states and territories and values
+        equal to the email of the corresponding CSA for the region to
+        which the state or territory belongs.  If None then the CSAs
+        will not be BCCd.
 
     dry_run : bool
         If True then do not actually send email.
@@ -1014,23 +1017,24 @@ def send_cyhy_notifications(
 
         # Grab the email address of the appropriate CSA.
         csa_email_address = None
-        try:
-            state = request["agency"]["location"]["state"]
-        except KeyError:
-            logging.warn(
-                f"State or territory information unavailable for agency with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
-            )
-        else:
+        if csa_emails is not None:
             try:
-                csa_email_address = csa_emails[state]
+                state = request["agency"]["location"]["state"]
             except KeyError:
                 logging.warn(
-                    f"State or territory {state} associated with agency with ID {id} does not correspond to a CSA region.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                    f"State or territory information unavailable for agency with ID {id}.  As a result this CyHy report cannot be sent to the corresponding CSA."
                 )
             else:
-                logging.debug(
-                    f"BCCing report for agency with ID {id} to {csa_email_address} because the agency is associated with the state or territory {state}."
-                )
+                try:
+                    csa_email_address = csa_emails[state]
+                except KeyError:
+                    logging.warn(
+                        f"State or territory {state} associated with agency with ID {id} does not correspond to a CSA region.  As a result this CyHy report cannot be sent to the corresponding CSA."
+                    )
+                else:
+                    logging.debug(
+                        f"BCCing report for agency with ID {id} to {csa_email_address} because the agency is associated with the state or territory {state}."
+                    )
 
         ###
         # Find and mail the CyHy notifications, if necessary
@@ -1068,7 +1072,7 @@ def send_cyhy_notifications(
                 ).strftime("%B %d, %Y")
 
                 # Construct the CyHy notification message to send
-                if csa_email_address:
+                if csa_email_address is not None:
                     bcc_addrs = Message.DefaultBcc + [csa_email_address]
                 else:
                     bcc_addrs = Message.DefaultBcc
@@ -1174,6 +1178,9 @@ def main():
                 region_email = region["email"]
                 for state_or_territory in region["states_and_territories"]:
                     csa_emails[state_or_territory] = region_email
+    else:
+        # The user doesn't want to BCC the CSAs.
+        csa_emails = None
 
     ses_client = boto3.client("ses")
 

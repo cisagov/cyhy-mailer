@@ -70,11 +70,11 @@ Options:
                                     state and territory abbreviations.
                                     Each abbreviation corresponds to a
                                     state or territory that belongs to
-                                    the region.  Note that this
-                                    argument is required
-                                    if --cyhy-report-dir
-                                    or --cyhy-notification-dir is
-                                    present.
+                                    the region.  If this option is
+                                    present then the appropriate CSA
+                                    will be BCCd any CyHy reports or
+                                    notifications related to a
+                                    stakeholder within their region.
   --batch-size=SIZE                 The batch size to use when retrieving
                                     results from the Mongo database.  If not
                                     present then the default Mongo batch size
