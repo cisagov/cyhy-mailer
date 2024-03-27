@@ -92,7 +92,7 @@ Cybersecurity and Infrastructure Security Agency<br>
 
         """
         # Grab the current date
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.UTC)
         # The microseconds are irrelevant and just make everything
         # look confusing
         now = now.replace(microsecond=0)
