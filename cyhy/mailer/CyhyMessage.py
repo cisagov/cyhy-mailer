@@ -110,7 +110,7 @@ Cybersecurity and Infrastructure Security Agency<br>
             corresponding to this message.
 
         agency_acronym : str
-            The acronym used by the agency corresponding to the CYHY
+            The acronym used by the entity corresponding to the CYHY
             report attachment.
 
         report_date : str
@@ -120,9 +120,9 @@ Cybersecurity and Infrastructure Security Agency<br>
         tech_pocs : list of dict
             A list of dicts, each containing a "name" and an "email"
             key.  The corresponding values correspond to the name and
-            email of a technical POC for the agency corresponding to
+            email of a technical POC for the entity corresponding to
             the CYHY report attachment.  If there are no technical
-            POCs for the agency then this parameter should be an empty
+            POCs for the entity then this parameter should be an empty
             list.
 
         from_addr : str

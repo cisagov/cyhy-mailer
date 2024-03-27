@@ -116,7 +116,7 @@ Cybersecurity and Infrastructure Security Agency<br />
             report corresponding to this message.
 
         agency_acronym : str
-            The acronym used by the agency corresponding to the
+            The acronym used by the entity corresponding to the
             Trustworthy Email report attachment.
 
         report_date : str
