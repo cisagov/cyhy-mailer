@@ -12,20 +12,20 @@ e-mail addresses.
 After using `git` to clone the repository, you can install
 `cyhy-mailer` using `pip`:
 
-```bash
+```console
 pip install /path/to/cyhy-mailer
 ```
 
 Or, if you prefer, you can install directly from
 [the GitHub repository](https://github.com/cisagov/cyhy-mailer):
 
-```bash
+```console
 pip install git+https://github.com/cisagov/cyhy-mailer.git
 ```
 
 ## Usage ##
 
-```bash
+```console
 Usage:
   cyhy-mailer (bod1801|cybex|cyhy|notification)... [--cyhy-report-dir=DIRECTORY] [--tmail-report-dir=DIRECTORY] [--https-report-dir=DIRECTORY]
 [--cybex-scorecard-dir=DIRECTORY] [--cyhy-notification-dir=DIRECTORY]
