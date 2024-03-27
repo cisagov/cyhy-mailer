@@ -31,23 +31,27 @@ Options:
   -c --db-creds-file=FILENAME       A YAML file containing the Cyber
                                     Hygiene database credentials.
                                     [default: /run/secrets/database_creds.yml]
-  -e --csa-email-file=FILENAME      A YAML file associating each state or
-                                    territory with the email address of the
-                                    corresponding CISA Cyber Security Advisor
-                                    (CSA).  The YAML file should be a
-                                    list of dictionaries, each
-                                    corresponding to a CSA region.
-                                    Each dictionary must contain an
-                                    "email" field containing the email
-                                    address corresponding to the CSA
-                                    for that region, as well as a
+  -e --csa-email-file=FILENAME      A YAML file associating each state
+                                    or territory with the email
+                                    address of the corresponding CISA
+                                    Cyber Security Advisor (CSA).  The
+                                    YAML file should be a list of
+                                    dictionaries, each corresponding
+                                    to a CSA region.  Each dictionary
+                                    must contain an "email" field
+                                    containing the email address
+                                    corresponding to the CSA for that
+                                    region, as well as a
                                     "states_and_territories" field
                                     containing a list of two-letter
                                     state and territory abbreviations.
                                     Each abbreviation corresponds to a
                                     state or territory that belongs to
-                                    the region.
-                                    [default: /run/secrets/csa_emails.yml]
+                                    the region.  Note that this
+                                    argument is required
+                                    if --cyhy-report-dir
+                                    or --cyhy-notification-dir is
+                                    present.
   --batch-size=SIZE                 The batch size to use when retrieving
                                     results from the Mongo database.  If not
                                     present then the default Mongo batch size
@@ -1162,14 +1166,14 @@ def main():
                 exc_info=True,
             )
             return 1
-
-    # Rearrange the CSA email mapping data into a more convenient
-    # form.
-    csa_emails = {}
-    for region in csa_email_mapping:
-        region_email = region["email"]
-        for state_or_territory in region["states_and_territories"]:
-            csa_emails[state_or_territory] = region_email
+        else:
+            # Rearrange the CSA email mapping data into a more
+            # convenient form.
+            csa_emails = {}
+            for region in csa_email_mapping:
+                region_email = region["email"]
+                for state_or_territory in region["states_and_territories"]:
+                    csa_emails[state_or_territory] = region_email
 
     ses_client = boto3.client("ses")
 

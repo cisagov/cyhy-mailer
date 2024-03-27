@@ -70,8 +70,11 @@ Options:
                                     state and territory abbreviations.
                                     Each abbreviation corresponds to a
                                     state or territory that belongs to
-                                    the region.
-                                    [default: /run/secrets/csa_emails.yml]
+                                    the region.  Note that this
+                                    argument is required
+                                    if --cyhy-report-dir
+                                    or --cyhy-notification-dir is
+                                    present.
   --batch-size=SIZE                 The batch size to use when retrieving
                                     results from the Mongo database.  If not
                                     present then the default Mongo batch size
