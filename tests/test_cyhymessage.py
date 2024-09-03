@@ -66,7 +66,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
-<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.
+<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
 <p>If you have any questions, please contact our office.</p>
 
@@ -150,7 +150,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
-<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.
+<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
 <p>Note: CISA has the following information listed as the Technical Points of Contact for CLARKE:</p>
 
@@ -241,7 +241,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
-<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.
+<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
 <p>Note: CISA has the following information listed as the Technical Points of Contact for CLARKE:</p>
 
@@ -339,7 +339,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
-<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.
+<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
 <p>Note: CISA has the following information listed as the Technical Points of Contact for CLARKE:</p>
 
@@ -437,7 +437,7 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
-<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.
+<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
 <p>Note: CISA has the following information listed as the Technical Points of Contact for CLARKE:</p>
 
