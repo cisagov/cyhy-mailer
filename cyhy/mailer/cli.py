@@ -320,7 +320,7 @@ def send_message(ses_client, message, counter=None, dry_run=False):
     Parameters
     ----------
     ses_client : boto3.client
-        The boto3 SES client via which the message is to be sent.
+        The boto3 SESv2 client via which the message is to be sent.
 
     message : email.message.Message
         The email message that is to be sent.
@@ -349,7 +349,7 @@ def send_message(ses_client, message, counter=None, dry_run=False):
     if not dry_run:
         # "Are you silly?  I'm still gonna send it!"
         #   -- Larry Enticer
-        response = ses_client.send_raw_email(RawMessage={"Data": message.as_string()})
+        response = ses_client.send_email(Content={"Raw": {"Data": message.as_string()}})
 
         # Check for errors
         status_code = response["ResponseMetadata"]["HTTPStatusCode"]
@@ -383,7 +383,7 @@ def send_bod_reports(
         database.  If None then the default will be used.
 
     ses_client : boto3.client
-        The boto3 SES client via which the message is to be sent.
+        The boto3 SESv2 client via which the message is to be sent.
 
     tmail_report_dir : str
         The directory where the Trustworthy Email reports can be
@@ -602,7 +602,7 @@ def send_cybex_scorecard(
         database.  If None then the default will be used.
 
     ses_client : boto3.client
-        The boto3 SES client via which the message is to be sent.
+        The boto3 SESv2 client via which the message is to be sent.
 
     cybex_scorecard_dir : str
         The directory where the Cybex scorecard can be found.  If None
@@ -750,7 +750,7 @@ def send_cyhy_reports(
         database.  If None then the default will be used.
 
     ses_client : boto3.client
-        The boto3 SES client via which the message is to be sent.
+        The boto3 SESv2 client via which the message is to be sent.
 
     cyhy_report_dir : str
         The directory where the Cyber Hygiene reports can be found.
@@ -981,7 +981,7 @@ def send_cyhy_notifications(
         database.  If None then the default will be used.
 
     ses_client : boto3.client
-        The boto3 SES client via which the message is to be sent.
+        The boto3 SESv2 client via which the message is to be sent.
 
     cyhy_notification_dir : str
         The directory where the Cyber Hygiene notifications can be found.
@@ -1208,7 +1208,7 @@ def main():
         # The user doesn't want to BCC the CSAs.
         csa_emails = None
 
-    ses_client = boto3.client("ses")
+    ses_client = boto3.client("sesv2")
 
     batch_size = args["--batch-size"]
     if batch_size is not None:
