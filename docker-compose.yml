@@ -1,12 +1,4 @@
 ---
-# The version for the main docker-compose configuration needs to be
-# the lowest version that supports the features used by all
-# docker-compose configurations in this project. This is to support
-# the use of a 'docker-compose.override.yml' file derived from one of
-# the other configurations as documented here:
-# https://docs.docker.com/compose/extends/#multiple-compose-files
-version: '3.2'
-
 secrets:
   database_creds:
     file: ./secrets/database_creds.yml
@@ -15,7 +7,7 @@ secrets:
 
 services:
   mailer:
-    image: cisagov/cyhy-mailer:1.7.2
+    image: cisagov/cyhy-mailer:1.7.3
     secrets:
       - source: database_creds
         target: database_creds.yml
