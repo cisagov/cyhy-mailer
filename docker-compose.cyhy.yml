@@ -1,6 +1,4 @@
 ---
-version: '3.2'
-
 secrets:
   csa_emails:
     file: ./secrets/csa_emails.yml
