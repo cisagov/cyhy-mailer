@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
             "CLARKE - Cyber Hygiene Report - December 15, 2001 Results",
         )
         self.assertEqual(message.get("CC"), None)
-        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message["BCC"], None)
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -103,7 +103,7 @@ Cybersecurity and Infrastructure Security Agency<br>
             "CLARKE - Cyber Hygiene Report - December 15, 2001 Results",
         )
         self.assertEqual(message.get("CC"), None)
-        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message["BCC"], None)
         self.assertEqual(message["To"], "recipient@example.com")
 
         # Grab the bytes that comprise the attachment
@@ -197,7 +197,7 @@ Cybersecurity and Infrastructure Security Agency<br>
             "CLARKE - Cyber Hygiene Report - December 15, 2001 Results",
         )
         self.assertEqual(message.get("CC"), None)
-        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message["BCC"], None)
         self.assertEqual(message["To"], "recipient@example.com,recipient2@example.com")
 
         # Grab the bytes that comprise the attachment
