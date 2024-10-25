@@ -23,10 +23,10 @@ class Test(unittest.TestCase):
             message["Subject"], "Cyber Exposure Scorecard - December 15, 2001 Results"
         )
         self.assertEqual(message.get("CC"), None)
-        self.assertEqual(message["BCC"], "cyhy_reports@hq.dhs.gov")
+        self.assertEqual(message["BCC"], None)
         self.assertEqual(
             message["To"],
-            "CyHy_Reports@hq.dhs.gov,CyberDirectives@cisa.dhs.gov,CyberLiaison@cisa.dhs.gov,cyberscopehelp@cisa.dhs.gov",
+            "CyberDirectives@cisa.dhs.gov,CyberLiaison@cisa.dhs.gov,cyberscopehelp@cisa.dhs.gov",
         )
 
         # Grab the bytes that comprise the attachments

@@ -7,7 +7,7 @@ secrets:
 
 services:
   mailer:
-    image: cisagov/cyhy-mailer:1.7.3
+    image: cisagov/cyhy-mailer:1.7.4
     secrets:
       - source: database_creds
         target: database_creds.yml

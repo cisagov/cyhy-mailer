@@ -36,7 +36,9 @@ class Message(MIMEMultipart):
 
     DefaultCc = None
 
-    DefaultBcc = ["cyhy_reports@hq.dhs.gov"]
+    # With an empty list, this type annotation is necessary for the mypy
+    # pre-commit linter that is run on this code.
+    DefaultBcc: list[str] = []
 
     DefaultReplyTo = "vulnerability@cisa.dhs.gov"
 

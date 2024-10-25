@@ -32,7 +32,6 @@ class CybexMessage(ReportMessage):
     """
 
     DefaultTo = [
-        "CyHy_Reports@hq.dhs.gov",
         "CyberDirectives@cisa.dhs.gov",
         "CyberLiaison@cisa.dhs.gov",
         "cyberscopehelp@cisa.dhs.gov",
