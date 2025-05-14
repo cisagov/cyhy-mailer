@@ -797,7 +797,7 @@ def send_cyhy_reports(
         for request in cyhy_requests:
             id = request["_id"]
             acronym = request["agency"]["acronym"]
-            enrolled = request["enrolled"]
+            enrolled = request.get("enrolled", "n/a")
             entity_name = request["agency"]["name"]
             technical_pocs = [
                 contact
