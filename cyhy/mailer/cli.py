@@ -231,6 +231,7 @@ def get_requests_raw(db, query, batch_size=None):
         "agency.location.state": True,
         "agency.name": True,
         "agency.type": True,
+        "enrolled": True,
     }
 
     try:
@@ -796,6 +797,7 @@ def send_cyhy_reports(
         for request in cyhy_requests:
             id = request["_id"]
             acronym = request["agency"]["acronym"]
+            enrolled = request.get("enrolled", "n/a")
             entity_name = request["agency"]["name"]
             technical_pocs = [
                 contact
@@ -856,7 +858,9 @@ def send_cyhy_reports(
                 # doc has "CYHY_THIRD_PARTY" in its report_types, but
                 # it does not have any children (the reporting code
                 # skips these request docs).
-                logging.error(f"No Cyber Hygiene report found for entity with ID {id}")
+                logging.error(
+                    f"No Cyber Hygiene report found for entity with ID {id} and enrollment date {enrolled}"
+                )
 
             if cyhy_report_filenames:
                 # We take the last filename since, if there happens to be more
