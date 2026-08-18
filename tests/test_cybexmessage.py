@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
         self.assertEqual(message["BCC"], None)
         self.assertEqual(
             message["To"],
-            "CyberDirectives@cisa.dhs.gov,CyberLiaison@cisa.dhs.gov,cyberscopehelp@cisa.dhs.gov",
+            "CyberDirectives@cisa.dhs.gov",
         )
 
         # Grab the bytes that comprise the attachments
