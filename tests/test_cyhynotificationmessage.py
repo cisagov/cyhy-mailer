@@ -48,13 +48,13 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
-As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.
+In accordance with BOD 26-04 [https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk], please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit BOD 26-04 Implementation Guidance [https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk] for risk prioritization guidance.
 
-As part of BOD 22-01, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.
+Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.
 
-As part of BOD 23-02, networked management interfaces exposed to the public internet must either be removed from the internet by making it only accessible from an internal enterprise network or protected by capabilities that enforce access control to the interface through a policy enforcement point separate from the interface itself as part of a Zero Trust Architecture within 14 days.
+As part of BOD 23-02 [https://www.cisa.gov/news-events/directives/binding-operational-directive-23-02], networked management interfaces exposed to the public internet must either be removed from the internet by making it only accessible from an internal enterprise network or protected by capabilities that enforce access control to the interface through a policy enforcement point separate from the interface itself as part of a Zero Trust Architecture within 14 days.
 
 The details are in the attached PDF, which has the same password as your weekly Cyber Hygiene Vulnerability Scanning report.
 
@@ -81,9 +81,8 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>As part of <a href="https://www.cisa.gov/news-events/directives/bod-19-02-vulnerability-remediation-requirements-internet-accessible-systems">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.</p>
-
-<p>As part of <a href="https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities">BOD 22-01</a>, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.</p>
+<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a></p>
+<p>Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
 
@@ -142,13 +141,13 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
-As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.
+In accordance with BOD 26-04 [https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk], please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit BOD 26-04 Implementation Guidance [https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk] for risk prioritization guidance.
 
-As part of BOD 22-01, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.
+Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.
 
-As part of BOD 23-02, networked management interfaces exposed to the public internet must either be removed from the internet by making it only accessible from an internal enterprise network or protected by capabilities that enforce access control to the interface through a policy enforcement point separate from the interface itself as part of a Zero Trust Architecture within 14 days.
+As part of BOD 23-02 [https://www.cisa.gov/news-events/directives/binding-operational-directive-23-02], networked management interfaces exposed to the public internet must either be removed from the internet by making it only accessible from an internal enterprise network or protected by capabilities that enforce access control to the interface through a policy enforcement point separate from the interface itself as part of a Zero Trust Architecture within 14 days.
 
 The details are in the attached PDF, which has the same password as your weekly Cyber Hygiene Vulnerability Scanning report.
 
@@ -175,9 +174,8 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>As part of <a href="https://www.cisa.gov/news-events/directives/bod-19-02-vulnerability-remediation-requirements-internet-accessible-systems">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.</p>
-
-<p>As part of <a href="https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities">BOD 22-01</a>, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.</p>
+<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a></p>
+<p>Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
 
@@ -247,13 +245,13 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
-As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.
+In accordance with BOD 26-04 [https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk], please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit BOD 26-04 Implementation Guidance [https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk] for risk prioritization guidance.
 
-As part of BOD 22-01, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.
+Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.
 
-As part of BOD 23-02, networked management interfaces exposed to the public internet must either be removed from the internet by making it only accessible from an internal enterprise network or protected by capabilities that enforce access control to the interface through a policy enforcement point separate from the interface itself as part of a Zero Trust Architecture within 14 days.
+As part of BOD 23-02 [https://www.cisa.gov/news-events/directives/binding-operational-directive-23-02], networked management interfaces exposed to the public internet must either be removed from the internet by making it only accessible from an internal enterprise network or protected by capabilities that enforce access control to the interface through a policy enforcement point separate from the interface itself as part of a Zero Trust Architecture within 14 days.
 
 The details are in the attached PDF, which has the same password as your weekly Cyber Hygiene Vulnerability Scanning report.
 
@@ -280,9 +278,8 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>As part of <a href="https://www.cisa.gov/news-events/directives/bod-19-02-vulnerability-remediation-requirements-internet-accessible-systems">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.</p>
-
-<p>As part of <a href="https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities">BOD 22-01</a>, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.</p>
+<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a></p>
+<p>Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
 
@@ -352,13 +349,13 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
-As part of BOD 19-02, critical findings need to be remediated within 15 days and high findings remediated within 30 days.
+In accordance with BOD 26-04 [https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk], please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit BOD 26-04 Implementation Guidance [https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk] for risk prioritization guidance.
 
-As part of BOD 22-01, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.
+Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.
 
-As part of BOD 23-02, networked management interfaces exposed to the public internet must either be removed from the internet by making it only accessible from an internal enterprise network or protected by capabilities that enforce access control to the interface through a policy enforcement point separate from the interface itself as part of a Zero Trust Architecture within 14 days.
+As part of BOD 23-02 [https://www.cisa.gov/news-events/directives/binding-operational-directive-23-02], networked management interfaces exposed to the public internet must either be removed from the internet by making it only accessible from an internal enterprise network or protected by capabilities that enforce access control to the interface through a policy enforcement point separate from the interface itself as part of a Zero Trust Architecture within 14 days.
 
 The details are in the attached PDF, which has the same password as your weekly Cyber Hygiene Vulnerability Scanning report.
 
@@ -385,9 +382,8 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>As part of <a href="https://www.cisa.gov/news-events/directives/bod-19-02-vulnerability-remediation-requirements-internet-accessible-systems">BOD 19-02</a>, critical findings need to be remediated within 15 days and high findings remediated within 30 days.</p>
-
-<p>As part of <a href="https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities">BOD 22-01</a>, any "known exploited" findings, regardless of severity, need to be remediated within two weeks.</p>
+<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a></p>
+<p>Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
 
@@ -446,9 +442,7 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
-CISA recommends remediating critical findings within 15 days and high findings within 30 days.
-
-CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.
+CISA recommends review of latest Federal Binding Operational Directives, such as BOD 26-04 [https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk]. While compliance is NOT required for non-Federal entities, review of the list of BODs [https://www.cisa.gov/news-events/directives/all?f%5B0%5D=directive_type%3A36] is highly encouraged.
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.
 
@@ -479,9 +473,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>CISA recommends remediating critical findings within 15 days and high findings within 30 days.</p>
-
-<p>CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.</p>
+<p>CISA recommends review of latest Federal Binding Operational Directives, such as <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>. While compliance is NOT required for non-Federal entities, review of the <a href="https://www.cisa.gov/news-events/directives/all?f%5B0%5D=directive_type%3A36">list of BODs</a> is highly encouraged.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
 
@@ -540,9 +532,7 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
-CISA recommends remediating critical findings within 15 days and high findings within 30 days.
-
-CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.
+CISA recommends review of latest Federal Binding Operational Directives, such as BOD 26-04 [https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk]. While compliance is NOT required for non-Federal entities, review of the list of BODs [https://www.cisa.gov/news-events/directives/all?f%5B0%5D=directive_type%3A36] is highly encouraged.
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.
 
@@ -573,9 +563,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>CISA recommends remediating critical findings within 15 days and high findings within 30 days.</p>
-
-<p>CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.</p>
+<p>CISA recommends review of latest Federal Binding Operational Directives, such as <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>. While compliance is NOT required for non-Federal entities, review of the <a href="https://www.cisa.gov/news-events/directives/all?f%5B0%5D=directive_type%3A36">list of BODs</a> is highly encouraged.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
 
@@ -645,9 +633,7 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
-CISA recommends remediating critical findings within 15 days and high findings within 30 days.
-
-CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.
+CISA recommends review of latest Federal Binding Operational Directives, such as BOD 26-04 [https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk]. While compliance is NOT required for non-Federal entities, review of the list of BODs [https://www.cisa.gov/news-events/directives/all?f%5B0%5D=directive_type%3A36] is highly encouraged.
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.
 
@@ -678,9 +664,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>CISA recommends remediating critical findings within 15 days and high findings within 30 days.</p>
-
-<p>CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.</p>
+<p>CISA recommends review of latest Federal Binding Operational Directives, such as <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>. While compliance is NOT required for non-Federal entities, review of the <a href="https://www.cisa.gov/news-events/directives/all?f%5B0%5D=directive_type%3A36">list of BODs</a> is highly encouraged.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
 
@@ -750,9 +734,7 @@ Cyber Hygiene scans of your host(s) conducted in the past day have detected one 
 * New critical, high, and/or known exploited vulnerabilities
 * New potentially risky services
 
-CISA recommends remediating critical findings within 15 days and high findings within 30 days.
-
-CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.
+CISA recommends review of latest Federal Binding Operational Directives, such as BOD 26-04 [https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk]. While compliance is NOT required for non-Federal entities, review of the list of BODs [https://www.cisa.gov/news-events/directives/all?f%5B0%5D=directive_type%3A36] is highly encouraged.
 
 CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), especially if they are functioning as networked management interfaces, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.
 
@@ -783,9 +765,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>CISA recommends remediating critical findings within 15 days and high findings within 30 days.</p>
-
-<p>CISA recommends remediating known exploited vulnerabilities, regardless of severity, within two weeks.</p>
+<p>CISA recommends review of latest Federal Binding Operational Directives, such as <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>. While compliance is NOT required for non-Federal entities, review of the <a href="https://www.cisa.gov/news-events/directives/all?f%5B0%5D=directive_type%3A36">list of BODs</a> is highly encouraged.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
 
