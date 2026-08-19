@@ -74,11 +74,11 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p><strong><u>Please note:</u></strong> The CyHy VS report has been updated with a new format. These changes were made based on feedback provided by you, our valued customers.</p>
 
-<p>Key updates include:
+<p>Key updates include:</p>
 <ul>
   <li><strong>Report Structure:</strong> Redesigned to better address the areas you highlighted.</li>
   <li><strong>Plugin Output:</strong> Plugin outputs are now included in the findings.csv attachment.</li>
-</ul></p>
+</ul>
 
 <p><strong>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found on the Attachments page.</strong> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
@@ -172,11 +172,11 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p><strong><u>Please note:</u></strong> The CyHy VS report has been updated with a new format. These changes were made based on feedback provided by you, our valued customers.</p>
 
-<p>Key updates include:
+<p>Key updates include:</p>
 <ul>
   <li><strong>Report Structure:</strong> Redesigned to better address the areas you highlighted.</li>
   <li><strong>Plugin Output:</strong> Plugin outputs are now included in the findings.csv attachment.</li>
-</ul></p>
+</ul>
 
 <p><strong>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found on the Attachments page.</strong> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
@@ -277,11 +277,11 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p><strong><u>Please note:</u></strong> The CyHy VS report has been updated with a new format. These changes were made based on feedback provided by you, our valued customers.</p>
 
-<p>Key updates include:
+<p>Key updates include:</p>
 <ul>
   <li><strong>Report Structure:</strong> Redesigned to better address the areas you highlighted.</li>
   <li><strong>Plugin Output:</strong> Plugin outputs are now included in the findings.csv attachment.</li>
-</ul></p>
+</ul>
 
 <p><strong>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found on the Attachments page.</strong> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
@@ -389,11 +389,11 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p><strong><u>Please note:</u></strong> The CyHy VS report has been updated with a new format. These changes were made based on feedback provided by you, our valued customers.</p>
 
-<p>Key updates include:
+<p>Key updates include:</p>
 <ul>
   <li><strong>Report Structure:</strong> Redesigned to better address the areas you highlighted.</li>
   <li><strong>Plugin Output:</strong> Plugin outputs are now included in the findings.csv attachment.</li>
-</ul></p>
+</ul>
 
 <p><strong>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found on the Attachments page.</strong> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
@@ -501,11 +501,11 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p><strong><u>Please note:</u></strong> The CyHy VS report has been updated with a new format. These changes were made based on feedback provided by you, our valued customers.</p>
 
-<p>Key updates include:
+<p>Key updates include:</p>
 <ul>
   <li><strong>Report Structure:</strong> Redesigned to better address the areas you highlighted.</li>
   <li><strong>Plugin Output:</strong> Plugin outputs are now included in the findings.csv attachment.</li>
-</ul></p>
+</ul>
 
 <p><strong>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found on the Attachments page.</strong> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
