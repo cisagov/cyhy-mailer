@@ -81,7 +81,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a></p>
+<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a> for risk prioritization guidance.</p>
 <p>Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
@@ -174,7 +174,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a></p>
+<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a> for risk prioritization guidance.</p>
 <p>Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
@@ -278,7 +278,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a></p>
+<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a> for risk prioritization guidance.</p>
 <p>Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
@@ -382,7 +382,7 @@ WARNING: This message and any attached document(s) is FOR OFFICIAL USE ONLY (FOU
 </ul>
 </p>
 
-<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a></p>
+<p>In accordance with <a href="https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk">BOD 26-04</a>, please see "Table 1: Remediation Timelines" on the linked BOD for any detected KEVs. Additionally, we recommend you visit <a href="https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk">BOD 26-04 Implementation Guidance</a> for risk prioritization guidance.</p>
 <p>Note: BOD 26-04 related findings can be viewed on the Continuous Diagnostics and Mitigation (CDM) Dashboard.</p>
 
 <p>CISA also recommends reviewing hosts with potentially risky open services (e.g. RDP, Telnet, etc.), <em>especially if they are functioning as networked management interfaces</em>, to ensure that each service is intended to be available to the public and, where applicable, the service is up-to-date, correctly configured, and uses strong authentication.</p>
