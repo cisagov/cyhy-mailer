@@ -57,7 +57,7 @@ setup(
         "boto3",
         "chevron",
         "docopt",
-        "mongo-db-from-config @ http://github.com/cisagov/mongo-db-from-config/tarball/develop#egg=mongo-db-from-config",
+        "mongo-db-from-config @ http://github.com/cisagov/mongo-db-from-config/archive/v1.2.1.tar.gz#egg=mongo-db-from-config",
         "pymongo<4.0",
     ],
     extras_require={

@@ -1,0 +1,20 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+
+  customManagers: [
+    {
+      customType: "regex",
+      datasourceTemplate: "github-releases",
+      depNameTemplate: "cisagov/mongo-db-from-config",
+      managerFilePatterns: ["setup.py"],
+      matchStrings: [
+        "cisagov/mongo-db-from-config/archive/(?<currentValue>\\S+).tar.gz",
+      ],
+      versioningTemplate: "semver-coerced", // handles the leading `v`
+    },
+  ],
+  dependencyDashboard: true,
+  enabledManagers: ["custom.regex"],
+  extends: ["config:recommended"],
+  labels: ["dependencies"],
+}
