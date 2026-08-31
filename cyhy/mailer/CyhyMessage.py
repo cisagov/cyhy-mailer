@@ -33,7 +33,13 @@ class CyhyMessage(ReportMessage):
 
 The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)
 
-Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments. To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.
+Please note: The CyHy VS report has been updated with a new format. These changes were made based on feedback provided by you, our valued customers.
+
+Key updates include:
+* Report Structure: Redesigned to better address the areas you highlighted.
+* Plugin Output: Plugin outputs are now included in the findings.csv attachment.
+
+Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found on the Attachments page. To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.
 
 {{#has_tech_pocs}}
 Note: CISA has the following information listed as the Technical Points of Contact for {{acronym}}:
@@ -63,7 +69,15 @@ WARNING: This document is FOR OFFICIAL USE ONLY (FOUO). It contains information 
 
 <p>The Cyber Hygiene scan results are attached for your review. Same password as before. (If this is your first report and you have yet to receive a password, please let us know.)</p>
 
-<p><b>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found under Appendix G: Attachments.</b> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
+<p><strong><u>Please note:</u></strong> The CyHy VS report has been updated with a new format. These changes were made based on feedback provided by you, our valued customers.</p>
+
+<p>Key updates include:</p>
+<ul>
+  <li><strong>Report Structure:</strong> Redesigned to better address the areas you highlighted.</li>
+  <li><strong>Plugin Output:</strong> Plugin outputs are now included in the findings.csv attachment.</li>
+</ul>
+
+<p><strong>Additional details regarding findings, hosts, mitigated vulnerabilities, potentially risky services, etc., can be found on the Attachments page.</strong> To access the attachments embedded within the report, open the report with a dedicated PDF reader (such as Adobe Acrobat), and click on the paper clip icon to the left of the attachment name.</p>
 
 {{#has_tech_pocs}}
 <p>Note: CISA has the following information listed as the Technical Points of Contact for {{acronym}}:</p>
