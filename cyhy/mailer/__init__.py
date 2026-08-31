@@ -1,3 +1,3 @@
 """This package contains the cyhy-mailer code."""
 
-__version__ = "1.8.0-rc.1"
+__version__ = "1.8.0"
