@@ -1,7 +1,6 @@
 """This module contains the Message class."""
 
 # Standard Python Libraries
-from email import encoders
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -157,7 +156,6 @@ class Message(MIMEMultipart):
         with open(pdf_filename, "rb") as attachment:
             part = MIMEApplication(attachment.read(), "pdf")
 
-        encoders.encode_base64(part)
         # See https://en.wikipedia.org/wiki/MIME#Content-Disposition
         _, filename = os.path.split(pdf_filename)
         part.add_header("Content-Disposition", "attachment", filename=filename)
