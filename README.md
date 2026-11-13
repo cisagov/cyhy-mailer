@@ -191,6 +191,26 @@ version: '1'
     - WA
 ```
 
+## Previewing messages ##
+
+`preview_messages.py` renders the plain text and HTML bodies of the
+email messages so that changes to them can be reviewed without
+sending anything.  Each message is built from its real message class
+with sample data, using the attachments in `tests/data`.  Every
+variant of a message type is rendered, e.g. the Cyber Hygiene report
+with and without technical POCs.
+
+Pass one or more of `cybex`, `cyhy`, `https`, `notification`,
+`summary`, and `tmail` to choose which message types to render, or
+pass none to render them all:
+
+```console
+./preview_messages.py cyhy notification
+```
+
+The previews are written to `previews/` by default.  Use
+`--output-dir` to choose a different directory.
+
 ## License ##
 
 This project is in the worldwide [public domain](LICENSE).
