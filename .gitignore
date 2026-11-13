@@ -1,5 +1,14 @@
+# Docker secrets
+secrets
+
 # Emacs droppings
 *~
+
+# Project-specific
+/previews/
+
+# pyenv
+.python-version
 
 # Python droppings
 .cache
@@ -8,9 +17,3 @@
 **/__pycache__
 .pytest_cache
 .tox
-
-# pyenv
-.python-version
-
-# Docker secrets
-secrets
